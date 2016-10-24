@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B6F3A40-A8C8-407B-914A-3692454FC110}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MeasureIt</RootNamespace>
+    <AssemblyName>MeasureIt.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MeasureIt.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\MeasureIt.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Attributes\CounterCreationDataAttribute.cs" />
+    <Compile Include="Attributes\PerformanceCounterAttribute.cs" />
+    <Compile Include="Attributes\PerformanceCounterAdapterAttribute.cs" />
+    <Compile Include="Attributes\IPerformanceCounterAdapterAttribute.cs" />
+    <Compile Include="Attributes\IPerformanceCounterAttribute.cs" />
+    <Compile Include="Attributes\IPerformanceCounterCategoryAttribute.cs" />
+    <Compile Include="Attributes\ICounterCreationDataAttribute.cs" />
+    <Compile Include="Attributes\IAttribute.cs" />
+    <Compile Include="Castle\Interception\IMeasurementContext.cs" />
+    <Compile Include="Core\Moniker.cs" />
+    <Compile Include="Counters\TotalMemberAccessesPerformanceCounterAdapter.cs" />
+    <Compile Include="Counters\PerformanceCounterNames.cs" />
+    <Compile Include="Counters\PerformanceCounterCategoryAdapterBase.cs" />
+    <Compile Include="Counters\MemberActivityTimerPerformanceCounterAdapter.cs" />
+    <Compile Include="Counters\PerformanceCounterAdapterBase.cs" />
+    <Compile Include="Counters\MemberAccessRatePerformanceCounterAdapter.cs" />
+    <Compile Include="Counters\LastMemberExecutionTimePerformanceCounterAdapter.cs" />
+    <Compile Include="Counters\ErrorRatePerformanceCounterAdapter.cs" />
+    <Compile Include="Counters\CurrentConcurrentCountPerformanceCounterAdapter.cs" />
+    <Compile Include="Counters\DefaultPerformanceCounterCategoryAdapter.cs" />
+    <Compile Include="Counters\AverageTimePerformanceCounterAdapter.cs" />
+    <Compile Include="Descriptors\IMeasurementOptions.cs" />
+    <Compile Include="Descriptors\IPublishingOptions.cs" />
+    <Compile Include="Descriptors\ISamplingOptions.cs" />
+    <Compile Include="Disposable.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Counters\IPerformanceCounterCategoryAdapter.cs" />
+    <Compile Include="Counters\IPerformanceCounterAdapter.cs" />
+    <Compile Include="Descriptors\PerformanceCounterCategoryDescriptor.cs" />
+    <Compile Include="Attributes\PerformanceCounterCategoryAttribute.cs" />
+    <Compile Include="Descriptors\PerformanceCounterDescriptor.cs" />
+    <Compile Include="Descriptors\PerformanceCounterAdapterDescriptor.cs" />
+    <Compile Include="Descriptors\CounterCreationDataDescriptor.cs" />
+    <Compile Include="Descriptors\IPerformanceCounterAdapterDescriptor.cs" />
+    <Compile Include="Descriptors\IPerformanceCounterDescriptor.cs" />
+    <Compile Include="Descriptors\IPerformanceCounterCategoryDescriptor.cs" />
+    <Compile Include="Descriptors\IDescriptor.cs" />
+    <Compile Include="Descriptors\ICounterCreationDataDescriptor.cs" />
+    <Compile Include="Discovery\Agents\PerformanceCounterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\IPerformanceCounterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\IPerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\IPerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\DiscoveryAgentBase.cs" />
+    <Compile Include="Discovery\Agents\IDiscoveryAgent.cs" />
+    <Compile Include="Discovery\DiscoveryServiceExportedTypesGetterDelegate.cs" />
+    <Compile Include="Discovery\RuntimeInstrumentationDiscoveryService.cs" />
+    <Compile Include="Discovery\IRuntimeInstrumentationDiscoveryService.cs" />
+    <Compile Include="Discovery\InstrumentationDiscoveryServiceBase.cs" />
+    <Compile Include="Discovery\InstallerInstrumentationDiscoveryService.cs" />
+    <Compile Include="Discovery\IInstrumentationDiscoveryService.cs" />
+    <Compile Include="Discovery\IInstallerInstrumentationDiscoveryService.cs" />
+    <Compile Include="Discovery\InstrumentationDiscovererOptions.cs" />
+    <Compile Include="Extensions\EnumExtensionMethods.cs" />
+    <Compile Include="Extensions\ReflectionExtensionMethods.cs" />
+    <Compile Include="Measurement\IMeasurementContext.cs" />
+    <Compile Include="Measurement\IMeasurementProvider.cs" />
+    <Compile Include="Measurement\IPerformanceCounterContext.cs" />
+    <Compile Include="Measurement\MeasurementContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

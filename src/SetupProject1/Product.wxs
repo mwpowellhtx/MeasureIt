@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?define MeasureIt.Integration.Installer_TargetDir=$(var.MeasureIt.Integration.Installer.TargetDir)?>
+    <Product Id="*" Name="MeasureIt.Integration.SetItUp" Language="1033" Version="1.0.0.0" Manufacturer="Kindgom Software Ltd" UpgradeCode="e0e4bb3c-d76c-4ae6-a56b-4b74491ea8e5">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <MediaTemplate />
+
+        <Feature Id="ProductFeature" Title="MeasureIt.Integration" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+    </Product>
+
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLFOLDER" Name="MeasureIt.Integration" />
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+            <!-- <Component Id="ProductComponent"> -->
+            <!-- TODO: Insert files, registry keys, and other resources here. -->
+            <!-- </Component> -->
+            <Component Id="MeasureIt.Core.dll" Guid="15241fa5-57d4-48d5-ab17-2d33d15ad804">
+                <File Id="MeasureIt.Core.dll" Name="MeasureIt.Core.dll" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Core.dll" />
+            </Component>
+            <Component Id="MeasureIt.Installer.Core.dll" Guid="72822dbe-01fa-407b-afef-c12807b2bb77">
+                <File Id="MeasureIt.Installer.Core.dll" Name="MeasureIt.Installer.Core.dll" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Installer.Core.dll" />
+            </Component>
+            <Component Id="MeasureIt.Integration.dll" Guid="f0217c91-e02d-41f4-ba70-00b444e16b68">
+                <File Id="MeasureIt.Integration.dll" Name="MeasureIt.Integration.dll" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Integration.dll" />
+            </Component>
+            <Component Id="MeasureIt.Integration.Installer.dll" Guid="de7a684b-d099-413e-b71c-6d00805f59c8">
+                <File Id="MeasureIt.Integration.Installer.dll" Name="MeasureIt.Integration.Installer.dll" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Integration.Installer.dll" />
+            </Component>
+            <Component Id="MeasureIt.Core.pdb" Guid="921f5c79-34df-4c63-9e55-36a63e2d3fb4">
+                <File Id="MeasureIt.Core.pdb" Name="MeasureIt.Core.pdb" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Core.pdb" />
+            </Component>
+            <Component Id="MeasureIt.Installer.Core.pdb" Guid="6ff275a4-473d-461b-8c25-2f81354fde0a">
+                <File Id="MeasureIt.Installer.Core.pdb" Name="MeasureIt.Installer.Core.pdb" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Installer.Core.pdb" />
+            </Component>
+            <Component Id="MeasureIt.Integration.Installer.pdb" Guid="462c3ded-c6ff-4d76-b34d-98b063831a66">
+                <File Id="MeasureIt.Integration.Installer.pdb" Name="MeasureIt.Integration.Installer.pdb" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Integration.Installer.pdb" />
+            </Component>
+            <Component Id="MeasureIt.Integration.pdb" Guid="474a2d69-5338-4e1d-8314-d2bd217ce9a3">
+                <File Id="MeasureIt.Integration.pdb" Name="MeasureIt.Integration.pdb" Source="$(var.MeasureIt.Integration.Installer_TargetDir)MeasureIt.Integration.pdb" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
