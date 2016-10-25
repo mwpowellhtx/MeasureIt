@@ -9,7 +9,9 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public class PerformanceCounterDescriptor : IPerformanceCounterDescriptor
+    public class PerformanceCounterDescriptor
+        : IPerformanceCounterDescriptor
+            , IEquatable<PerformanceCounterDescriptor>
     {
         // TODO: TBD: what, if anything, to do about the RandomSeed?
         public int? RandomSeed { get; set; }
@@ -147,6 +149,27 @@ namespace MeasureIt
                         return new PerformanceCounter(categoryName, counterName, instanceName);
                 }
             });
+        }
+
+        private static bool Equals(IPerformanceCounterDescriptor a, IPerformanceCounterDescriptor b)
+        {
+            return ReferenceEquals(a, b)
+                   || (!(a.Method == null || b.Method == null)
+                       && a.Method.GetBaseDefinition() == b.Method.GetBaseDefinition()
+                       && !(a.CategoryType == null || b.CategoryType == null
+                            || a.AdapterType == null || b.AdapterType == null)
+                       && a.CategoryType == b.CategoryType
+                       && a.AdapterType == b.AdapterType);
+        }
+
+        public bool Equals(IPerformanceCounterDescriptor other)
+        {
+            return Equals(this, other);
+        }
+
+        public bool Equals(PerformanceCounterDescriptor other)
+        {
+            return Equals(this, other);
         }
     }
 }

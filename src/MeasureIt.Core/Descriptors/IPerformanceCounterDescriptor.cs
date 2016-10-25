@@ -7,7 +7,10 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public interface IPerformanceCounterDescriptor : IMeasurementOptions, IDescriptor
+    public interface IPerformanceCounterDescriptor
+        : IMeasurementOptions
+            , IDescriptor
+            , IEquatable<IPerformanceCounterDescriptor>
     {
         /// <summary>
         /// Gets or sets the CategoryType.
