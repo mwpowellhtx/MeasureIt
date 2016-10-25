@@ -151,6 +151,27 @@ namespace MeasureIt
         }
 
         /// <summary>
+        /// Returns the <typeparamref name="TResult"/> based on the <paramref name="member"/> and
+        /// <paramref name="getter"/>.
+        /// </summary>
+        /// <typeparam name="TMember"></typeparam>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="member"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IEnumerable<TResult> GetAttributeValues<TMember, TAttribute, TResult>(
+            this TMember member, Func<TAttribute, TResult> getter)
+            where TMember : MemberInfo
+            where TAttribute : Attribute
+        {
+            if (member == null) yield break;
+            var attrs = member.GetCustomAttributes<TAttribute>(false);
+            foreach (var result in attrs.Select(getter))
+                yield return result;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
