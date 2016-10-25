@@ -7,6 +7,23 @@ namespace Xunit
 
     public static class Internal
     {
+        public static Type VerifySubclassOf(this Type derivedType, Type baseType)
+        {
+            Assert.NotNull(derivedType);
+            Assert.NotNull(baseType);
+            Assert.True(derivedType.IsSubclassOf(baseType));
+            return derivedType;
+        }
+
+        public static Type VerifyUnrelatedType(this Type firstType, Type secondType)
+        {
+            Assert.NotNull(firstType);
+            Assert.NotNull(secondType);
+            Assert.False(firstType.IsSubclassOf(secondType));
+            Assert.False(secondType.IsSubclassOf(firstType));
+            return firstType;
+        }
+
         public static bool Parse<T, TResult>(this T value, TryParseDelegate<T, TResult> tryParse)
         {
             TResult result;
