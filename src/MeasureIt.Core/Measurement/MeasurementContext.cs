@@ -5,25 +5,34 @@ using System.Threading.Tasks;
 
 namespace MeasureIt.Measurement
 {
+    using Discovery;
+
     /// <summary>
     /// 
     /// </summary>
     public class MeasurementContext : Disposable, IMeasurementContext
     {
-        public Random Rnd { get; set; }
+        // ReSharper disable once NotAccessedField.Local
+        private readonly Random _rnd;
 
-        public IMeasurementOptions Options { get; private set; }
+        // ReSharper disable once NotAccessedField.Local
+        private readonly IInstrumentationDiscoveryOptions _options;
 
         public IEnumerable<IPerformanceCounterContext> CounterContexts { get; private set; }
 
-        internal MeasurementContext(IMeasurementOptions options,
+        public IPerformanceCounterDescriptor Descriptor { get; private set; }
+
+        internal MeasurementContext(IInstrumentationDiscoveryOptions options,
             IEnumerable<IPerformanceCounterContext> counterContexts)
         {
-            Rnd = options.RandomSeed.HasValue
+            // TODO: TBD: find the Descriptor from where?
+            Descriptor = null;
+
+            _rnd = options.RandomSeed.HasValue
                 ? new Random(options.RandomSeed.Value)
                 : new Random();
 
-            Options = options;
+            _options = options;
             CounterContexts = counterContexts;
         }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -11,13 +10,9 @@ namespace MeasureIt.Discovery.Agents
     public class DefaultOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests
         : PerformanceCounterDescriptorDiscoveryAgentTestFixtureBase
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            const BindingFlags methodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions();
-            Assert.NotNull(options);
-            Assert.Equal(methodBindingAttr, options.MethodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions().VerifyOptions();
         }
 
         public DefaultOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests()
@@ -149,13 +144,10 @@ namespace MeasureIt.Discovery.Agents
     public class IncludingNonPublicOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests
         : PerformanceCounterDescriptorDiscoveryAgentTestFixtureBase
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
             const BindingFlags methodBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions {MethodBindingAttr = methodBindingAttr};
-            Assert.NotNull(options);
-            Assert.Equal(methodBindingAttr, options.MethodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions {MethodBindingAttr = methodBindingAttr}.VerifyOptions(methodBindingAttr);
         }
 
         public IncludingNonPublicOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests()

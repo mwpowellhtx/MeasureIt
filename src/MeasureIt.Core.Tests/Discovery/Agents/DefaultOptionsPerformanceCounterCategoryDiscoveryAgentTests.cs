@@ -1,18 +1,11 @@
-﻿using System.Reflection;
-
-namespace MeasureIt.Discovery.Agents
+﻿namespace MeasureIt.Discovery.Agents
 {
-    using Xunit;
-
     public class DefaultOptionsPerformanceCounterCategoryDiscoveryAgentTests
         : PerformanceCounterCategoryDescriptorDiscoveryAgentTestFixtureBase
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            const BindingFlags methodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions();
-            Assert.Equal(options.MethodBindingAttr, methodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions().VerifyOptions();
         }
 
         public DefaultOptionsPerformanceCounterCategoryDiscoveryAgentTests()

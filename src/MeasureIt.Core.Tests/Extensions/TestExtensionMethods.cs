@@ -6,6 +6,7 @@ using System.Reflection;
 
 namespace MeasureIt
 {
+    using Discovery;
     using Xunit;
 
     internal static class TestExtensionMethods
@@ -14,6 +15,22 @@ namespace MeasureIt
         {
             Guid guid;
             Assert.True(Guid.TryParse(s, out guid));
+        }
+
+        private const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
+
+        internal static TOptions VerifyOptions<TOptions>(this TOptions options
+            , BindingFlags expectedMethodBindingFlags = PublicInstance
+            , bool expectedIncludeInherited = true
+            , bool expectedHasRandomSeed = false
+            )
+            where TOptions : class, IInstrumentationDiscoveryOptions
+        {
+            Assert.NotNull(options);
+            Assert.Equal(expectedMethodBindingFlags, options.MethodBindingAttr);
+            Assert.Equal(expectedIncludeInherited, options.IncludeInherited);
+            Assert.Equal(options.RandomSeed.HasValue, expectedHasRandomSeed);
+            return options;
         }
 
         /// <summary>
@@ -131,20 +148,17 @@ namespace MeasureIt
         /// <param name="descriptor"></param>
         /// <param name="expectedSampleRate"></param>
         /// <param name="expectedReadOnly"></param>
-        /// <param name="expectedRandomSeed"></param>
         /// <param name="expectedInstanceLifetime"></param>
         internal static IPerformanceCounterDescriptor VerifySamplingOptions(
             this IPerformanceCounterDescriptor descriptor
             , double expectedSampleRate = Constants.MaxSampleRate
             , bool? expectedReadOnly = null
-            , int? expectedRandomSeed = null
             , PerformanceCounterInstanceLifetime expectedInstanceLifetime = PerformanceCounterInstanceLifetime.Process
             )
         {
             Assert.NotNull(descriptor);
             Assert.Equal(expectedSampleRate, descriptor.SampleRate);
             Assert.Equal(expectedReadOnly, descriptor.ReadOnly);
-            Assert.Equal(expectedRandomSeed, descriptor.RandomSeed);
             Assert.Equal(expectedInstanceLifetime, descriptor.InstanceLifetime);
 
             return descriptor;

@@ -8,7 +8,7 @@ namespace MeasureIt.Discovery
     public abstract class RuntimeDiscoveryTestFixtureBase<TService> : DiscoveryServiceTestFixtureBase<TService>
         where TService : RuntimeInstrumentationDiscoveryService
     {
-        protected RuntimeDiscoveryTestFixtureBase(InstrumentationDiscovererOptions options,
+        protected RuntimeDiscoveryTestFixtureBase(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies, ServiceFactoryDelegate serviceFactory)
             : base(options, assemblies, serviceFactory)
         {

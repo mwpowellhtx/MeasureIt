@@ -12,13 +12,9 @@ namespace MeasureIt.Discovery
         : InstallerDiscoveryTestFixtureBase<
             InstallerInstrumentationDiscoveryService>
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            const BindingFlags methodBindingFlags = BindingFlags.Public | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions();
-            Assert.NotNull(options);
-            Assert.Equal(methodBindingFlags, options.MethodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions().VerifyOptions();
         }
 
         private static IEnumerable<Assembly> GetAssemblies()
@@ -28,7 +24,7 @@ namespace MeasureIt.Discovery
         }
 
         private static InstallerInstrumentationDiscoveryService CreateService(
-            InstrumentationDiscovererOptions options, IEnumerable<Assembly> assemblies)
+            IInstrumentationDiscoveryOptions options, IEnumerable<Assembly> assemblies)
         {
             return new InstallerInstrumentationDiscoveryService(options, assemblies);
         }

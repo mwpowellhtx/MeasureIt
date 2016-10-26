@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace MeasureIt.Discovery
 {
+    using Measurement;
+
     /// <summary>
     /// 
     /// </summary>
@@ -11,5 +15,11 @@ namespace MeasureIt.Discovery
         /// 
         /// </summary>
         IEnumerable<IPerformanceCounterDescriptor> CounterDescriptors { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo methodInfo);
     }
 }

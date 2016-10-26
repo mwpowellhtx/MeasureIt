@@ -39,13 +39,13 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// Gets the Options.
         /// </summary>
-        protected InstrumentationDiscovererOptions Options { get; private set; }
+        protected IInstrumentationDiscoveryOptions Options { get; private set; }
 
         /// <summary>
         /// Protected Constructor
         /// </summary>
         /// <param name="options"></param>
-        protected InstrumentationDiscoveryServiceBase(InstrumentationDiscovererOptions options)
+        protected InstrumentationDiscoveryServiceBase(IInstrumentationDiscoveryOptions options)
             : this(options, new List<Assembly>())
         {
         }
@@ -55,7 +55,7 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <param name="options"></param>
         /// <param name="assemblies"></param>
-        protected InstrumentationDiscoveryServiceBase(InstrumentationDiscovererOptions options,
+        protected InstrumentationDiscoveryServiceBase(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies)
         {
             IsPending = true;

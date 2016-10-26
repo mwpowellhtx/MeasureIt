@@ -13,12 +13,6 @@ namespace MeasureIt
         /// <summary>
         /// 
         /// </summary>
-        int? RandomSeed { get; }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
         double SampleRate { get; set; }
     }
 }

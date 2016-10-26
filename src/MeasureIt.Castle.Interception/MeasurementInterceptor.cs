@@ -16,7 +16,7 @@ namespace MeasureIt.Castle.Interception
 
         public override void Intercept(IInvocation invocation)
         {
-            var context = Provider.GetMeasurementContext(invocation.Method);
+            var context = Provider.GetMeasurementContext(invocation.TargetType, invocation.Method);
 
             if (context == null)
             {
@@ -28,7 +28,7 @@ namespace MeasureIt.Castle.Interception
             {
                 try
                 {
-                    if (context.Options.MayProceedUnabated)
+                    if (context.Descriptor.MayProceedUnabated)
                     {
                         invocation.Proceed();
                         return;
@@ -55,7 +55,7 @@ namespace MeasureIt.Castle.Interception
                 catch (Exception ex)
                 {
                     Trace.TraceError(ex.ToString());
-                    if (context.Options.ThrowPublishErrors) throw;
+                    if (context.Descriptor.ThrowPublishErrors) throw;
                 }
             }
         }

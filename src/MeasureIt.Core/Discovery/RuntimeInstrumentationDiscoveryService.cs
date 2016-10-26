@@ -6,6 +6,7 @@ using System.Reflection;
 namespace MeasureIt.Discovery
 {
     using Agents;
+    using Measurement;
     using DataAttribute = CounterCreationDataAttribute;
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace MeasureIt.Discovery
         /// 
         /// </summary>
         /// <param name="options"></param>
-        public RuntimeInstrumentationDiscoveryService(InstrumentationDiscovererOptions options)
+        public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
             : this(options, new List<Assembly>())
         {
         }
@@ -41,7 +42,7 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <param name="options"></param>
         /// <param name="assemblies"></param>
-        public RuntimeInstrumentationDiscoveryService(InstrumentationDiscovererOptions options,
+        public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies)
             : base(options, assemblies)
         {
@@ -66,6 +67,11 @@ namespace MeasureIt.Discovery
             base.OnDiscover();
 
             OnDiscoverCounterDescriptors();
+        }
+
+        public IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo methodInfo)
+        {
+            return new MeasurementContext(null, null);
         }
     }
 }

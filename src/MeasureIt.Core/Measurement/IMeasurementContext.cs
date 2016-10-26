@@ -12,17 +12,12 @@ namespace MeasureIt.Measurement
         /// <summary>
         /// 
         /// </summary>
-        Random Rnd { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        IMeasurementOptions Options { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         IEnumerable<IPerformanceCounterContext> CounterContexts { get; }
+
+        /// <summary>
+        /// Gets the Descriptor.
+        /// </summary>
+        IPerformanceCounterDescriptor Descriptor { get; }
 
         /// <summary>
         /// 

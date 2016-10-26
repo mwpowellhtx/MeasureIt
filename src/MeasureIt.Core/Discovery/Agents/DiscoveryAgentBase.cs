@@ -10,7 +10,7 @@ namespace MeasureIt.Discovery.Agents
     public abstract class DiscoveryAgentBase<T> : IDiscoveryAgent<T>
         where T : IDescriptor
     {
-        private readonly InstrumentationDiscovererOptions _options;
+        private readonly IInstrumentationDiscoveryOptions _options;
 
         private readonly DiscoveryServiceExportedTypesGetterDelegate _getExportedTypes;
 
@@ -24,7 +24,7 @@ namespace MeasureIt.Discovery.Agents
         /// </summary>
         /// <param name="options"></param>
         /// <param name="getExportedTypes"></param>
-        protected DiscoveryAgentBase(InstrumentationDiscovererOptions options,
+        protected DiscoveryAgentBase(IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
         {
             _options = options;
@@ -37,7 +37,7 @@ namespace MeasureIt.Discovery.Agents
         /// <param name="options"></param>
         /// <param name="exportedTypes"></param>
         /// <returns></returns>
-        protected abstract IEnumerable<T> DiscoverValues(InstrumentationDiscovererOptions options,
+        protected abstract IEnumerable<T> DiscoverValues(IInstrumentationDiscoveryOptions options,
             IEnumerable<Type> exportedTypes);
 
         public IEnumerator<T> GetEnumerator()

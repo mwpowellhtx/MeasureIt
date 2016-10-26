@@ -9,15 +9,11 @@ namespace MeasureIt.Discovery
     public class RuntimeDiscoveryIncludingNonPublicInstanceMembersTests
         : RuntimeDiscoveryTestFixtureBase<RuntimeInstrumentationDiscoveryService>
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
             // These are NOT the default options.
-            const BindingFlags expectedBindingAttr =
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions {MethodBindingAttr = expectedBindingAttr};
-            Assert.NotNull(options);
-            Assert.Equal(expectedBindingAttr, options.MethodBindingAttr);
-            return options;
+            const BindingFlags expectedBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            return new InstrumentationDiscoveryOptions {MethodBindingAttr = expectedBindingAttr}.VerifyOptions(expectedBindingAttr);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()

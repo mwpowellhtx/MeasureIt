@@ -26,10 +26,10 @@ namespace MeasureIt.Discovery
         /// <param name="options"></param>
         /// <param name="assemblies"></param>
         /// <returns></returns>
-        protected delegate TService ServiceFactoryDelegate(InstrumentationDiscovererOptions options,
+        protected delegate TService ServiceFactoryDelegate(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies);
 
-        protected DiscoveryServiceTestFixtureBase(InstrumentationDiscovererOptions options,
+        protected DiscoveryServiceTestFixtureBase(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies, ServiceFactoryDelegate serviceFactory)
         {
             Assert.NotNull(assemblies);

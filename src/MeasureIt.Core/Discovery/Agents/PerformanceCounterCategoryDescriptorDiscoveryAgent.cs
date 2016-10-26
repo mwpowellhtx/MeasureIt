@@ -11,14 +11,14 @@ namespace MeasureIt.Discovery.Agents
         IPerformanceCounterCategoryDescriptor>, IPerformanceCounterCategoryDescriptorDiscoveryAgent
     {
         internal PerformanceCounterCategoryDescriptorDiscoveryAgent(
-            InstrumentationDiscovererOptions options,
+            IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
             : base(options, getExportedTypes)
         {
         }
 
         protected override IEnumerable<IPerformanceCounterCategoryDescriptor> DiscoverValues(
-            InstrumentationDiscovererOptions options, IEnumerable<Type> exportedTypes)
+            IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {
             var o = options;
 

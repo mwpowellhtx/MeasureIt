@@ -8,9 +8,9 @@ namespace MeasureIt.Integration.Installer
 
     public class IntegrationDiscoveryServiceInstaller : DiscoveryServiceInstallerBase
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            return new InstrumentationDiscovererOptions();
+            return new InstrumentationDiscoveryOptions();
         }
 
         private static IEnumerable<Assembly> GetAssemblies()

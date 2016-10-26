@@ -11,14 +11,14 @@ namespace MeasureIt.Discovery.Agents
         IPerformanceCounterAdapterDescriptor>, IPerformanceCounterAdapterDescriptorDiscoveryAgent
     {
         internal PerformanceCounterAdapterDescriptorDiscoveryAgent(
-            InstrumentationDiscovererOptions options,
+            IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
             : base(options, getExportedTypes)
         {
         }
 
         protected override IEnumerable<IPerformanceCounterAdapterDescriptor> DiscoverValues(
-            InstrumentationDiscovererOptions options, IEnumerable<Type> exportedTypes)
+            IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {
             var adapterType = typeof(IPerformanceCounterAdapter);
 

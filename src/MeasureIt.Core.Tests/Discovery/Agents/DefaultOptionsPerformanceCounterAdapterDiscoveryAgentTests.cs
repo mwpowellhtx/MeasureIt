@@ -2,18 +2,12 @@
 
 namespace MeasureIt.Discovery.Agents
 {
-    using Xunit;
-
     public class DefaultOptionsPerformanceCounterAdapterDiscoveryAgentTests
         : PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            const BindingFlags methodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions();
-            Assert.NotNull(options);
-            Assert.Equal(methodBindingAttr, options.MethodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions().VerifyOptions();
         }
 
         public DefaultOptionsPerformanceCounterAdapterDiscoveryAgentTests()
@@ -25,13 +19,10 @@ namespace MeasureIt.Discovery.Agents
     public class IncludingNonPublicOptionsPerformanceCounterAdapterDiscoveryAgentTests
         : PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
             const BindingFlags methodBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions {MethodBindingAttr = methodBindingAttr};
-            Assert.NotNull(options);
-            Assert.Equal(methodBindingAttr, options.MethodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions {MethodBindingAttr = methodBindingAttr}.VerifyOptions(methodBindingAttr);
         }
 
         public IncludingNonPublicOptionsPerformanceCounterAdapterDiscoveryAgentTests()

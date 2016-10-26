@@ -13,14 +13,14 @@ namespace MeasureIt.Discovery.Agents
             , IPerformanceCounterCategoryDescriptor>
     {
         protected override PerformanceCounterCategoryDescriptorDiscoveryAgent CreateAgent(
-            InstrumentationDiscovererOptions options,
+            IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
         {
             return new PerformanceCounterCategoryDescriptorDiscoveryAgent(options, getExportedTypes);
         }
 
         protected PerformanceCounterCategoryDescriptorDiscoveryAgentTestFixtureBase(
-            InstrumentationDiscovererOptions options)
+            IInstrumentationDiscoveryOptions options)
             : base(options)
         {
         }

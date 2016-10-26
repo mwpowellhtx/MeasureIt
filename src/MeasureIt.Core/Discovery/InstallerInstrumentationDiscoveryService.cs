@@ -37,7 +37,7 @@ namespace MeasureIt.Discovery
         /// 
         /// </summary>
         /// <param name="options"></param>
-        public InstallerInstrumentationDiscoveryService(InstrumentationDiscovererOptions options)
+        public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
             : this(options, new List<Assembly>())
         {
         }
@@ -47,7 +47,7 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <param name="options"></param>
         /// <param name="assemblies"></param>
-        public InstallerInstrumentationDiscoveryService(InstrumentationDiscovererOptions options,
+        public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies)
             : base(options, assemblies)
         {

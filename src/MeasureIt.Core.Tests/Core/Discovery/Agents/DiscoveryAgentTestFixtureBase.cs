@@ -45,12 +45,12 @@ namespace MeasureIt.Discovery.Agents
             }
         }
 
-        private InstrumentationDiscovererOptions _options;
+        private IInstrumentationDiscoveryOptions _options;
 
         /// <summary>
         /// Gets the Options that derive the Test conditions.
         /// </summary>
-        protected InstrumentationDiscovererOptions Options
+        protected IInstrumentationDiscoveryOptions Options
         {
             get { return _options; }
             private set
@@ -68,10 +68,10 @@ namespace MeasureIt.Discovery.Agents
         /// <param name="options"></param>
         /// <param name="getExportedTypes"></param>
         /// <returns></returns>
-        protected abstract TAgent CreateAgent(InstrumentationDiscovererOptions options,
+        protected abstract TAgent CreateAgent(IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes);
 
-        protected DiscoveryAgentTestFixtureBase(InstrumentationDiscovererOptions options)
+        protected DiscoveryAgentTestFixtureBase(IInstrumentationDiscoveryOptions options)
         {
             Options = options;
             _lazyAgent = new Lazy<TAgent>(() => CreateAgent(Options, GetExportedTypes));

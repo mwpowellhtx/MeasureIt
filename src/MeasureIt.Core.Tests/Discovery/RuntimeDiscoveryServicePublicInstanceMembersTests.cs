@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -10,14 +9,9 @@ namespace MeasureIt.Discovery
     public class RuntimeDiscoveryServicePublicInstanceMembersTests : RuntimeDiscoveryTestFixtureBase<
         RuntimeInstrumentationDiscoveryService>
     {
-        private static InstrumentationDiscovererOptions GetOptions()
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            // These are the DEFAULT options.
-            const BindingFlags expectedBindingAttr = BindingFlags.Public | BindingFlags.Instance;
-            var options = new InstrumentationDiscovererOptions();
-            Assert.NotNull(options);
-            Assert.Equal(expectedBindingAttr, options.MethodBindingAttr);
-            return options;
+            return new InstrumentationDiscoveryOptions().VerifyOptions();
         }
 
         private static IEnumerable<Assembly> GetAssemblies()

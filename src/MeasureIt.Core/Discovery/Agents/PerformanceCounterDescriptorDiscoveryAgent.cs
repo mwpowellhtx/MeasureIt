@@ -11,14 +11,14 @@ namespace MeasureIt.Discovery.Agents
     public class PerformanceCounterDescriptorDiscoveryAgent : DiscoveryAgentBase<
         IPerformanceCounterDescriptor>, IPerformanceCounterDescriptorDiscoveryAgent
     {
-        internal PerformanceCounterDescriptorDiscoveryAgent(InstrumentationDiscovererOptions options,
+        internal PerformanceCounterDescriptorDiscoveryAgent(IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
             : base(options, getExportedTypes)
         {
         }
 
         private static IEnumerable<IPerformanceCounterDescriptor> DiscoverValues(
-            InstrumentationDiscovererOptions options, Type rootType, Type currentType)
+            IInstrumentationDiscoveryOptions options, Type rootType, Type currentType)
         {
             const bool inherited = false;
 
@@ -66,7 +66,7 @@ namespace MeasureIt.Discovery.Agents
         /// <param name="options"></param>
         /// <param name="descriptor"></param>
         /// <param name="currentType"></param>
-        private static void AlignDescriptorMethod(InstrumentationDiscovererOptions options
+        private static void AlignDescriptorMethod(IInstrumentationDiscoveryOptions options
             , IMeasurementOptions descriptor, Type currentType = null)
         {
             var o = options;
@@ -92,7 +92,7 @@ namespace MeasureIt.Discovery.Agents
         }
 
         protected override IEnumerable<IPerformanceCounterDescriptor> DiscoverValues(
-            InstrumentationDiscovererOptions options, IEnumerable<Type> exportedTypes)
+            IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {
             var o = options;
 

@@ -14,8 +14,6 @@ namespace MeasureIt
             , IEquatable<PerformanceCounterDescriptor>
     {
         // TODO: TBD: what, if anything, to do about the RandomSeed?
-        public int? RandomSeed { get; set; }
-
         private Moniker _counterMoniker;
 
         public string CounterName
@@ -155,7 +153,6 @@ namespace MeasureIt
             SampleRate = other.SampleRate;
 
             ReadOnly = other.ReadOnly;
-            RandomSeed = other.RandomSeed;
         }
 
         public IEnumerable<PerformanceCounter> GetPerformanceCounters()

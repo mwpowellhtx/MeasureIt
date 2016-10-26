@@ -68,6 +68,7 @@
     <Compile Include="Descriptors\IMeasurementOptions.cs" />
     <Compile Include="Descriptors\IPublishingOptions.cs" />
     <Compile Include="Descriptors\ISamplingOptions.cs" />
+    <Compile Include="Discovery\IInstrumentationDiscoveryOptions.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Counters\IPerformanceCounterCategoryAdapter.cs" />
@@ -97,13 +98,14 @@
     <Compile Include="Discovery\InstallerInstrumentationDiscoveryService.cs" />
     <Compile Include="Discovery\IInstrumentationDiscoveryService.cs" />
     <Compile Include="Discovery\IInstallerInstrumentationDiscoveryService.cs" />
-    <Compile Include="Discovery\InstrumentationDiscovererOptions.cs" />
+    <Compile Include="Discovery\InstrumentationDiscoveryOptions.cs" />
     <Compile Include="Extensions\EnumExtensionMethods.cs" />
     <Compile Include="Extensions\ReflectionExtensionMethods.cs" />
     <Compile Include="Measurement\IMeasurementContext.cs" />
     <Compile Include="Measurement\IMeasurementProvider.cs" />
     <Compile Include="Measurement\IPerformanceCounterContext.cs" />
     <Compile Include="Measurement\MeasurementContext.cs" />
+    <Compile Include="Measurement\MeasurementProviderBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
