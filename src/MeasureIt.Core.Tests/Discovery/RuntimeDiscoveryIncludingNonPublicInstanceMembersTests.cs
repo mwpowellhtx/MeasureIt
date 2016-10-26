@@ -50,14 +50,9 @@ namespace MeasureIt.Discovery
         protected override void VerifyDiscoveredCounterDescriptors(
             IEnumerable<IPerformanceCounterDescriptor> descriptors)
         {
-            // Make sure that the Methods all have a verifiable ReflectedType.
-
-            // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors.Select(d => d.Method.ReflectedType), Assert.NotNull);
-
-            // ReSharper disable once PossibleMultipleEnumeration
-            // ReSharper disable once PossibleNullReferenceException
             var ordered = descriptors.Order().ToArray();
+
+            var voidType = typeof(void);
 
             const string internalTargetMethod = "InternalTargetMethod";
             const string methodDeclaredInBaseOnly = "MethodDeclaredInBaseOnly";
@@ -66,24 +61,14 @@ namespace MeasureIt.Discovery
             const string virtualMethodDecoratedInBaseOnly = "VirtualMethodDecoratedInBaseOnly";
             const string virtualMethodDecoratedInDerivedClass = "VirtualMethodDecoratedInDerivedClass";
 
-            var voidType = typeof(void);
-
             // The descriptors will have been presented in a predictable order.
             Assert.Collection(ordered,
                 d =>
                 {
                     Assert.Equal(methodDeclaredInBaseOnly, d.CounterName);
                     d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.RootType.Confirm<SubjectClass>();
                     d.Method.Verify<SubjectClass, SubjectClass>(voidType, methodDeclaredInBaseOnly);
-                    d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
-                    d.VerifyCounterCategoryAdapter();
-                }
-                , d =>
-                {
-                    Assert.Equal(methodDeclaredInBaseOnly, d.CounterName);
-                    d.VerifyPublishingOptions().VerifySamplingOptions();
-                    d.Method.Verify<SubjectClassWithNonPublicMethods
-                        , SubjectClass>(voidType, methodDeclaredInBaseOnly);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
                     d.VerifyCounterCategoryAdapter();
                 }
@@ -91,6 +76,7 @@ namespace MeasureIt.Discovery
                 {
                     Assert.Equal(virtualMethodDecoratedInBaseOnly, d.CounterName);
                     d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.RootType.Confirm<SubjectClass>();
                     d.Method.Verify<SubjectClass, SubjectClass>(
                         voidType, virtualMethodDecoratedInBaseOnly);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
@@ -99,9 +85,29 @@ namespace MeasureIt.Discovery
                 , d =>
                 {
                     Assert.Equal(virtualMethodDecorationOvershadowed, d.CounterName);
-                    d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.VerifyPublishingOptions().VerifySamplingOptions(expectedReadOnly: true);
+                    d.RootType.Confirm<SubjectClass>();
                     d.Method.Verify<SubjectClass, SubjectClass>(
                         voidType, virtualMethodDecorationOvershadowed);
+                    d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
+                    d.VerifyCounterCategoryAdapter();
+                }
+                , d =>
+                {
+                    Assert.Equal(methodDeclaredInBaseOnly, d.CounterName);
+                    d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
+                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, methodDeclaredInBaseOnly);
+                    d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
+                    d.VerifyCounterCategoryAdapter();
+                }
+                , d =>
+                {
+                    Assert.Equal(methodDeclaredInBaseOnly, d.CounterName);
+                    d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
+                    d.Method.Verify<SubjectClassWithNonPublicMethods
+                        , SubjectClass>(voidType, methodDeclaredInBaseOnly);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
                     d.VerifyCounterCategoryAdapter();
                 }
@@ -110,6 +116,7 @@ namespace MeasureIt.Discovery
                     Assert.Equal(internalTargetMethod, d.CounterName);
                     d.VerifyPublishingOptions(false, false, true)
                         .VerifySamplingOptions(Constants.MinSampleRate);
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods, SubjectClassWithNonPublicMethods>(
                         voidType, internalTargetMethod, false);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
@@ -119,6 +126,7 @@ namespace MeasureIt.Discovery
                 {
                     Assert.Equal(methodDeclaredInDerivedOnly, d.CounterName);
                     d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods, SubjectClassWithNonPublicMethods>(
                         voidType, methodDeclaredInDerivedOnly);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
@@ -128,8 +136,9 @@ namespace MeasureIt.Discovery
                 {
                     Assert.Equal(virtualMethodDecoratedInBaseOnly, d.CounterName);
                     d.VerifyPublishingOptions().VerifySamplingOptions();
-                    d.Method.Verify<SubjectClassWithNonPublicMethods, SubjectClassWithNonPublicMethods>(
-                        voidType, virtualMethodDecoratedInBaseOnly);
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
+                    d.Method.Verify<SubjectClassWithNonPublicMethods
+                        , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecoratedInBaseOnly);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
                     d.VerifyCounterCategoryAdapter();
                 }
@@ -137,8 +146,9 @@ namespace MeasureIt.Discovery
                 {
                     Assert.Equal(virtualMethodDecoratedInDerivedClass, d.CounterName);
                     d.VerifyPublishingOptions().VerifySamplingOptions();
-                    d.Method.Verify<SubjectClassWithNonPublicMethods, SubjectClassWithNonPublicMethods>(
-                        voidType, virtualMethodDecoratedInDerivedClass);
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
+                    d.Method.Verify<SubjectClassWithNonPublicMethods
+                        , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecoratedInDerivedClass);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
                     d.VerifyCounterCategoryAdapter();
                 }
@@ -147,15 +157,7 @@ namespace MeasureIt.Discovery
                     Assert.Equal(virtualMethodDecorationOvershadowed, d.CounterName);
                     d.VerifyPublishingOptions(false, false, true)
                         .VerifySamplingOptions(0.25d, false);
-                    d.Method.Verify<SubjectClassWithNonPublicMethods
-                        , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecorationOvershadowed);
-                    d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
-                    d.VerifyCounterCategoryAdapter();
-                }
-                , d =>
-                {
-                    Assert.Equal(virtualMethodDecorationOvershadowed, d.CounterName);
-                    d.VerifyPublishingOptions().VerifySamplingOptions();
+                    d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
                         , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecorationOvershadowed);
                     d.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();

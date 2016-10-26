@@ -68,6 +68,12 @@
     <Compile Include="Core\Discovery\RuntimeDiscoveryTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\InstallerDiscoveryTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\DiscoveryServiceTestFixtureBase.cs" />
+    <Compile Include="Descriptors\DescriptorTestFixtureBase.cs" />
+    <Compile Include="Descriptors\IPerformanceCounterDescriptorFixture.cs" />
+    <Compile Include="Descriptors\ISimilarity.cs" />
+    <Compile Include="Descriptors\PerformanceCounterDescriptorFixture.cs" />
+    <Compile Include="Descriptors\PerformanceCounterDescriptorTestFixtureBase.cs" />
+    <Compile Include="Descriptors\PerformanceCounterDescriptorTests.cs" />
     <Compile Include="Discovery\Agents\DefaultOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\Agents\DefaultOptionsPerformanceCounterCategoryDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\Agents\DefaultOptionsPerformanceCounterAdapterDiscoveryAgentTests.cs" />
@@ -76,6 +82,7 @@
     <Compile Include="Discovery\RuntimeDiscoveryIncludingNonPublicInstanceMembersTests.cs" />
     <Compile Include="Extensions\DefaultTestExtensionMethods.cs" />
     <Compile Include="Extensions\TestExtensionMethods.cs" />
+    <Compile Include="Fixtures\CategoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Xunit\Internal.cs" />
   </ItemGroup>

@@ -47,10 +47,11 @@ namespace MeasureIt
         internal static void Verify<TReflected, TDeclaring>(this MethodInfo method,
             Type expectedReturnType, string expectedName, bool expectedPublic = true)
         {
-            Assert.Equal(expectedName, method.Name);
-            Assert.Equal(expectedPublic, method.IsPublic);
+            // Sort out the concerns in order of appearance, from generics then from params.
             method.ReflectedType.Confirm<TReflected>();
             method.DeclaringType.Confirm<TDeclaring>();
+            Assert.Equal(expectedName, method.Name);
+            Assert.Equal(expectedPublic, method.IsPublic);
             method.ReturnType.Confirm(expectedReturnType);
         }
 
@@ -88,14 +89,21 @@ namespace MeasureIt
                 Assert.NotNull(d.Method);
                 Assert.NotNull(d.Method.ReflectedType);
                 Assert.NotNull(d.Method.DeclaringType);
+                Assert.NotNull(d.RootType);
             });
+
+            /* TODO: TBD: ditto along the lines of possible less reliable ReflectedType;
+             * here, the theory is that RootType is more important. */
 
             // ReSharper disable once PossibleMultipleEnumeration, PossibleNullReferenceException
             return descriptors
-                .OrderBy(x => x.CategoryType.FullName)
-                .ThenBy(x => x.AdapterType.FullName)
+                .OrderBy(x => x.RootType.FullName)
+                //.OrderBy(x => x.Method.ReflectedType.FullName)
                 .ThenBy(x => x.Method.DeclaringType.FullName)
-                .ThenBy(x => x.Method.Name);
+                .ThenBy(x => x.Method.Name)
+                .ThenBy(x => x.CategoryType.FullName)
+                .ThenBy(x => x.AdapterType.FullName)
+                ;
         }
 
         internal static IPerformanceCounterDescriptor VerifyPublishingOptions(
