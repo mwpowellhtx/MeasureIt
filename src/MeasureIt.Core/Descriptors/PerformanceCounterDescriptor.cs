@@ -94,6 +94,8 @@ namespace MeasureIt
             }
         }
 
+        public Type RootType { get; set; }
+
         public MethodInfo Method { get; set; }
 
         /// <summary>
@@ -128,6 +130,34 @@ namespace MeasureIt
             SampleRate = Constants.DefaultSampleRate;
         }
 
+        internal PerformanceCounterDescriptor(IPerformanceCounterDescriptor other)
+        {
+            _adapterType = other.AdapterType;
+
+            _lazyAdapterDescriptor = new Lazy<IPerformanceCounterAdapterDescriptor>(() => other.AdapterDescriptor);
+
+            if (AdapterDescriptor == null)
+                throw new ArgumentException("Invalid descriptor instance.", "other");
+
+            _categoryType = other.CategoryType;
+            CategoryDescriptor = other.CategoryDescriptor;
+
+            _counterMoniker.Name = other.CounterName;
+            InstanceLifetime = other.InstanceLifetime;
+
+            RootType = other.RootType;
+            Method = other.Method;
+
+            PublishCounters = other.PublishCounters;
+            PublishEvent = other.PublishEvent;
+            ThrowPublishErrors = other.ThrowPublishErrors;
+
+            SampleRate = other.SampleRate;
+
+            ReadOnly = other.ReadOnly;
+            RandomSeed = other.RandomSeed;
+        }
+
         public IEnumerable<PerformanceCounter> GetPerformanceCounters()
         {
             var categoryName = CategoryDescriptor.Name;
@@ -151,15 +181,25 @@ namespace MeasureIt
             });
         }
 
-        private static bool Equals(IPerformanceCounterDescriptor a, IPerformanceCounterDescriptor b)
+        /// <summary>
+        /// Returns whether <paramref name="a"/> Equals <paramref name="b"/>.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        protected static bool Equals(IPerformanceCounterDescriptor a, IPerformanceCounterDescriptor b)
         {
             return ReferenceEquals(a, b)
-                   || (!(a.Method == null || b.Method == null)
+                   || (
+                       !(a.Method == null || b.Method == null)
                        && a.Method.GetBaseDefinition() == b.Method.GetBaseDefinition()
+                       && !(a.RootType == null || b.RootType == null)
+                       && a.RootType == b.RootType
                        && !(a.CategoryType == null || b.CategoryType == null
                             || a.AdapterType == null || b.AdapterType == null)
                        && a.CategoryType == b.CategoryType
-                       && a.AdapterType == b.AdapterType);
+                       && a.AdapterType == b.AdapterType
+                       );
         }
 
         public bool Equals(IPerformanceCounterDescriptor other)
