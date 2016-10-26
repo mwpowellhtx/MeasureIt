@@ -51,9 +51,12 @@ namespace MeasureIt.Measurement
             internal void Start()
             {
                 foreach (var context in _contexts)
-                    context.Adapter.BeginMeasurement(context.Descriptor);
+                    context.BeginMeasurement();
 
-                _stopwatch.Start();
+                if (_stopwatch.IsRunning)
+                    _stopwatch.Restart();
+                else
+                    _stopwatch.Start();
             }
 
             protected override void Dispose(bool disposing)
@@ -63,7 +66,10 @@ namespace MeasureIt.Measurement
                     var elapsed = _stopwatch.Elapsed;
 
                     foreach (var context in _contexts)
-                        context.Adapter.EndMeasurement(elapsed, context.Descriptor);
+                    {
+                        context.EndMeasurement(elapsed);
+                        context.Dispose();
+                    }
                 }
 
                 base.Dispose(disposing);

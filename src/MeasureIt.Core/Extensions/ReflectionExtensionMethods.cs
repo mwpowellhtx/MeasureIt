@@ -13,6 +13,18 @@ namespace MeasureIt
     public static class ReflectionExtensionMethods
     {
         /// <summary>
+        /// Returns whether <paramref name="type"/> and <paramref name="otherType"/> are Related.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="otherType"></param>
+        /// <returns></returns>
+        public static bool IsRelatedTo(this Type type, Type otherType)
+        {
+            return !(type == null || otherType == null)
+                   && (type.IsSubclassOf(otherType) || otherType.IsSubclassOf(type));
+        }
+
+        /// <summary>
         /// Returns whether <paramref name="type"/> Has <typeparamref name="TAttribute"/>.
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>

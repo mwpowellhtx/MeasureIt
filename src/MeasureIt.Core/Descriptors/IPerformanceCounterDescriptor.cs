@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MeasureIt.Measurement;
 
 namespace MeasureIt
 {
@@ -47,5 +48,17 @@ namespace MeasureIt
         /// </summary>
         /// <returns></returns>
         IEnumerable<PerformanceCounter> GetPerformanceCounters();
+
+        /// <summary>
+        /// Returns a new <see cref="IPerformanceCounterAdapter"/> corresponding to the Descriptor.
+        /// </summary>
+        /// <returns></returns>
+        IPerformanceCounterAdapter CreateAdapter();
+
+        /// <summary>
+        /// Returns a new <see cref="IPerformanceCounterContext"/> corresponding to the Descriptor.
+        /// </summary>
+        /// <returns></returns>
+        IPerformanceCounterContext CreateContext();
     }
 }

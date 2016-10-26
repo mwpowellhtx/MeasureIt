@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using MeasureIt.Measurement;
 
 namespace MeasureIt
 {
@@ -46,7 +47,7 @@ namespace MeasureIt
             get { return _adapterType; }
             set
             {
-                _adapterType = value;
+                _adapterType = value.VerifyAdapterType();
                 _lazyAdapterDescriptor = new Lazy<IPerformanceCounterAdapterDescriptor>(
                     () => value.GetAttributeValue((PerformanceCounterAdapterAttribute a) => a.Descriptor));
             }
@@ -176,6 +177,21 @@ namespace MeasureIt
                         return new PerformanceCounter(categoryName, counterName, instanceName);
                 }
             });
+        }
+
+        public virtual IPerformanceCounterAdapter CreateAdapter()
+        {
+            const BindingFlags nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+
+            var ctor = AdapterType.GetConstructor(nonPublicInstance, Type.DefaultBinder,
+                new[] {typeof(IPerformanceCounterDescriptor)}, null);
+
+            return (IPerformanceCounterAdapter) ctor.Invoke(new object[] {this});
+        }
+
+        public virtual IPerformanceCounterContext CreateContext()
+        {
+            return new PerformanceCounterContext(this);
         }
 
         /// <summary>

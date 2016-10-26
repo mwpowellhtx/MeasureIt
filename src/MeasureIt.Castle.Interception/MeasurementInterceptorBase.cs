@@ -1,13 +1,14 @@
 namespace MeasureIt.Castle.Interception
 {
     using global::Castle.DynamicProxy;
-    using Measurement;
+    using MeasureIt.Measurement;
 
-    public abstract class MeasurementInterceptorBase : IMeasurementInterceptor
+    public abstract class MeasurementInterceptorBase<TMeasurementProvider> : IMeasurementInterceptor
+        where TMeasurementProvider : IMeasurementProvider
     {
-        protected IMeasurementProvider Provider { get; private set; }
+        protected TMeasurementProvider Provider { get; private set; }
 
-        protected MeasurementInterceptorBase(IMeasurementProvider provider)
+        protected MeasurementInterceptorBase(TMeasurementProvider provider)
         {
             Provider = provider;
         }

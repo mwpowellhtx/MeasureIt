@@ -46,6 +46,8 @@
     <Compile Include="IMeasurementInterceptor.cs" />
     <Compile Include="MeasurementInterceptor.cs" />
     <Compile Include="MeasurementInterceptorBase.cs" />
+    <Compile Include="Measurement\IInterceptionMeasurementProvider.cs" />
+    <Compile Include="Measurement\InterceptionMeasurementProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

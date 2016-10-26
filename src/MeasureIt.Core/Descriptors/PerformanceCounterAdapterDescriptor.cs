@@ -29,7 +29,7 @@ namespace MeasureIt
             get { return _adapterType; }
             set
             {
-                _adapterType = value;
+                _adapterType = value.VerifyAdapterType();
                 CreationDataDescriptors = _adapterType.GetAttributeValues(
                     (CounterCreationDataAttribute a) => a.Descriptor)
                     .OrderBy(d => d.CounterType);

@@ -99,6 +99,7 @@
     <Compile Include="Discovery\IInstrumentationDiscoveryService.cs" />
     <Compile Include="Discovery\IInstallerInstrumentationDiscoveryService.cs" />
     <Compile Include="Discovery\InstrumentationDiscoveryOptions.cs" />
+    <Compile Include="Extensions\ModelExtensionMethods.cs" />
     <Compile Include="Extensions\EnumExtensionMethods.cs" />
     <Compile Include="Extensions\ReflectionExtensionMethods.cs" />
     <Compile Include="Measurement\IMeasurementContext.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Measurement\IPerformanceCounterContext.cs" />
     <Compile Include="Measurement\MeasurementContext.cs" />
     <Compile Include="Measurement\MeasurementProviderBase.cs" />
+    <Compile Include="Measurement\PerformanceCounterContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
