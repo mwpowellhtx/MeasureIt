@@ -3,8 +3,8 @@
     public class SubjectClassWithNonPublicMethods : SubjectClass
     {
         [PerformanceCounter("VirtualMethodDecorationOvershadowed"
-            , typeof(AverageTimePerformanceCounterAdapter)
             , typeof(DefaultPerformanceCounterCategoryAdapter)
+            , typeof(AverageTimePerformanceCounterAdapter)
             , PublishCounters = false, PublishEvent = false
             , ThrowPublishErrors = true, ReadOnly = false, SampleRate = 0.25d)]
         public override void VirtualMethodDecorationOvershadowed()
@@ -13,8 +13,8 @@
         }
 
         [PerformanceCounter("InternalTargetMethod"
-            , typeof(AverageTimePerformanceCounterAdapter)
             , typeof(DefaultPerformanceCounterCategoryAdapter)
+            , typeof(AverageTimePerformanceCounterAdapter)
             , PublishCounters = false, ThrowPublishErrors = true
             , PublishEvent = false, SampleRate = 0d)]
         internal void InternalTargetMethod()
@@ -27,16 +27,18 @@
         }
 
         [PerformanceCounter("VirtualMethodDecoratedInDerivedClass"
+            , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
-            , typeof(DefaultPerformanceCounterCategoryAdapter))]
+            )]
         public override void VirtualMethodDecoratedInDerivedClass()
         {
             base.VirtualMethodDecoratedInDerivedClass();
         }
 
         [PerformanceCounter("MethodDeclaredInDerivedOnly"
-        , typeof(AverageTimePerformanceCounterAdapter)
-        , typeof(DefaultPerformanceCounterCategoryAdapter))]
+            , typeof(DefaultPerformanceCounterCategoryAdapter)
+            , typeof(AverageTimePerformanceCounterAdapter)
+            )]
         public void MethodDeclaredInDerivedOnly()
         {
         }

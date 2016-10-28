@@ -3,15 +3,17 @@
     public class SubjectClass
     {
         [PerformanceCounter("VirtualMethodDecorationOvershadowed"
+            , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
-            , typeof(DefaultPerformanceCounterCategoryAdapter), ReadOnly = true)]
+            , ReadOnly = true)]
         public virtual void VirtualMethodDecorationOvershadowed()
         {
         }
 
         [PerformanceCounter("VirtualMethodDecoratedInBaseOnly"
+            , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
-            , typeof(DefaultPerformanceCounterCategoryAdapter))]
+            )]
         public virtual void VirtualMethodDecoratedInBaseOnly()
         {
         }
@@ -21,8 +23,9 @@
         }
 
         [PerformanceCounter("MethodDeclaredInBaseOnly"
+            , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
-            , typeof(DefaultPerformanceCounterCategoryAdapter))]
+            )]
         public void MethodDeclaredInBaseOnly()
         {
         }

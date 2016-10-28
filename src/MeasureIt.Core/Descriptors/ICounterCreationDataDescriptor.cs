@@ -13,9 +13,9 @@ namespace MeasureIt
         IPerformanceCounterAdapterDescriptor AdapterDescriptor { get; set; }
 
         /// <summary>
-        /// Gets or sets the CounterName.
+        /// Gets or sets the Name.
         /// </summary>
-        string CounterName { get; set; }
+        string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the Help.

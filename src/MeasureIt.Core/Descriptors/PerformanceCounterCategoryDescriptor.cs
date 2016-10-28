@@ -12,12 +12,22 @@ namespace MeasureIt
     {
         public Type Type { get; set; }
 
-        private Moniker _moniker;
+        private IMoniker _moniker;
+
+        private static IMoniker GetNameMoniker(string name)
+        {
+            return string.IsNullOrEmpty(name) ? null : new NameMoniker(name);
+        }
+
+        private static IMoniker GetTypeMoniker(Type type)
+        {
+            return type == null ? null : new TypeMoniker(type);
+        }
 
         public string Name
         {
-            get { return _moniker.Name; }
-            set { _moniker.Name = value; }
+            get { return _moniker.ToString(); }
+            set { _moniker = GetNameMoniker(value) ?? GetTypeMoniker(Type) ?? DefaultMoniker.New(); }
         }
 
         private string _help;

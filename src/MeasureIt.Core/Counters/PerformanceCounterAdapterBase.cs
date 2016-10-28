@@ -111,11 +111,11 @@ namespace MeasureIt
         {
             if (HasAny<CounterCreationData>(parts)) return;
 
-            var adapter = _descriptor.AdapterDescriptor;
+            var adapters = _descriptor.AdapterDescriptors;
 
             // TODO: TBD: let's assume for the time being that the counter has already been named in an appropriate manner here...
             // TODO: TBD: if we need to provide some naming service/strategy, seems like we'd want to do it during discovery and/or in the agents
-            var data = adapter.CreationDataDescriptors.Select(x => x.GetCounterCreationData());
+            var data = adapters.SelectMany(a => a.CreationDataDescriptors.Select(x => x.GetCounterCreationData()));
 
             IExpandoObjectDictionary dictionary = parts;
 

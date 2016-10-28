@@ -79,7 +79,7 @@ namespace MeasureIt.Discovery
                 var c = category;
 
                 var adaptersInUse = adapters.Where(x => counters.Any(
-                    y => y.AdapterType == x.AdapterType && y.CategoryType == c.Type));
+                    y => y.AdapterTypes.Contains(x.AdapterType) && y.CategoryType == c.Type));
 
                 if (!adapters.Any()) continue;
 

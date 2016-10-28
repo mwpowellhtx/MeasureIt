@@ -53,7 +53,15 @@
     <Compile Include="Attributes\ICounterCreationDataAttribute.cs" />
     <Compile Include="Attributes\IAttribute.cs" />
     <Compile Include="Castle\Interception\IMeasurementContext.cs" />
-    <Compile Include="Core\Moniker.cs" />
+    <Compile Include="Core\DefaultMoniker.cs" />
+    <Compile Include="Core\IDefaultMoniker.cs" />
+    <Compile Include="Core\IMoniker.cs" />
+    <Compile Include="Core\INameMoniker.cs" />
+    <Compile Include="Core\ITypeMoniker.cs" />
+    <Compile Include="Core\MethodInfoMoniker.cs" />
+    <Compile Include="Core\MonikerBase.cs" />
+    <Compile Include="Core\NameMoniker.cs" />
+    <Compile Include="Core\TypeMoniker.cs" />
     <Compile Include="Counters\TotalMemberAccessesPerformanceCounterAdapter.cs" />
     <Compile Include="Counters\PerformanceCounterNames.cs" />
     <Compile Include="Counters\PerformanceCounterCategoryAdapterBase.cs" />

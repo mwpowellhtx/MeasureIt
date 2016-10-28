@@ -9,21 +9,25 @@ namespace MeasureIt
     {
         public IPerformanceCounterAdapterDescriptor AdapterDescriptor { get; set; }
 
-        private Moniker _counterMoniker;
+        private IMoniker _nameMoniker;
 
-        public string CounterName
+        private IMoniker _instanceMoniker;
+
+        private static IMoniker GetNameMoniker(string name)
         {
-            get { return _counterMoniker.Name; }
-            set { _counterMoniker.Name = value; }
+            return string.IsNullOrEmpty(name) ? null : new NameMoniker(name);
         }
 
-        private Moniker _instanceMoniker;
+        public string Name
+        {
+            get { return _nameMoniker.ToString(); }
+            set { _nameMoniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
+        }
 
-        // TODO: TBD: may decide on another approach here?
         public string InstanceName
         {
-            get { return _instanceMoniker.Name; }
-            set { _instanceMoniker.Name = value; }
+            get { return _instanceMoniker.ToString(); }
+            set { _instanceMoniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
         }
 
         public string Help { get; set; }
@@ -38,30 +42,30 @@ namespace MeasureIt
         /// 
         /// </summary>
         public CounterCreationDataDescriptor()
-            : this(string.Empty)
+            : this(string.Empty, string.Empty)
         {
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="counterName"></param>
+        /// <param name="name"></param>
         /// <param name="readOnly"></param>
-        public CounterCreationDataDescriptor(string counterName, bool? readOnly = null)
-            : this(counterName, null, readOnly)
+        public CounterCreationDataDescriptor(string name, bool? readOnly = null)
+            : this(name, null, readOnly)
         {
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="counterName"></param>
+        /// <param name="name"></param>
         /// <param name="instanceName"></param>
         /// <param name="readOnly"></param>
-        public CounterCreationDataDescriptor(string counterName, string instanceName, bool? readOnly = null)
+        public CounterCreationDataDescriptor(string name, string instanceName, bool? readOnly = null)
         {
-            _counterMoniker = new Moniker(counterName);
-            _instanceMoniker = new Moniker(instanceName);
+            Name = name;
+            InstanceName = instanceName;
             Help = null;
             ReadOnly = readOnly;
             // Unlike InstanceLifetime, we cannot really know the CounterType at this moment.
@@ -70,7 +74,8 @@ namespace MeasureIt
 
         public CounterCreationData GetCounterCreationData()
         {
-            return new CounterCreationData(CounterName, Help, CounterType);
+            // TODO: TBD: may need/want a different naming convention...
+            return new CounterCreationData(Name, Help, CounterType);
         }
     }
 }

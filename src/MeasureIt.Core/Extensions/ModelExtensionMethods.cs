@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MeasureIt
 {
@@ -7,25 +9,51 @@ namespace MeasureIt
     /// </summary>
     public static class ModelExtensionMethods
     {
-        internal static Type VerifyAdapterType(this Type adapterType)
+        /// <summary>
+        /// Verifies that the <paramref name="type"/> is assignable to the
+        /// <typeparamref name="TAssignableTo"/> type. <typeparamref name="TAssignableTo"/> may be
+        /// anything, but is usually an interface.
+        /// </summary>
+        /// <typeparam name="TAssignableTo"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static Type VerifyType<TAssignableTo>(this Type type)
         {
-            var interfaceType = typeof(IPerformanceCounterAdapter);
+            var assignableToType = typeof(TAssignableTo);
 
-            // ReSharper disable once InvertIf
-            if (!interfaceType.IsAssignableFrom(adapterType))
+            if (assignableToType.IsAssignableFrom(type))
             {
-                var message = string.Format("The adapter type must implement {0}.", interfaceType.FullName);
-                throw new ArgumentException(message, "adapterType");
+                return type;
             }
 
-            return adapterType;
+            var message = string.Format("The type {0} must be assignable to {1}."
+                , type.FullName, assignableToType.FullName);
+
+            throw new ArgumentException(message, "type");
         }
 
-        internal static void IfNotNull(this IPerformanceCounterAdapter adapter,
-            Action<IPerformanceCounterAdapter> action)
+        /// <summary>
+        /// Verifies that the <paramref name="types"/> are assignable to the
+        /// <typeparamref name="TAssignableTo"/> type. <typeparamref name="TAssignableTo"/> may be
+        /// anything, but is usually an interface.
+        /// </summary>
+        /// <typeparam name="TAssignableTo"></typeparam>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        internal static IEnumerable<Type> VerifyTypes<TAssignableTo>(this IEnumerable<Type> types)
         {
-            if (adapter == null) return;
-            action(adapter);
+            return types.Select(VerifyType<TAssignableTo>);
+        }
+
+        internal static void IfNotNull(this IEnumerable<IPerformanceCounterAdapter> adapters
+            , Action<IPerformanceCounterAdapter> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            adapters = adapters ?? new IPerformanceCounterAdapter[0];
+
+            foreach (var adapter in adapters) action(adapter);
         }
     }
 }

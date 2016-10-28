@@ -9,12 +9,17 @@ namespace MeasureIt
     /// </summary>
     public class PerformanceCounterAdapterDescriptor : IPerformanceCounterAdapterDescriptor
     {
-        private Moniker _counterMoniker;
+        private IMoniker _counterMoniker;
+
+        private static IMoniker GetNameMoniker(string name)
+        {
+            return new NameMoniker(name);
+        }
 
         public string CounterName
         {
-            get { return _counterMoniker.Name; }
-            set { _counterMoniker.Name = value; }
+            get { return _counterMoniker.ToString(); }
+            set { _counterMoniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
         }
 
         public string CounterHelp { get; set; }
@@ -29,7 +34,7 @@ namespace MeasureIt
             get { return _adapterType; }
             set
             {
-                _adapterType = value.VerifyAdapterType();
+                _adapterType = value.VerifyType<IPerformanceCounterAdapter>();
                 CreationDataDescriptors = _adapterType.GetAttributeValues(
                     (CounterCreationDataAttribute a) => a.Descriptor)
                     .OrderBy(d => d.CounterType);
@@ -63,7 +68,7 @@ namespace MeasureIt
         /// <param name="counterHelp"></param>
         public PerformanceCounterAdapterDescriptor(string counterName, string counterHelp)
         {
-            _counterMoniker = new Moniker(counterName);
+            CounterName = counterName;
             CounterHelp = counterHelp ?? string.Empty;
         }
     }

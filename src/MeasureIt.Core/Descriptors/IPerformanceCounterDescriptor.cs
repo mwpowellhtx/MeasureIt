@@ -29,14 +29,14 @@ namespace MeasureIt
         string CounterName { get; set; }
 
         /// <summary>
-        /// Connect the <see cref="PerformanceCounter"/> with the adapter itself.
+        /// Connect the <see cref="PerformanceCounter"/> with the adapters themselves.
         /// </summary>
-        Type AdapterType { get; set; }
+        IEnumerable<Type> AdapterTypes { get; set; }
 
         /// <summary>
-        /// 
+        /// Gets the <see cref="IPerformanceCounterAdapterDescriptor"/> corresponding with the <see cref="AdapterTypes"/>.
         /// </summary>
-        IPerformanceCounterAdapterDescriptor AdapterDescriptor { get; }
+        IEnumerable<IPerformanceCounterAdapterDescriptor> AdapterDescriptors { get; }
 
         /// <summary>
         /// 
@@ -50,10 +50,10 @@ namespace MeasureIt
         IEnumerable<PerformanceCounter> GetPerformanceCounters();
 
         /// <summary>
-        /// Returns a new <see cref="IPerformanceCounterAdapter"/> corresponding to the Descriptor.
+        /// Returns a new set of <see cref="IPerformanceCounterAdapter"/> instances corresponding to the Descriptor.
         /// </summary>
         /// <returns></returns>
-        IPerformanceCounterAdapter CreateAdapter();
+        IEnumerable<IPerformanceCounterAdapter> CreateAdapters();
 
         /// <summary>
         /// Returns a new <see cref="IPerformanceCounterContext"/> corresponding to the Descriptor.

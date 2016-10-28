@@ -84,10 +84,11 @@ namespace MeasureIt
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="adapterType"></param>
         /// <param name="categoryType"></param>
-        public PerformanceCounterAttribute(Type adapterType, Type categoryType)
-            : this(string.Empty, adapterType, categoryType)
+        /// <param name="adapterType"></param>
+        /// <param name="otherAdapterTypes"></param>
+        public PerformanceCounterAttribute(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+            : this(string.Empty, categoryType, adapterType, otherAdapterTypes)
         {
         }
 
@@ -95,12 +96,13 @@ namespace MeasureIt
         /// Constructor
         /// </summary>
         /// <param name="counterName"></param>
-        /// <param name="adapterType"></param>
         /// <param name="categoryType"></param>
-        public PerformanceCounterAttribute(string counterName, Type adapterType, Type categoryType)
+        /// <param name="adapterType"></param>
+        /// <param name="otherAdapterTypes"></param>
+        public PerformanceCounterAttribute(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
             _lazyDescriptor = new Lazy<IPerformanceCounterDescriptor>(
-                () => new PerformanceCounterDescriptor(counterName, adapterType, categoryType));
+                () => new PerformanceCounterDescriptor(counterName, categoryType, adapterType, otherAdapterTypes));
         }
 
         // TODO: TBD: not sure I want something like this on the attribute, but rather the Descriptors

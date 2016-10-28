@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MeasureIt.Measurement
 {
@@ -7,11 +9,11 @@ namespace MeasureIt.Measurement
     /// </summary>
     public class PerformanceCounterContext : Disposable, IPerformanceCounterContext
     {
-        private readonly Lazy<IPerformanceCounterAdapter> _lazyAdapter;
+        private readonly Lazy<IEnumerable<IPerformanceCounterAdapter>> _lazyAdapters;
 
-        private IPerformanceCounterAdapter Adapter
+        private IEnumerable<IPerformanceCounterAdapter> Adapters
         {
-            get { return _lazyAdapter.Value; }
+            get { return _lazyAdapters.Value; }
         }
 
         private readonly IPerformanceCounterDescriptor _descriptor;
@@ -23,25 +25,28 @@ namespace MeasureIt.Measurement
         internal PerformanceCounterContext(IPerformanceCounterDescriptor descriptor)
         {
             _descriptor = descriptor;
-            _lazyAdapter = new Lazy<IPerformanceCounterAdapter>(
-                () => _descriptor == null ? null : _descriptor.CreateAdapter());
+            _lazyAdapters = new Lazy<IEnumerable<IPerformanceCounterAdapter>>(
+                () => (_descriptor == null
+                    ? new IPerformanceCounterAdapter[0]
+                    : _descriptor.CreateAdapters()).ToList()
+                );
         }
 
         public void BeginMeasurement()
         {
-            Adapter.IfNotNull(a => a.BeginMeasurement(_descriptor));
+            Adapters.IfNotNull(a => a.BeginMeasurement(_descriptor));
         }
 
         public void EndMeasurement(TimeSpan elapsed)
         {
-            Adapter.IfNotNull(a => a.EndMeasurement(elapsed, _descriptor));
+            Adapters.IfNotNull(a => a.EndMeasurement(elapsed, _descriptor));
         }
 
         protected override void Dispose(bool disposing)
         {
             if (!IsDisposed && disposing)
             {
-                Adapter.IfNotNull(a => a.Dispose());
+                Adapters.IfNotNull(a => a.Dispose());
             }
 
             base.Dispose(disposing);

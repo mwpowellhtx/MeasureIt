@@ -19,12 +19,12 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// Gets or sets the CounterName.
+        /// Gets or sets the Name.
         /// </summary>
-        public string CounterName
+        public string Name
         {
-            get { return Descriptor.CounterName; }
-            set { Descriptor.CounterName = value; }
+            get { return Descriptor.Name; }
+            set { Descriptor.Name = value; }
         }
 
         /// <summary>
@@ -74,9 +74,9 @@ namespace MeasureIt
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="counterName"></param>
-        public CounterCreationDataAttribute(string counterName)
-            : this(counterName, null)
+        /// <param name="name"></param>
+        public CounterCreationDataAttribute(string name)
+            : this(name, null)
         {
         }
 
@@ -92,22 +92,22 @@ namespace MeasureIt
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="counterName"></param>
+        /// <param name="name"></param>
         /// <param name="readOnly"></param>
-        public CounterCreationDataAttribute(string counterName, bool readOnly)
-            : this(counterName, (bool?) readOnly)
+        public CounterCreationDataAttribute(string name, bool readOnly)
+            : this(name, (bool?) readOnly)
         {
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="counterName"></param>
+        /// <param name="name"></param>
         /// <param name="readOnly"></param>
-        private CounterCreationDataAttribute(string counterName, bool? readOnly)
+        private CounterCreationDataAttribute(string name, bool? readOnly)
         {
             _lazyDescriptor = new Lazy<ICounterCreationDataDescriptor>(
-                () => new CounterCreationDataDescriptor {CounterName = counterName, ReadOnly = readOnly});
+                () => new CounterCreationDataDescriptor {Name = name, ReadOnly = readOnly});
         }
 
         ///// <summary>
