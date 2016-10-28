@@ -5,11 +5,11 @@ namespace MeasureIt
     /// <summary>
     /// Represents the blueprint for <see cref="PerformanceCounter"/>.
     /// </summary>
-    public interface IPerformanceCounterAttribute : IAttribute
+    public interface IMeasurePerformanceAttribute : IAttribute
     {
         /// <summary>
-        /// 
+        /// Gets the Descriptor.
         /// </summary>
-        IPerformanceCounterDescriptor Descriptor { get; }
+        IMeasurePerformanceDescriptor Descriptor { get; }
     }
 }

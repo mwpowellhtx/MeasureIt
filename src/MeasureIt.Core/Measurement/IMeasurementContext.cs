@@ -17,7 +17,7 @@ namespace MeasureIt.Measurement
         /// <summary>
         /// Gets the Descriptor.
         /// </summary>
-        IPerformanceCounterDescriptor Descriptor { get; }
+        IMeasurePerformanceDescriptor Descriptor { get; }
 
         /// <summary>
         /// 

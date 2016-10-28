@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using MeasureIt.Measurement;
 
 namespace MeasureIt
 {
+    using Measurement;
+
     /// <summary>
     /// 
     /// </summary>
-    public interface IPerformanceCounterDescriptor
+    public interface IMeasurePerformanceDescriptor
         : IMeasurementOptions
             , IDescriptor
-            , IEquatable<IPerformanceCounterDescriptor>
+            , IEquatable<IMeasurePerformanceDescriptor>
     {
         /// <summary>
         /// Gets or sets the CategoryType.

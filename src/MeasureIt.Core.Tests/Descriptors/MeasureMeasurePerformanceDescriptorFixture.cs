@@ -3,17 +3,17 @@ using System.Linq;
 
 namespace MeasureIt.Descriptors
 {
-    public class PerformanceCounterDescriptorFixture : PerformanceCounterDescriptor
-        , IPerformanceCounterDescriptorFixture
-        , IEquatable<PerformanceCounterDescriptorFixture>
-        , ISimilarity<PerformanceCounterDescriptorFixture>
+    public class MeasureMeasurePerformanceDescriptorFixture : MeasurePerformanceDescriptor
+        , IMeasurePerformanceDescriptorFixture
+        , IEquatable<MeasureMeasurePerformanceDescriptorFixture>
+        , ISimilarity<MeasureMeasurePerformanceDescriptorFixture>
     {
-        internal PerformanceCounterDescriptorFixture(Type adapterType, Type categoryType)
+        internal MeasureMeasurePerformanceDescriptorFixture(Type adapterType, Type categoryType)
             : base(adapterType, categoryType)
         {
         }
 
-        internal PerformanceCounterDescriptorFixture(IPerformanceCounterDescriptor descriptor)
+        internal MeasureMeasurePerformanceDescriptorFixture(IMeasurePerformanceDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -23,17 +23,17 @@ namespace MeasureIt.Descriptors
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(IPerformanceCounterDescriptorFixture other)
+        public bool Equals(IMeasurePerformanceDescriptorFixture other)
         {
             return Equals(this, other);
         }
 
-        public bool Equals(PerformanceCounterDescriptorFixture other)
+        public bool Equals(MeasureMeasurePerformanceDescriptorFixture other)
         {
             return Equals(this, other);
         }
 
-        private static bool IsSimilarTo(IPerformanceCounterDescriptor a, IPerformanceCounterDescriptor b)
+        private static bool IsSimilarTo(IMeasurePerformanceDescriptor a, IMeasurePerformanceDescriptor b)
         {
             return ReferenceEquals(a, b)
                    || (
@@ -49,12 +49,12 @@ namespace MeasureIt.Descriptors
                        );
         }
 
-        public bool IsSimilarTo(IPerformanceCounterDescriptorFixture other)
+        public bool IsSimilarTo(IMeasurePerformanceDescriptorFixture other)
         {
             return IsSimilarTo(this, other);
         }
 
-        public bool IsSimilarTo(PerformanceCounterDescriptorFixture other)
+        public bool IsSimilarTo(MeasureMeasurePerformanceDescriptorFixture other)
         {
             return IsSimilarTo(this, other);
         }

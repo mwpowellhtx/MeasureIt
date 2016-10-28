@@ -15,17 +15,17 @@ namespace MeasureIt.Discovery
     public class RuntimeInstrumentationDiscoveryService : InstrumentationDiscoveryServiceBase
         , IRuntimeInstrumentationDiscoveryService
     {
-        private readonly Lazy<IPerformanceCounterDescriptorDiscoveryAgent> _performanceCounterDescriptorDiscoveryAgent;
+        private readonly Lazy<IMeasurePerformanceDescriptorDiscoveryAgent> _performanceCounterDescriptorDiscoveryAgent;
 
-        private IEnumerable<IPerformanceCounterDescriptor> _counterDescriptors;
+        private IEnumerable<IMeasurePerformanceDescriptor> _counterDescriptors;
 
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable<IPerformanceCounterDescriptor> CounterDescriptors
+        public IEnumerable<IMeasurePerformanceDescriptor> CounterDescriptors
         {
             get { return _counterDescriptors; }
-            private set { _counterDescriptors = (value ?? new List<IPerformanceCounterDescriptor>()).ToArray(); }
+            private set { _counterDescriptors = (value ?? new List<IMeasurePerformanceDescriptor>()).ToArray(); }
         }
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace MeasureIt.Discovery
             CounterDescriptors = null;
 
             _performanceCounterDescriptorDiscoveryAgent
-                = new Lazy<IPerformanceCounterDescriptorDiscoveryAgent>(
-                    () => new PerformanceCounterDescriptorDiscoveryAgent(options, GetExportedTypes));
+                = new Lazy<IMeasurePerformanceDescriptorDiscoveryAgent>(
+                    () => new MeasurePerformanceDescriptorDiscoveryAgent(options, GetExportedTypes));
         }
 
         /* TODO: TBD: we may need/want different discovery services for different purposes:

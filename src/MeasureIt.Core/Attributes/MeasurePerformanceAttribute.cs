@@ -9,11 +9,11 @@ namespace MeasureIt
     /// compile time.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-    public class PerformanceCounterAttribute : Attribute, IPerformanceCounterAttribute
+    public class MeasurePerformanceAttribute : Attribute, IMeasurePerformanceAttribute
     {
-        private readonly Lazy<IPerformanceCounterDescriptor> _lazyDescriptor;
+        private readonly Lazy<IMeasurePerformanceDescriptor> _lazyDescriptor;
 
-        public IPerformanceCounterDescriptor Descriptor
+        public IMeasurePerformanceDescriptor Descriptor
         {
             get { return _lazyDescriptor.Value; }
         }
@@ -87,7 +87,7 @@ namespace MeasureIt
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public PerformanceCounterAttribute(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public MeasurePerformanceAttribute(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
             : this(string.Empty, categoryType, adapterType, otherAdapterTypes)
         {
         }
@@ -99,10 +99,10 @@ namespace MeasureIt
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public PerformanceCounterAttribute(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public MeasurePerformanceAttribute(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
-            _lazyDescriptor = new Lazy<IPerformanceCounterDescriptor>(
-                () => new PerformanceCounterDescriptor(counterName, categoryType, adapterType, otherAdapterTypes));
+            _lazyDescriptor = new Lazy<IMeasurePerformanceDescriptor>(
+                () => new MeasurePerformanceDescriptor(counterName, categoryType, adapterType, otherAdapterTypes));
         }
 
         // TODO: TBD: not sure I want something like this on the attribute, but rather the Descriptors

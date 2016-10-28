@@ -16,13 +16,13 @@ namespace MeasureIt.Measurement
             get { return _lazyAdapters.Value; }
         }
 
-        private readonly IPerformanceCounterDescriptor _descriptor;
+        private readonly IMeasurePerformanceDescriptor _descriptor;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        internal PerformanceCounterContext(IPerformanceCounterDescriptor descriptor)
+        internal PerformanceCounterContext(IMeasurePerformanceDescriptor descriptor)
         {
             _descriptor = descriptor;
             _lazyAdapters = new Lazy<IEnumerable<IPerformanceCounterAdapter>>(

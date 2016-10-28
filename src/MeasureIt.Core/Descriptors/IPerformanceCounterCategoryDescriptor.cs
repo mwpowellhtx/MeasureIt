@@ -33,7 +33,7 @@ namespace MeasureIt
         /// </summary>
         PerformanceCounterCategoryType CategoryType { get; set; }
 
-        // TODO: TBD: we may need/want to dive deeper here and actually uncover the IPerformanceCounterDescriptor's corresponding with the category
+        // TODO: TBD: we may need/want to dive deeper here and actually uncover the IMeasurePerformanceDescriptor's corresponding with the category
         // TODO: TBD: in this sense, we may then want/need the category adapter System.Type
 
         /// <summary>

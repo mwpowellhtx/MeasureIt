@@ -44,7 +44,7 @@ namespace MeasureIt.Discovery
         }
 
         protected override void VerifyDiscoveredCounterDescriptors(
-            IEnumerable<IPerformanceCounterDescriptor> descriptors)
+            IEnumerable<IMeasurePerformanceDescriptor> descriptors)
         {
             var ordered = descriptors.Order().ToArray();
 

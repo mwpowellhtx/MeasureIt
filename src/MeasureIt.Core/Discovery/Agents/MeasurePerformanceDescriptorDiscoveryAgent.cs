@@ -8,16 +8,16 @@ namespace MeasureIt.Discovery.Agents
     /// <summary>
     /// 
     /// </summary>
-    public class PerformanceCounterDescriptorDiscoveryAgent : DiscoveryAgentBase<
-        IPerformanceCounterDescriptor>, IPerformanceCounterDescriptorDiscoveryAgent
+    public class MeasurePerformanceDescriptorDiscoveryAgent : DiscoveryAgentBase<
+        IMeasurePerformanceDescriptor>, IMeasurePerformanceDescriptorDiscoveryAgent
     {
-        internal PerformanceCounterDescriptorDiscoveryAgent(IInstrumentationDiscoveryOptions options,
+        internal MeasurePerformanceDescriptorDiscoveryAgent(IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
             : base(options, getExportedTypes)
         {
         }
 
-        private static IEnumerable<IPerformanceCounterDescriptor> DiscoverValues(
+        private static IEnumerable<IMeasurePerformanceDescriptor> DiscoverValues(
             IInstrumentationDiscoveryOptions options, Type rootType, Type currentType)
         {
             const bool inherited = false;
@@ -29,7 +29,7 @@ namespace MeasureIt.Discovery.Agents
 
             var bases = (currentType.BaseType != null
                 ? DiscoverValues(o, rootType, currentType.BaseType)
-                : new List<IPerformanceCounterDescriptor>()).ToArray();
+                : new List<IMeasurePerformanceDescriptor>()).ToArray();
 
             /* TODO: TBD: RootType is necessary because, according to this strategy, Method will
              * be focused on the CurrentType as the ReflectedType, which may or may not work when
@@ -37,9 +37,9 @@ namespace MeasureIt.Discovery.Agents
              * under the theory that we will need the rooted Type information. */
 
             var potentials = currentType.GetMethods(o.MethodBindingAttr)
-                .Where(m => m.HasAttributes<PerformanceCounterAttribute>(inherited))
+                .Where(m => m.HasAttributes<MeasurePerformanceAttribute>(inherited))
                 .SelectMany(method => method.GetAttributeValues(
-                    (PerformanceCounterAttribute a) => a.Descriptor).Select(d =>
+                    (MeasurePerformanceAttribute a) => a.Descriptor).Select(d =>
                     {
                         d.RootType = rootType;
                         d.Method = method;
@@ -58,9 +58,9 @@ namespace MeasureIt.Discovery.Agents
         }
 
         /// <summary>
-        /// The most recently appearing, overshadowed <see cref="PerformanceCounterAttribute"/>,
+        /// The most recently appearing, overshadowed <see cref="MeasurePerformanceAttribute"/>,
         /// may not necessarily be the most recently declared, overriden <see cref="MethodInfo"/>.
-        /// So we must go about aligning the <see cref="PerformanceCounterDescriptor"/> with the
+        /// So we must go about aligning the <see cref="MeasurePerformanceDescriptor"/> with the
         /// correct one.
         /// </summary>
         /// <param name="options"></param>
@@ -91,7 +91,7 @@ namespace MeasureIt.Discovery.Agents
             }
         }
 
-        protected override IEnumerable<IPerformanceCounterDescriptor> DiscoverValues(
+        protected override IEnumerable<IMeasurePerformanceDescriptor> DiscoverValues(
             IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {
             var o = options;

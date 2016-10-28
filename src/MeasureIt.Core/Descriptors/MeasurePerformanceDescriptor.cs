@@ -11,9 +11,9 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public class PerformanceCounterDescriptor
-        : IPerformanceCounterDescriptor
-            , IEquatable<PerformanceCounterDescriptor>
+    public class MeasurePerformanceDescriptor
+        : IMeasurePerformanceDescriptor
+            , IEquatable<MeasurePerformanceDescriptor>
     {
         // TODO: TBD: what, if anything, to do about the RandomSeed?
         private IMoniker _counterMoniker;
@@ -127,7 +127,7 @@ namespace MeasureIt
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public PerformanceCounterDescriptor(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public MeasurePerformanceDescriptor(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
             : this(null, categoryType, adapterType, otherAdapterTypes)
         {
         }
@@ -139,7 +139,7 @@ namespace MeasureIt
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public PerformanceCounterDescriptor(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public MeasurePerformanceDescriptor(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
             CounterName = counterName;
 
@@ -155,7 +155,7 @@ namespace MeasureIt
             SampleRate = Constants.DefaultSampleRate;
         }
 
-        internal PerformanceCounterDescriptor(IPerformanceCounterDescriptor other)
+        internal MeasurePerformanceDescriptor(IMeasurePerformanceDescriptor other)
         {
             _adapterTypes = other.AdapterTypes;
 
@@ -212,7 +212,7 @@ namespace MeasureIt
             const BindingFlags nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
 
             var ctors = AdapterTypes.Select(a => a.GetConstructor(nonPublicInstance, Type.DefaultBinder,
-                new[] {typeof(IPerformanceCounterDescriptor)}, null));
+                new[] {typeof(IMeasurePerformanceDescriptor)}, null));
 
             return ctors.Select(ctor => ctor.Invoke(new object[] {this})).Cast<IPerformanceCounterAdapter>();
         }
@@ -228,7 +228,7 @@ namespace MeasureIt
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        protected static bool Equals(IPerformanceCounterDescriptor a, IPerformanceCounterDescriptor b)
+        protected static bool Equals(IMeasurePerformanceDescriptor a, IMeasurePerformanceDescriptor b)
         {
             return ReferenceEquals(a, b)
                    || (
@@ -243,12 +243,12 @@ namespace MeasureIt
                        );
         }
 
-        public bool Equals(IPerformanceCounterDescriptor other)
+        public bool Equals(IMeasurePerformanceDescriptor other)
         {
             return Equals(this, other);
         }
 
-        public bool Equals(PerformanceCounterDescriptor other)
+        public bool Equals(MeasurePerformanceDescriptor other)
         {
             return Equals(this, other);
         }

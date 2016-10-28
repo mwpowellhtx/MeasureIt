@@ -14,7 +14,7 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// 
         /// </summary>
-        IEnumerable<IPerformanceCounterDescriptor> CounterDescriptors { get; }
+        IEnumerable<IMeasurePerformanceDescriptor> CounterDescriptors { get; }
 
         /// <summary>
         /// 

@@ -8,15 +8,15 @@ namespace MeasureIt.Descriptors
     using Xunit;
     using BuildDescriptorAnonymousDelegate = Func<MethodInfo, bool>;
 
-    public class PerformanceCounterDescriptorTests : PerformanceCounterDescriptorTestFixtureBase<
-        PerformanceCounterDescriptorFixture>
+    public class MeasurePerformanceDescriptorTests : MeasurePerformanceDescriptorTestFixtureBase<
+        MeasureMeasurePerformanceDescriptorFixture>
     {
         /// <summary>
         /// This is intentionally derived from <see cref="B"/>.
         /// </summary>
         private class A
         {
-            [PerformanceCounter(typeof(CategoryFixture)
+            [MeasurePerformance(typeof(CategoryFixture)
                 , typeof(AverageTimePerformanceCounterAdapter)
                 )]
             public virtual void Verify(bool a)
@@ -28,7 +28,7 @@ namespace MeasureIt.Descriptors
             /// Another placeholder with an intentionally different signature.
             /// </summary>
             /// <param name="i"></param>
-            [PerformanceCounter(typeof(CategoryFixture)
+            [MeasurePerformance(typeof(CategoryFixture)
                 , typeof(AverageTimePerformanceCounterAdapter)
                 )]
             public void VerifyBase(int i)
@@ -41,7 +41,7 @@ namespace MeasureIt.Descriptors
         /// </summary>
         private class B : A
         {
-            [PerformanceCounter(typeof(CategoryFixture)
+            [MeasurePerformance(typeof(CategoryFixture)
                 , typeof(AverageTimePerformanceCounterAdapter)
                 )]
             public override void Verify(bool b)
@@ -53,7 +53,7 @@ namespace MeasureIt.Descriptors
             /// Another placeholder with an intentionally different signature.
             /// </summary>
             /// <param name="s"></param>
-            [PerformanceCounter(typeof(CategoryFixture)
+            [MeasurePerformance(typeof(CategoryFixture)
                 , typeof(AverageTimePerformanceCounterAdapter)
                 )]
             public void VerifyDerived(string s)
@@ -67,7 +67,7 @@ namespace MeasureIt.Descriptors
         private class C
         {
             // ReSharper disable once UnusedMember.Local, UnusedParameter.Local
-            [PerformanceCounter(typeof(CategoryFixture)
+            [MeasurePerformance(typeof(CategoryFixture)
                 , typeof(AverageTimePerformanceCounterAdapter)
                 )]
             public void Verify(bool c)
@@ -75,7 +75,7 @@ namespace MeasureIt.Descriptors
             }
         }
 
-        protected override PerformanceCounterDescriptorFixture BuildDescriptor(Type type
+        protected override MeasureMeasurePerformanceDescriptorFixture BuildDescriptor(Type type
             , BuildDescriptorAnonymousDelegate predicate)
         {
             Assert.NotNull(type);
@@ -91,7 +91,7 @@ namespace MeasureIt.Descriptors
 
             // This is a tiny snippet that would also contribute to the proper Discovery Agents.
             var descriptor = method
-                .GetAttributeValues((PerformanceCounterAttribute a) => a.Descriptor)
+                .GetAttributeValues((MeasurePerformanceAttribute a) => a.Descriptor)
                 .Select(d =>
                 {
                     // We do not need to re-apply the Predicate.
@@ -112,7 +112,7 @@ namespace MeasureIt.Descriptors
                 , a => Assert.Null(a.AdapterType)
                 );
 
-            return new PerformanceCounterDescriptorFixture(descriptor);
+            return new MeasureMeasurePerformanceDescriptorFixture(descriptor);
         }
 
         private static class MethodNames
@@ -134,7 +134,7 @@ namespace MeasureIt.Descriptors
         }
 
         /// <summary>
-        /// Verify that <see cref="PerformanceCounterDescriptor"/> instances associated with
+        /// Verify that <see cref="MeasurePerformanceDescriptor"/> instances associated with
         /// related <paramref name="derivedType"/> and <paramref name="baseType"/> type methods
         /// <paramref name="derivedMethodName"/> and <paramref name="baseMethodName"/> are
         /// <see cref="IEquatable{PerformanceCounterDescriptor}.Equals(PerformanceCounterDescriptor)"/>.
@@ -162,7 +162,7 @@ namespace MeasureIt.Descriptors
         }
 
         /// <summary>
-        /// Verify that <see cref="PerformanceCounterDescriptor"/> instances associated with
+        /// Verify that <see cref="MeasurePerformanceDescriptor"/> instances associated with
         /// unrelated <paramref name="firstType"/> and <paramref name="secondType"/> type methods
         /// <paramref name="firstMethodName"/> and <paramref name="secondMethodName"/> are not
         /// <see cref="IEquatable{PerformanceCounterDescriptor}.Equals(PerformanceCounterDescriptor)"/>.

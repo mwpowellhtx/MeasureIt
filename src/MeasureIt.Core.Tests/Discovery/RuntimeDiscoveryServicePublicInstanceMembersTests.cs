@@ -43,7 +43,7 @@ namespace MeasureIt.Discovery
         }
 
         protected override void VerifyDiscoveredCounterDescriptors(
-            IEnumerable<IPerformanceCounterDescriptor> descriptors)
+            IEnumerable<IMeasurePerformanceDescriptor> descriptors)
         {
             // ReSharper disable once PossibleMultipleEnumeration
             var ordered = descriptors.Order().ToArray();

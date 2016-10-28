@@ -2,7 +2,7 @@
 {
     public class SubjectClass
     {
-        [PerformanceCounter("VirtualMethodDecorationOvershadowed"
+        [MeasurePerformance("VirtualMethodDecorationOvershadowed"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             , ReadOnly = true)]
@@ -10,7 +10,7 @@
         {
         }
 
-        [PerformanceCounter("VirtualMethodDecoratedInBaseOnly"
+        [MeasurePerformance("VirtualMethodDecoratedInBaseOnly"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             )]
@@ -22,7 +22,7 @@
         {
         }
 
-        [PerformanceCounter("MethodDeclaredInBaseOnly"
+        [MeasurePerformance("MethodDeclaredInBaseOnly"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             )]

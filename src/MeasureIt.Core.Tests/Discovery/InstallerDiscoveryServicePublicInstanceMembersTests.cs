@@ -93,7 +93,7 @@ namespace MeasureIt.Discovery
                 );
         }
 
-        protected override void OnVerifyCounterDescriptors(IEnumerable<IPerformanceCounterDescriptor> descriptors)
+        protected override void OnVerifyCounterDescriptors(IEnumerable<IMeasurePerformanceDescriptor> descriptors)
         {
             var ordered = descriptors.Order().ToArray();
 

@@ -45,10 +45,10 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\CounterCreationDataAttribute.cs" />
-    <Compile Include="Attributes\PerformanceCounterAttribute.cs" />
+    <Compile Include="Attributes\MeasurePerformanceAttribute.cs" />
     <Compile Include="Attributes\PerformanceCounterAdapterAttribute.cs" />
     <Compile Include="Attributes\IPerformanceCounterAdapterAttribute.cs" />
-    <Compile Include="Attributes\IPerformanceCounterAttribute.cs" />
+    <Compile Include="Attributes\IMeasurePerformanceAttribute.cs" />
     <Compile Include="Attributes\IPerformanceCounterCategoryAttribute.cs" />
     <Compile Include="Attributes\ICounterCreationDataAttribute.cs" />
     <Compile Include="Attributes\IAttribute.cs" />
@@ -63,7 +63,6 @@
     <Compile Include="Core\NameMoniker.cs" />
     <Compile Include="Core\TypeMoniker.cs" />
     <Compile Include="Counters\TotalMemberAccessesPerformanceCounterAdapter.cs" />
-    <Compile Include="Counters\PerformanceCounterNames.cs" />
     <Compile Include="Counters\PerformanceCounterCategoryAdapterBase.cs" />
     <Compile Include="Counters\MemberActivityTimerPerformanceCounterAdapter.cs" />
     <Compile Include="Counters\PerformanceCounterAdapterBase.cs" />
@@ -83,18 +82,18 @@
     <Compile Include="Counters\IPerformanceCounterAdapter.cs" />
     <Compile Include="Descriptors\PerformanceCounterCategoryDescriptor.cs" />
     <Compile Include="Attributes\PerformanceCounterCategoryAttribute.cs" />
-    <Compile Include="Descriptors\PerformanceCounterDescriptor.cs" />
+    <Compile Include="Descriptors\MeasurePerformanceDescriptor.cs" />
     <Compile Include="Descriptors\PerformanceCounterAdapterDescriptor.cs" />
     <Compile Include="Descriptors\CounterCreationDataDescriptor.cs" />
     <Compile Include="Descriptors\IPerformanceCounterAdapterDescriptor.cs" />
-    <Compile Include="Descriptors\IPerformanceCounterDescriptor.cs" />
+    <Compile Include="Descriptors\IMeasurePerformanceDescriptor.cs" />
     <Compile Include="Descriptors\IPerformanceCounterCategoryDescriptor.cs" />
     <Compile Include="Descriptors\IDescriptor.cs" />
     <Compile Include="Descriptors\ICounterCreationDataDescriptor.cs" />
-    <Compile Include="Discovery\Agents\PerformanceCounterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\MeasurePerformanceDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
-    <Compile Include="Discovery\Agents\IPerformanceCounterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\IMeasurePerformanceDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\IPerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\IPerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\DiscoveryAgentBase.cs" />

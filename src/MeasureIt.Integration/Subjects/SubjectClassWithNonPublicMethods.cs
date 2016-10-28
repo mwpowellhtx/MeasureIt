@@ -2,7 +2,7 @@
 {
     public class SubjectClassWithNonPublicMethods : SubjectClass
     {
-        [PerformanceCounter("VirtualMethodDecorationOvershadowed"
+        [MeasurePerformance("VirtualMethodDecorationOvershadowed"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             , PublishCounters = false, PublishEvent = false
@@ -12,7 +12,7 @@
             base.VirtualMethodDecorationOvershadowed();
         }
 
-        [PerformanceCounter("InternalTargetMethod"
+        [MeasurePerformance("InternalTargetMethod"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             , PublishCounters = false, ThrowPublishErrors = true
@@ -26,7 +26,7 @@
             base.VirtualMethodDecoratedInBaseOnly();
         }
 
-        [PerformanceCounter("VirtualMethodDecoratedInDerivedClass"
+        [MeasurePerformance("VirtualMethodDecoratedInDerivedClass"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             )]
@@ -35,7 +35,7 @@
             base.VirtualMethodDecoratedInDerivedClass();
         }
 
-        [PerformanceCounter("MethodDeclaredInDerivedOnly"
+        [MeasurePerformance("MethodDeclaredInDerivedOnly"
             , typeof(DefaultPerformanceCounterCategoryAdapter)
             , typeof(AverageTimePerformanceCounterAdapter)
             )]

@@ -12,7 +12,7 @@ namespace MeasureIt
     public class TotalMemberAccessesPerformanceCounterAdapter : PerformanceCounterAdapterBase<
         TotalMemberAccessesPerformanceCounterAdapter>
     {
-        internal TotalMemberAccessesPerformanceCounterAdapter(IPerformanceCounterDescriptor descriptor)
+        internal TotalMemberAccessesPerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -24,12 +24,12 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == MemberAccessesType); }
         }
 
-        public override void BeginMeasurement(IPerformanceCounterDescriptor descriptor)
+        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
         {
             // Nothing to do here.
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IPerformanceCounterDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
         {
             MemberAccessesCounter.Increment();
         }

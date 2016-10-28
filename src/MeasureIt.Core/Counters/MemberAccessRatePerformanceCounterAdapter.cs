@@ -12,7 +12,7 @@ namespace MeasureIt
     public class MemberAccessRatePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         MemberAccessRatePerformanceCounterAdapter>
     {
-        internal MemberAccessRatePerformanceCounterAdapter(IPerformanceCounterDescriptor descriptor)
+        internal MemberAccessRatePerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -24,12 +24,12 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == AccessRateType); }
         }
 
-        public override void BeginMeasurement(IPerformanceCounterDescriptor descriptor)
+        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
         {
             // Nothing to do here.
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IPerformanceCounterDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
         {
             // TODO: TBD: not sure that "access rate" or "number of operations per second" is quite what this captures, but I could be wrong...
             AccessRateCounter.Increment();

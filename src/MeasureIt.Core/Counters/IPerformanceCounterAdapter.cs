@@ -25,13 +25,13 @@ namespace MeasureIt
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        void BeginMeasurement(IPerformanceCounterDescriptor descriptor);
+        void BeginMeasurement(IMeasurePerformanceDescriptor descriptor);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="elapsed"></param>
         /// <param name="descriptor"></param>
-        void EndMeasurement(TimeSpan elapsed, IPerformanceCounterDescriptor descriptor);
+        void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor);
     }
 }

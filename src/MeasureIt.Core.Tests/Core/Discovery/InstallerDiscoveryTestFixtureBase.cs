@@ -41,6 +41,6 @@ namespace MeasureIt.Discovery
             IEnumerable<IPerformanceCounterCategoryDescriptor> descriptors);
 
         protected abstract void OnVerifyCounterDescriptors(
-            IEnumerable<IPerformanceCounterDescriptor> descriptors);
+            IEnumerable<IMeasurePerformanceDescriptor> descriptors);
     }
 }

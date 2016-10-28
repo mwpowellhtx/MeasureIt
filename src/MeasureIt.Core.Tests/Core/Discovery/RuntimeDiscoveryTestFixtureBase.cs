@@ -41,7 +41,7 @@ namespace MeasureIt.Discovery
         }
 
         protected virtual void VerifyDiscoveredCounterDescriptors(
-            IEnumerable<IPerformanceCounterDescriptor> descriptors)
+            IEnumerable<IMeasurePerformanceDescriptor> descriptors)
         {
             Assert.NotNull(descriptors);
             Assert.NotEmpty(descriptors);

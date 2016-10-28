@@ -94,8 +94,8 @@ namespace MeasureIt
         {
         }
 
-        internal static IEnumerable<IPerformanceCounterDescriptor> Order(
-            this IEnumerable<IPerformanceCounterDescriptor> descriptors)
+        internal static IEnumerable<IMeasurePerformanceDescriptor> Order(
+            this IEnumerable<IMeasurePerformanceDescriptor> descriptors)
         {
             // ReSharper disable once PossibleMultipleEnumeration
             Assert.All(descriptors, d =>
@@ -123,8 +123,8 @@ namespace MeasureIt
                 ;
         }
 
-        internal static IPerformanceCounterDescriptor VerifyPublishingOptions(
-            this IPerformanceCounterDescriptor descriptor,
+        internal static IMeasurePerformanceDescriptor VerifyPublishingOptions(
+            this IMeasurePerformanceDescriptor descriptor,
             bool expectedPublishCounters = true, bool expectedPublishEvent = true,
             bool expectedThrowPublishErrors = false, bool? expectedMayProceedUnabated = null)
         {
@@ -149,8 +149,8 @@ namespace MeasureIt
         /// <param name="expectedSampleRate"></param>
         /// <param name="expectedReadOnly"></param>
         /// <param name="expectedInstanceLifetime"></param>
-        internal static IPerformanceCounterDescriptor VerifySamplingOptions(
-            this IPerformanceCounterDescriptor descriptor
+        internal static IMeasurePerformanceDescriptor VerifySamplingOptions(
+            this IMeasurePerformanceDescriptor descriptor
             , double expectedSampleRate = Constants.MaxSampleRate
             , bool? expectedReadOnly = null
             , PerformanceCounterInstanceLifetime expectedInstanceLifetime = PerformanceCounterInstanceLifetime.Process
@@ -171,7 +171,7 @@ namespace MeasureIt
         ///// <typeparam name="TAdapter"></typeparam>
         ///// <param name="descriptor"></param>
         ///// <param name="verify"></param>
-        //internal static void VerifyCounterAdapter<TAdapter>(this IPerformanceCounterDescriptor descriptor,
+        //internal static void VerifyCounterAdapter<TAdapter>(this IMeasurePerformanceDescriptor descriptor,
         //    Action<IPerformanceCounterAdapterDescriptor> verify = null)
         //    where TAdapter : PerformanceCounterAdapterBase<TAdapter>
         //{
@@ -182,7 +182,7 @@ namespace MeasureIt
         //    verify(descriptor.AdapterDescriptor);
         //}
 
-        internal static void VerifyCounterCategoryAdapter<TCategory>(this IPerformanceCounterDescriptor descriptor,
+        internal static void VerifyCounterCategoryAdapter<TCategory>(this IMeasurePerformanceDescriptor descriptor,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
             Action<IPerformanceCounterCategoryDescriptor> verify = null)
             where TCategory : PerformanceCounterCategoryAdapterBase
@@ -198,7 +198,7 @@ namespace MeasureIt
         /// <param name="expectedCategoryType"></param>
         /// <param name="verify"></param>
         internal static void VerifyCounterCategoryAdapter(
-            this IPerformanceCounterDescriptor descriptor, Type expectedType = null,
+            this IMeasurePerformanceDescriptor descriptor, Type expectedType = null,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
             Action<IPerformanceCounterCategoryDescriptor> verify = null)
         {

@@ -20,7 +20,7 @@ namespace MeasureIt.Measurement
 
         public IEnumerable<IPerformanceCounterContext> CounterContexts { get; private set; }
 
-        public IPerformanceCounterDescriptor Descriptor { get; private set; }
+        public IMeasurePerformanceDescriptor Descriptor { get; private set; }
 
         internal MeasurementContext(IInstrumentationDiscoveryOptions options,
             IEnumerable<IPerformanceCounterContext> counterContexts)

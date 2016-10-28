@@ -61,7 +61,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Core\IntegrationTestFixtureBase.cs" />
-    <Compile Include="Core\Discovery\Agents\PerformanceCounterDescriptorDiscoveryAgentTestFixtureBase.cs" />
+    <Compile Include="Core\Discovery\Agents\MeasurePerformanceDescriptorDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\DiscoveryAgentTestFixtureBase.cs" />
@@ -69,12 +69,12 @@
     <Compile Include="Core\Discovery\InstallerDiscoveryTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\DiscoveryServiceTestFixtureBase.cs" />
     <Compile Include="Descriptors\DescriptorTestFixtureBase.cs" />
-    <Compile Include="Descriptors\IPerformanceCounterDescriptorFixture.cs" />
+    <Compile Include="Descriptors\IMeasurePerformanceDescriptorFixture.cs" />
     <Compile Include="Descriptors\ISimilarity.cs" />
-    <Compile Include="Descriptors\PerformanceCounterDescriptorFixture.cs" />
-    <Compile Include="Descriptors\PerformanceCounterDescriptorTestFixtureBase.cs" />
-    <Compile Include="Descriptors\PerformanceCounterDescriptorTests.cs" />
-    <Compile Include="Discovery\Agents\DefaultOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests.cs" />
+    <Compile Include="Descriptors\MeasureMeasurePerformanceDescriptorFixture.cs" />
+    <Compile Include="Descriptors\MeasurePerformanceDescriptorTestFixtureBase.cs" />
+    <Compile Include="Descriptors\MeasurePerformanceDescriptorTests.cs" />
+    <Compile Include="Discovery\Agents\DefaultOptionsExportedTypesMeasurePerformanceDescriptorDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\Agents\DefaultOptionsPerformanceCounterCategoryDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\Agents\DefaultOptionsPerformanceCounterAdapterDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\InstallerDiscoveryServicePublicInstanceMembersTests.cs" />

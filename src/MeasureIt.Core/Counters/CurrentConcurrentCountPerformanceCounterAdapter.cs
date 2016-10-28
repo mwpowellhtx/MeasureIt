@@ -12,7 +12,7 @@ namespace MeasureIt
     public class CurrentConcurrentCountPerformanceCounterAdapter : PerformanceCounterAdapterBase<
         CurrentConcurrentCountPerformanceCounterAdapter>
     {
-        internal CurrentConcurrentCountPerformanceCounterAdapter(IPerformanceCounterDescriptor descriptor)
+        internal CurrentConcurrentCountPerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -24,12 +24,12 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == CountType); }
         }
 
-        public override void BeginMeasurement(IPerformanceCounterDescriptor descriptor)
+        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
         {
             CountCounter.Increment();
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IPerformanceCounterDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
         {
             CountCounter.Decrement();
         }

@@ -7,15 +7,15 @@ namespace MeasureIt.Discovery.Agents
     using Discovery;
     using Xunit;
 
-    public class DefaultOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests
-        : PerformanceCounterDescriptorDiscoveryAgentTestFixtureBase
+    public class DefaultOptionsExportedTypesMeasurePerformanceDescriptorDiscoveryAgentTests
+        : MeasurePerformanceDescriptorDiscoveryAgentTestFixtureBase
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
         {
             return new InstrumentationDiscoveryOptions().VerifyOptions();
         }
 
-        public DefaultOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests()
+        public DefaultOptionsExportedTypesMeasurePerformanceDescriptorDiscoveryAgentTests()
             : base(GetOptions())
         {
         }
@@ -37,7 +37,7 @@ namespace MeasureIt.Discovery.Agents
             });
         }
 
-        protected override void OnItemsDiscovered(IEnumerable<IPerformanceCounterDescriptor> discoveredItems)
+        protected override void OnItemsDiscovered(IEnumerable<IMeasurePerformanceDescriptor> discoveredItems)
         {
             var orderedItems = discoveredItems.Order().ToArray();
 
@@ -159,8 +159,8 @@ namespace MeasureIt.Discovery.Agents
         }
     }
 
-    public class IncludingNonPublicOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests
-        : PerformanceCounterDescriptorDiscoveryAgentTestFixtureBase
+    public class IncludingNonPublicOptionsExportedTypesMeasurePerformanceDescriptorDiscoveryAgentTests
+        : MeasurePerformanceDescriptorDiscoveryAgentTestFixtureBase
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
         {
@@ -168,7 +168,7 @@ namespace MeasureIt.Discovery.Agents
             return new InstrumentationDiscoveryOptions {MethodBindingAttr = methodBindingAttr}.VerifyOptions(methodBindingAttr);
         }
 
-        public IncludingNonPublicOptionsExportedTypesPerformanceCounterDescriptorDiscoveryAgentTests()
+        public IncludingNonPublicOptionsExportedTypesMeasurePerformanceDescriptorDiscoveryAgentTests()
             : base(GetOptions())
         {
         }
@@ -190,7 +190,7 @@ namespace MeasureIt.Discovery.Agents
             });
         }
 
-        protected override void OnItemsDiscovered(IEnumerable<IPerformanceCounterDescriptor> discoveredItems)
+        protected override void OnItemsDiscovered(IEnumerable<IMeasurePerformanceDescriptor> discoveredItems)
         {
             // ReSharper disable once PossibleMultipleEnumeration, PossibleNullReferenceException
             var orderedItems = discoveredItems.Order().ToArray();

@@ -83,13 +83,13 @@ namespace MeasureIt
             return dictionary.Values.OfType<T>().Where(predicate);
         }
 
-        private readonly IPerformanceCounterDescriptor _descriptor;
+        private readonly IMeasurePerformanceDescriptor _descriptor;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        protected PerformanceCounterAdapterBase(IPerformanceCounterDescriptor descriptor)
+        protected PerformanceCounterAdapterBase(IMeasurePerformanceDescriptor descriptor)
         {
             _descriptor = descriptor;
             Parts = new ExpandoObject();
@@ -164,14 +164,14 @@ namespace MeasureIt
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        public abstract void BeginMeasurement(IPerformanceCounterDescriptor descriptor);
+        public abstract void BeginMeasurement(IMeasurePerformanceDescriptor descriptor);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="elapsed"></param>
         /// <param name="descriptor"></param>
-        public abstract void EndMeasurement(TimeSpan elapsed, IPerformanceCounterDescriptor descriptor);
+        public abstract void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor);
 
         protected override void Dispose(bool disposing)
         {
