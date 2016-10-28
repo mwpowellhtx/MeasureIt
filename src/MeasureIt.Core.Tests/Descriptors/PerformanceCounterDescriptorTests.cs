@@ -16,8 +16,9 @@ namespace MeasureIt.Descriptors
         /// </summary>
         private class A
         {
-            [PerformanceCounter(typeof(AverageTimePerformanceCounterAdapter)
-                , typeof(CategoryFixture))]
+            [PerformanceCounter(typeof(CategoryFixture)
+                , typeof(AverageTimePerformanceCounterAdapter)
+                )]
             public virtual void Verify(bool a)
             {
             }
@@ -27,8 +28,9 @@ namespace MeasureIt.Descriptors
             /// Another placeholder with an intentionally different signature.
             /// </summary>
             /// <param name="i"></param>
-            [PerformanceCounter(typeof(AverageTimePerformanceCounterAdapter)
-                , typeof(CategoryFixture))]
+            [PerformanceCounter(typeof(CategoryFixture)
+                , typeof(AverageTimePerformanceCounterAdapter)
+                )]
             public void VerifyBase(int i)
             {
             }
@@ -39,8 +41,9 @@ namespace MeasureIt.Descriptors
         /// </summary>
         private class B : A
         {
-            [PerformanceCounter(typeof(AverageTimePerformanceCounterAdapter)
-                , typeof(CategoryFixture))]
+            [PerformanceCounter(typeof(CategoryFixture)
+                , typeof(AverageTimePerformanceCounterAdapter)
+                )]
             public override void Verify(bool b)
             {
             }
@@ -50,8 +53,9 @@ namespace MeasureIt.Descriptors
             /// Another placeholder with an intentionally different signature.
             /// </summary>
             /// <param name="s"></param>
-            [PerformanceCounter(typeof(AverageTimePerformanceCounterAdapter)
-                , typeof(CategoryFixture))]
+            [PerformanceCounter(typeof(CategoryFixture)
+                , typeof(AverageTimePerformanceCounterAdapter)
+                )]
             public void VerifyDerived(string s)
             {
             }
@@ -63,8 +67,9 @@ namespace MeasureIt.Descriptors
         private class C
         {
             // ReSharper disable once UnusedMember.Local, UnusedParameter.Local
-            [PerformanceCounter(typeof(AverageTimePerformanceCounterAdapter)
-                , typeof(CategoryFixture))]
+            [PerformanceCounter(typeof(CategoryFixture)
+                , typeof(AverageTimePerformanceCounterAdapter)
+                )]
             public void Verify(bool c)
             {
             }
@@ -102,7 +107,10 @@ namespace MeasureIt.Descriptors
              * do not expect there to be a type associated with the Descriptor itself. */
 
             descriptor.VerifyCounterCategoryAdapter();
-            descriptor.VerifyCounterAdapter<AverageTimePerformanceCounterAdapter>();
+
+            Assert.Collection(descriptor.AdapterDescriptors
+                , a => Assert.Null(a.AdapterType)
+                );
 
             return new PerformanceCounterDescriptorFixture(descriptor);
         }

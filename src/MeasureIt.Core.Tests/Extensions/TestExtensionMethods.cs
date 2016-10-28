@@ -101,7 +101,8 @@ namespace MeasureIt
             Assert.All(descriptors, d =>
             {
                 Assert.NotNull(d);
-                Assert.NotNull(d.AdapterType);
+                Assert.NotNull(d.AdapterTypes);
+                Assert.NotEmpty(d.AdapterTypes);
                 Assert.NotNull(d.CategoryType);
                 Assert.NotNull(d.Method);
                 Assert.NotNull(d.Method.ReflectedType);
@@ -119,7 +120,6 @@ namespace MeasureIt
                 .ThenBy(x => x.Method.DeclaringType.FullName)
                 .ThenBy(x => x.Method.Name)
                 .ThenBy(x => x.CategoryType.FullName)
-                .ThenBy(x => x.AdapterType.FullName)
                 ;
         }
 
@@ -164,21 +164,23 @@ namespace MeasureIt
             return descriptor;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TAdapter"></typeparam>
-        /// <param name="descriptor"></param>
-        /// <param name="verify"></param>
-        internal static void VerifyCounterAdapter<TAdapter>(this IPerformanceCounterDescriptor descriptor,
-            Action<IPerformanceCounterAdapterDescriptor> verify = null)
-            where TAdapter : PerformanceCounterAdapterBase<TAdapter>
-        {
-            verify = verify ?? (d => { });
-            descriptor.AdapterType.Confirm<TAdapter>();
-            Assert.NotNull(descriptor.AdapterDescriptor);
-            verify(descriptor.AdapterDescriptor);
-        }
+        //// TODO: TBD: refactor this as an Assert.Collection on the descriptor.AdapterTypes
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <typeparam name="TAdapter"></typeparam>
+        ///// <param name="descriptor"></param>
+        ///// <param name="verify"></param>
+        //internal static void VerifyCounterAdapter<TAdapter>(this IPerformanceCounterDescriptor descriptor,
+        //    Action<IPerformanceCounterAdapterDescriptor> verify = null)
+        //    where TAdapter : PerformanceCounterAdapterBase<TAdapter>
+        //{
+        //    verify = verify ?? (d => { });
+        //    descriptor.AdapterTypes.Confirm<TAdapter>();
+        //    Assert.NotNull(descriptor.AdapterDescriptors);
+        //    Assert.NotEmpty(descriptor.AdapterDescriptors);
+        //    verify(descriptor.AdapterDescriptor);
+        //}
 
         internal static void VerifyCounterCategoryAdapter<TCategory>(this IPerformanceCounterDescriptor descriptor,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
@@ -243,7 +245,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageTimer, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -252,7 +254,7 @@ namespace MeasureIt
                         }
                         , y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageBase, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -278,7 +280,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -304,7 +306,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -330,7 +332,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -356,7 +358,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -382,7 +384,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
@@ -408,7 +410,7 @@ namespace MeasureIt
                     Assert.Collection(x,
                         y =>
                         {
-                            y.CounterName.CanParse<string, Guid>(Guid.TryParse);
+                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(timer, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);

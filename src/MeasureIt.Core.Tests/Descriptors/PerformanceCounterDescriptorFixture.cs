@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace MeasureIt.Descriptors
 {
@@ -42,9 +43,9 @@ namespace MeasureIt.Descriptors
                        && (a.RootType.IsSubclassOf(b.RootType)
                            || b.RootType.IsSubclassOf(a.RootType))
                        && !(a.CategoryType == null || b.CategoryType == null
-                            || a.AdapterType == null || b.AdapterType == null)
+                            || a.AdapterTypes == null || b.AdapterTypes == null)
                        && a.CategoryType == b.CategoryType
-                       && a.AdapterType == b.AdapterType
+                       && a.AdapterTypes.SequenceEqual(b.AdapterTypes)
                        );
         }
 
