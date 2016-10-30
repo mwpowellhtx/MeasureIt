@@ -1,7 +1,7 @@
 namespace MeasureIt.Castle.Interception.Measurement
 {
+    using Contexts;
     using Discovery;
-    using MeasureIt.Measurement;
 
     public class InterceptionMeasurementProvider : MeasurementProviderBase<
         IRuntimeInstrumentationDiscoveryService>, IInterceptionMeasurementProvider

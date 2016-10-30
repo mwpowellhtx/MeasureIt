@@ -8,16 +8,16 @@ namespace MeasureIt.Discovery.Agents
     /// <summary>
     /// 
     /// </summary>
-    public class MeasurePerformanceDescriptorDiscoveryAgent : DiscoveryAgentBase<
-        IMeasurePerformanceDescriptor>, IMeasurePerformanceDescriptorDiscoveryAgent
+    public class PerformanceMeasurementDescriptorDiscoveryAgent : DiscoveryAgentBase<
+        IPerformanceMeasurementDescriptor>, IPerformanceMeasurementDescriptorDiscoveryAgent
     {
-        internal MeasurePerformanceDescriptorDiscoveryAgent(IInstrumentationDiscoveryOptions options,
+        internal PerformanceMeasurementDescriptorDiscoveryAgent(IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
             : base(options, getExportedTypes)
         {
         }
 
-        private static IEnumerable<IMeasurePerformanceDescriptor> DiscoverValues(
+        private static IEnumerable<IPerformanceMeasurementDescriptor> DiscoverValues(
             IInstrumentationDiscoveryOptions options, Type rootType, Type currentType)
         {
             const bool inherited = false;
@@ -29,7 +29,7 @@ namespace MeasureIt.Discovery.Agents
 
             var bases = (currentType.BaseType != null
                 ? DiscoverValues(o, rootType, currentType.BaseType)
-                : new List<IMeasurePerformanceDescriptor>()).ToArray();
+                : new List<IPerformanceMeasurementDescriptor>()).ToArray();
 
             /* TODO: TBD: RootType is necessary because, according to this strategy, Method will
              * be focused on the CurrentType as the ReflectedType, which may or may not work when
@@ -60,8 +60,8 @@ namespace MeasureIt.Discovery.Agents
         /// <summary>
         /// The most recently appearing, overshadowed <see cref="MeasurePerformanceAttribute"/>,
         /// may not necessarily be the most recently declared, overriden <see cref="MethodInfo"/>.
-        /// So we must go about aligning the <see cref="MeasurePerformanceDescriptor"/> with the
-        /// correct one.
+        /// So we must go about aligning the <see cref="PerformanceMeasurementDescriptor"/> with
+        /// the correct one.
         /// </summary>
         /// <param name="options"></param>
         /// <param name="descriptor"></param>
@@ -91,7 +91,7 @@ namespace MeasureIt.Discovery.Agents
             }
         }
 
-        protected override IEnumerable<IMeasurePerformanceDescriptor> DiscoverValues(
+        protected override IEnumerable<IPerformanceMeasurementDescriptor> DiscoverValues(
             IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {
             var o = options;

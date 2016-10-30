@@ -7,18 +7,18 @@ namespace MeasureIt.Discovery.Agents
     using Discovery;
     using Xunit;
 
-    public abstract class MeasurePerformanceDescriptorDiscoveryAgentTestFixtureBase
-        : DiscoveryAgentTestFixtureBase<MeasurePerformanceDescriptorDiscoveryAgent
-            , IMeasurePerformanceDescriptor>
+    public abstract class PerformanceMeasurementDescriptorDiscoveryAgentTestFixtureBase
+        : DiscoveryAgentTestFixtureBase<PerformanceMeasurementDescriptorDiscoveryAgent
+            , IPerformanceMeasurementDescriptor>
     {
-        protected override MeasurePerformanceDescriptorDiscoveryAgent CreateAgent(
+        protected override PerformanceMeasurementDescriptorDiscoveryAgent CreateAgent(
             IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
         {
-            return new MeasurePerformanceDescriptorDiscoveryAgent(options, getExportedTypes);
+            return new PerformanceMeasurementDescriptorDiscoveryAgent(options, getExportedTypes);
         }
 
-        protected MeasurePerformanceDescriptorDiscoveryAgentTestFixtureBase(
+        protected PerformanceMeasurementDescriptorDiscoveryAgentTestFixtureBase(
             IInstrumentationDiscoveryOptions options)
             : base(options)
         {
@@ -29,7 +29,7 @@ namespace MeasureIt.Discovery.Agents
             Assert.NotNull(methods);
         }
 
-        protected override void OnItemsDiscovered(IEnumerable<IMeasurePerformanceDescriptor> discoveredItems)
+        protected override void OnItemsDiscovered(IEnumerable<IPerformanceMeasurementDescriptor> discoveredItems)
         {
             Assert.NotNull(discoveredItems);
             VerifyMethods(discoveredItems.Select(x => x.Method));

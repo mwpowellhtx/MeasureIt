@@ -12,7 +12,7 @@ namespace MeasureIt
     public class MemberActivityTimerPerformanceCounterAdapter : PerformanceCounterAdapterBase<
         MemberActivityTimerPerformanceCounterAdapter>
     {
-        internal MemberActivityTimerPerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
+        internal MemberActivityTimerPerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -24,7 +24,7 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == ActivityTimerType); }
         }
 
-        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
+        public override void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)
         {
             // Nothing to do here.
         }
@@ -37,7 +37,7 @@ namespace MeasureIt
             return seconds*(nanoSecondsPerSecond/oneHundred);
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
 
             /* TODO: TBD: on the broader descriptor specification, "ReadOnly" does not make sense

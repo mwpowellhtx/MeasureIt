@@ -7,18 +7,19 @@ namespace MeasureIt.Descriptors
 
     /// <summary>
     /// Provides some basic resources necessary for verifying
-    /// <see cref="IMeasurePerformanceDescriptor"/> based <see cref="IDescriptor"/> tests.
+    /// <see cref="IPerformanceMeasurementDescriptor"/> based <see cref="IDescriptor"/> tests.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class MeasurePerformanceDescriptorTestFixtureBase<T> : DescriptorTestFixtureBase<T>
+    public abstract class PerformanceMeasurementDescriptorTestFixtureBase<T> : DescriptorTestFixtureBase<T>
         where T : class
             , IEquatable<T>
-            , IMeasurePerformanceDescriptor
-            , IEquatable<IMeasurePerformanceDescriptor>
+            , IPerformanceMeasurementDescriptor
+            , IEquatable<IPerformanceMeasurementDescriptor>
     {
         /// <summary>
-        /// Returns the <see cref="T"/> <see cref="IMeasurePerformanceDescriptor"/> based delegate
-        /// corresponding with the <paramref name="type"/> and <paramref name="predicate"/>.
+        /// Returns the <see cref="T"/> <see cref="IPerformanceMeasurementDescriptor"/> based
+        /// delegate corresponding with the <paramref name="type"/> and
+        /// <paramref name="predicate"/>.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="predicate"></param>

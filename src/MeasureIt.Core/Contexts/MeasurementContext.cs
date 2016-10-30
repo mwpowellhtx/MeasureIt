@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace MeasureIt.Measurement
+namespace MeasureIt.Contexts
 {
     using Discovery;
 
     /// <summary>
     /// 
     /// </summary>
-    public class MeasurementContext : Disposable, IMeasurementContext
+    public class MeasurementContext : ContextBase, IMeasurementContext
     {
         // ReSharper disable once NotAccessedField.Local
         private readonly Random _rnd;
@@ -18,12 +18,12 @@ namespace MeasureIt.Measurement
         // ReSharper disable once NotAccessedField.Local
         private readonly IInstrumentationDiscoveryOptions _options;
 
-        public IEnumerable<IPerformanceCounterContext> CounterContexts { get; private set; }
+        private readonly IEnumerable<IPerformanceMeasurementContext> _contexts;
 
-        public IMeasurePerformanceDescriptor Descriptor { get; private set; }
+        public IPerformanceMeasurementDescriptor Descriptor { get; private set; }
 
         internal MeasurementContext(IInstrumentationDiscoveryOptions options,
-            IEnumerable<IPerformanceCounterContext> counterContexts)
+            IEnumerable<IPerformanceMeasurementContext> contexts)
         {
             // TODO: TBD: find the Descriptor from where?
             Descriptor = null;
@@ -33,16 +33,16 @@ namespace MeasureIt.Measurement
                 : new Random();
 
             _options = options;
-            CounterContexts = counterContexts;
+            _contexts = contexts;
         }
 
         private class Gauge : Disposable
         {
             private readonly Stopwatch _stopwatch;
 
-            private readonly IEnumerable<IPerformanceCounterContext> _contexts;
+            private readonly IEnumerable<IPerformanceMeasurementContext> _contexts;
 
-            internal Gauge(IEnumerable<IPerformanceCounterContext> contexts)
+            internal Gauge(IEnumerable<IPerformanceMeasurementContext> contexts)
             {
                 _stopwatch = new Stopwatch();
                 _contexts = contexts;
@@ -79,7 +79,7 @@ namespace MeasureIt.Measurement
         public void Measure(Action aspect)
         {
             // TODO: TBD: not clear I would need anything else, descriptors, etc...
-            using (var gauge = new Gauge(CounterContexts))
+            using (var gauge = new Gauge(_contexts))
             {
                 gauge.Disposed += (sender, e) =>
                 {
@@ -94,7 +94,22 @@ namespace MeasureIt.Measurement
 
         public Task MeasureAsync(Func<Task> aspectGetter)
         {
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                using (var gauge = new Gauge(_contexts))
+                {
+                    gauge.Disposed += (sender, e) =>
+                    {
+                    };
+
+                    // Start running after setup.
+                    gauge.Start();
+
+                    var aspect = aspectGetter();
+
+                    aspect.Wait();
+                }
+            });
         }
 
         // TODO: TBD: how much of an active context needs to be disposed here...
@@ -104,7 +119,7 @@ namespace MeasureIt.Measurement
             if (!IsDisposed && disposing)
             {
                 // Fine to Dispose the Contexts themselves, but avoid disposing the contexts.Adapters.
-                foreach (var context in CounterContexts)
+                foreach (var context in _contexts)
                     context.Dispose();
             }
 

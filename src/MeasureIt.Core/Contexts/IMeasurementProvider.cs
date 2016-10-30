@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace MeasureIt.Measurement
+namespace MeasureIt.Contexts
 {
     /// <summary>
     /// 

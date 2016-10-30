@@ -12,7 +12,7 @@ namespace MeasureIt
     public class ErrorRatePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         ErrorRatePerformanceCounterAdapter>
     {
-        internal ErrorRatePerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
+        internal ErrorRatePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -24,12 +24,12 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == ErrorRateType); }
         }
 
-        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
+        public override void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)
         {
             // Nothing to do here.
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
             ErrorRateCounter.Increment();
         }

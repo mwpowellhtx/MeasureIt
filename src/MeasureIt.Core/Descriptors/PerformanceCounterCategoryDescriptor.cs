@@ -8,7 +8,7 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public class PerformanceCounterCategoryDescriptor : IPerformanceCounterCategoryDescriptor
+    public class PerformanceCounterCategoryDescriptor : DescriptorBase, IPerformanceCounterCategoryDescriptor
     {
         public Type Type { get; set; }
 
@@ -40,12 +40,16 @@ namespace MeasureIt
 
         public PerformanceCounterCategoryType CategoryType { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public PerformanceCounterCategoryDescriptor()
-            : this(string.Empty)
+        private Lazy<IList<IPerformanceMeasurementDescriptor>> _lazyMeasurements;
+
+        public virtual IList<IPerformanceMeasurementDescriptor> Measurements
         {
+            get { return _lazyMeasurements.Value; }
+            private set
+            {
+                _lazyMeasurements = new Lazy<IList<IPerformanceMeasurementDescriptor>>(
+                    () => (value ?? new List<IPerformanceMeasurementDescriptor>(0)).ToList());
+            }
         }
 
         private IEnumerable<ICounterCreationDataDescriptor> _creationDataDescriptors;
@@ -62,6 +66,14 @@ namespace MeasureIt
         /// <summary>
         /// 
         /// </summary>
+        public PerformanceCounterCategoryDescriptor()
+            : this(string.Empty)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="name"></param>
         /// <param name="help"></param>
         public PerformanceCounterCategoryDescriptor(string name, string help = null)
@@ -70,12 +82,24 @@ namespace MeasureIt
             Help = help;
             CategoryType = PerformanceCounterCategoryType.MultiInstance;
             CreationDataDescriptors = null;
+            Measurements = null;
         }
 
-        public virtual CounterCreationDataCollection GetCounterCreationDataCollection()
+        public virtual PerformanceCounterCategory CreateCategory()
         {
-            var data = CreationDataDescriptors.Select(x => x.GetCounterCreationData());
-            return new CounterCreationDataCollection(data.ToArray());
+            var items = Measurements.SelectMany(d => d.Data).ToArray();
+            var data = new CounterCreationDataCollection(items);
+            return PerformanceCounterCategory.Create(Name, Help, CategoryType, data);
+        }
+
+        /// <summary>
+        /// Tries to Delete the Category.
+        /// </summary>
+        public virtual bool TryDeleteCategory()
+        {
+            var exists = PerformanceCounterCategory.Exists(Name);
+            PerformanceCounterCategory.Delete(Name);
+            return exists;
         }
     }
 }

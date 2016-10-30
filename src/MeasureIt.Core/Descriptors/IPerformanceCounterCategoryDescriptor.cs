@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MeasureIt.Collections.Generic;
 
 namespace MeasureIt
 {
@@ -37,14 +38,44 @@ namespace MeasureIt
         // TODO: TBD: in this sense, we may then want/need the category adapter System.Type
 
         /// <summary>
+        /// Gets the Measurements.
+        /// </summary>
+        IList<IPerformanceMeasurementDescriptor> Measurements { get; }
+
+        /// <summary>
         /// Gets or sets the set of <see cref="ICounterCreationDataDescriptor"/> items.
         /// </summary>
         IEnumerable<ICounterCreationDataDescriptor> CreationDataDescriptors { get; set; }
 
         /// <summary>
-        /// Returns the <see cref="CounterCreationDataCollection"/> corresponding to the Descriptor.
+        /// Returns a created <see cref="PerformanceCounterCategory"/> corresponding with the
+        /// <see cref="Measurements"/>.
         /// </summary>
         /// <returns></returns>
-        CounterCreationDataCollection GetCounterCreationDataCollection();
+        PerformanceCounterCategory CreateCategory();
+
+        /// <summary>
+        /// Tries to Delete the Category.
+        /// </summary>
+        bool TryDeleteCategory();
+    }
+
+    internal static class CategoryExtensionMethods
+    {
+        internal static IPerformanceCounterCategoryDescriptor Register(this IPerformanceCounterCategoryDescriptor category
+            , IPerformanceMeasurementDescriptor measurement)
+        {
+            category.Measurements.ToBidirectionalList(
+                added => added.CategoryDescriptor = category
+                , removed => removed.CategoryDescriptor = null).Add(measurement);
+            return category;
+        }
+
+        internal static bool Unregister(this IPerformanceCounterCategoryDescriptor category,
+            IPerformanceMeasurementDescriptor measurement)
+        {
+            return category.Measurements.ToBidirectionalList(
+                onAfterRemoved: removed => { }).Remove(measurement);
+        }
     }
 }

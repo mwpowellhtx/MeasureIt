@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace MeasureIt.Discovery
 {
-    using Measurement;
+    using Contexts;
 
     /// <summary>
     /// 
@@ -12,14 +12,20 @@ namespace MeasureIt.Discovery
     public interface IRuntimeInstrumentationDiscoveryService : IInstrumentationDiscoveryService
     {
         /// <summary>
-        /// 
+        /// Gets the MeasurementDescriptors.
         /// </summary>
-        IEnumerable<IMeasurePerformanceDescriptor> CounterDescriptors { get; }
+        IEnumerable<IPerformanceMeasurementDescriptor> MeasurementDescriptors { get; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo methodInfo);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IMeasurementContext GetMeasurementContext();
     }
 }

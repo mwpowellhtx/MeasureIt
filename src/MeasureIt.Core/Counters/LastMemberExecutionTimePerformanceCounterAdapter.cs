@@ -12,7 +12,7 @@ namespace MeasureIt
     public class LastMemberExecutionTimePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         LastMemberExecutionTimePerformanceCounterAdapter>
     {
-        internal LastMemberExecutionTimePerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
+        internal LastMemberExecutionTimePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
             : base(descriptor)
         {
         }
@@ -24,12 +24,12 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == MemberAccessType); }
         }
 
-        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
+        public override void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)
         {
             // Nothing to do here.
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
             MemberAccessCounter.RawValue = elapsed.Ticks;
         }

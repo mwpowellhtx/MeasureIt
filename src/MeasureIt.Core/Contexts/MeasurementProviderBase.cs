@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace MeasureIt.Measurement
+namespace MeasureIt.Contexts
 {
     using Discovery;
 
@@ -45,7 +45,7 @@ namespace MeasureIt.Measurement
         {
             // TODO: TBD: everything else seems pretty much boilerplate; I believe aligning descriptors with contexts hinges on this.
 
-            var descriptors = DiscoveryService.CounterDescriptors.Where(
+            var descriptors = DiscoveryService.MeasurementDescriptors.Where(
                 d => d.RootType.IsRelatedTo(targetType)
                      && d.Method.GetBaseDefinition() == method.GetBaseDefinition()).ToArray();
 

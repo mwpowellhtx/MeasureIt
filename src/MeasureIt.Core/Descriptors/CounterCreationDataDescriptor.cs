@@ -5,13 +5,11 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public class CounterCreationDataDescriptor : ICounterCreationDataDescriptor
+    public class CounterCreationDataDescriptor : DescriptorBase, ICounterCreationDataDescriptor
     {
         public IPerformanceCounterAdapterDescriptor AdapterDescriptor { get; set; }
 
         private IMoniker _nameMoniker;
-
-        private IMoniker _instanceMoniker;
 
         private static IMoniker GetNameMoniker(string name)
         {
@@ -22,12 +20,6 @@ namespace MeasureIt
         {
             get { return _nameMoniker.ToString(); }
             set { _nameMoniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
-        }
-
-        public string InstanceName
-        {
-            get { return _instanceMoniker.ToString(); }
-            set { _instanceMoniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
         }
 
         public string Help { get; set; }
@@ -42,7 +34,7 @@ namespace MeasureIt
         /// 
         /// </summary>
         public CounterCreationDataDescriptor()
-            : this(string.Empty, string.Empty)
+            : this(string.Empty)
         {
         }
 
@@ -52,30 +44,18 @@ namespace MeasureIt
         /// <param name="name"></param>
         /// <param name="readOnly"></param>
         public CounterCreationDataDescriptor(string name, bool? readOnly = null)
-            : this(name, null, readOnly)
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="instanceName"></param>
-        /// <param name="readOnly"></param>
-        public CounterCreationDataDescriptor(string name, string instanceName, bool? readOnly = null)
         {
             Name = name;
-            InstanceName = instanceName;
             Help = null;
             ReadOnly = readOnly;
             // Unlike InstanceLifetime, we cannot really know the CounterType at this moment.
             InstanceLifetime = PerformanceCounterInstanceLifetime.Process;
         }
 
-        public CounterCreationData GetCounterCreationData()
-        {
-            // TODO: TBD: may need/want a different naming convention...
-            return new CounterCreationData(Name, Help, CounterType);
-        }
+        //public CounterCreationData GetCounterCreationData(IMeasurePerformanceDescriptor descriptor)
+        //{
+        //    // TODO: TBD: may need/want a different naming convention...
+        //    return new CounterCreationData(string.Join(".", descriptor.CounterName, Name), Help, CounterType);
+        //}
     }
 }

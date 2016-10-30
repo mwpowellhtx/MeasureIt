@@ -6,6 +6,7 @@ using System.Reflection;
 namespace MeasureIt.Discovery
 {
     using Agents;
+    using Contexts;
 
     /// <summary>
     /// Installer requires the Runtime Discovery Service as well as connecting the dots.
@@ -29,7 +30,7 @@ namespace MeasureIt.Discovery
             get {return _categoryDescriptors;}
             private set
             {
-                _categoryDescriptors = (value ?? new List<IPerformanceCounterCategoryDescriptor>()).ToArray();
+                _categoryDescriptors = (value ?? new IPerformanceCounterCategoryDescriptor[0]).ToArray();
             }
         }
 
@@ -58,6 +59,11 @@ namespace MeasureIt.Discovery
                     () => new PerformanceCounterCategoryDescriptorDiscoveryAgent(options, GetExportedTypes));
         }
 
+        public IInstallerContext GetInstallerContext()
+        {
+            return new InstallerContext(this);
+        }
+
         private void OnDiscoverCounterAdapterDescriptors()
         {
             CategoryDescriptors = _performanceCounterCategoryDescriptorDiscoveryAgent.Value.ToArray();
@@ -71,14 +77,14 @@ namespace MeasureIt.Discovery
 
             // TODO: now we must align the categories with the adapters...
 
-            var counters = CounterDescriptors.ToArray();
+            var measurements = MeasurementDescriptors.ToArray();
             var adapters = CounterAdapterDescriptors.ToArray();
 
             foreach (var category in CategoryDescriptors)
             {
                 var c = category;
 
-                var adaptersInUse = adapters.Where(x => counters.Any(
+                var adaptersInUse = adapters.Where(x => measurements.Any(
                     y => y.AdapterTypes.Contains(x.AdapterType) && y.CategoryType == c.Type));
 
                 if (!adapters.Any()) continue;

@@ -6,17 +6,17 @@ using System.Reflection;
 
 namespace MeasureIt
 {
-    using Measurement;
+    using Contexts;
 
     /// <summary>
     /// 
     /// </summary>
-    public class MeasurePerformanceDescriptor
-        : IMeasurePerformanceDescriptor
-            , IEquatable<MeasurePerformanceDescriptor>
+    public class PerformanceMeasurementDescriptor : DescriptorBase
+        , IPerformanceMeasurementDescriptor
+        , IEquatable<PerformanceMeasurementDescriptor>
     {
         // TODO: TBD: what, if anything, to do about the RandomSeed?
-        private IMoniker _counterMoniker;
+        private IMoniker _nameMoniker;
 
         private static IMoniker GetNameMoniker(string name)
         {
@@ -28,11 +28,13 @@ namespace MeasureIt
             return method == null ? null : new MethodInfoMoniker(method);
         }
 
-        public string CounterName
+        public string Name
         {
-            get { return _counterMoniker.ToString(); }
-            set { _counterMoniker = GetNameMoniker(value) ?? GetMethodMoniker(Method) ?? DefaultMoniker.New(); }
+            get { return _nameMoniker.ToString(); }
+            set { _nameMoniker = GetNameMoniker(value) ?? GetMethodMoniker(Method) ?? DefaultMoniker.New(); }
         }
+
+        public IPerformanceCounterCategoryDescriptor CategoryDescriptor { get; set; }
 
         private Type _categoryType;
 
@@ -42,12 +44,26 @@ namespace MeasureIt
             set
             {
                 _categoryType = value.VerifyType<IPerformanceCounterCategoryAdapter>();
-                // TODO: TBD: not only identify the descriptor here, but also register itself with it?
-                CategoryDescriptor = value.GetAttributeValue((PerformanceCounterCategoryAttribute a) => a.Descriptor);
+
+                UnregisterFromCategory(CategoryDescriptor);
+
+                var category = value.GetAttributeValue((PerformanceCounterCategoryAttribute a) => a.Descriptor);
+
+                RegisterWithCategory(CategoryDescriptor = category);
             }
         }
 
-        public IPerformanceCounterCategoryDescriptor CategoryDescriptor { get; private set; }
+        private void RegisterWithCategory(IPerformanceCounterCategoryDescriptor category)
+        {
+            if (category == null) return;
+            category.Register(this);
+        }
+
+        private void UnregisterFromCategory(IPerformanceCounterCategoryDescriptor category)
+        {
+            if (category == null) return;
+            category.Unregister(this);
+        }
 
         private IEnumerable<Type> _adapterTypes;
 
@@ -61,17 +77,17 @@ namespace MeasureIt
             {
                 _adapterTypes = value.VerifyTypes<IPerformanceCounterAdapter>();
 
-                _lazyAdapterDescriptors = new Lazy<IEnumerable<IPerformanceCounterAdapterDescriptor>>(
-                    () => (value ?? new Type[0]).Select(t => t.GetAttributeValue(
-                        (PerformanceCounterAdapterAttribute a) => a.Descriptor)).ToArray());
+                foreach (var a in Adapters) a.Dispose();
+
+                _lazyAdapters = new Lazy<IEnumerable<IPerformanceCounterAdapter>>(CreateAdapters);
             }
         }
 
-        private Lazy<IEnumerable<IPerformanceCounterAdapterDescriptor>> _lazyAdapterDescriptors;
+        private Lazy<IEnumerable<IPerformanceCounterAdapter>> _lazyAdapters;
 
-        public IEnumerable<IPerformanceCounterAdapterDescriptor> AdapterDescriptors
+        public IEnumerable<IPerformanceCounterAdapter> Adapters
         {
-            get { return _lazyAdapterDescriptors.Value; }
+            get { return _lazyAdapters.Value; }
         }
 
         public bool? ReadOnly { get; set; }
@@ -117,7 +133,22 @@ namespace MeasureIt
             set
             {
                 _method = value;
-                CounterName = null;
+                Name = null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private class CounterCreationDataComparer : Comparer<CounterCreationData>
+        {
+            public override int Compare(CounterCreationData x, CounterCreationData y)
+            {
+                if (x == null && y == null) return 0;
+                if (x != null && y == null) return 1;
+                if (x == null) return -1;
+                if (x.CounterType > y.CounterType) return -1;
+                return x.CounterType < y.CounterType ? 1 : 0;
             }
         }
 
@@ -127,7 +158,7 @@ namespace MeasureIt
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public MeasurePerformanceDescriptor(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public PerformanceMeasurementDescriptor(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
             : this(null, categoryType, adapterType, otherAdapterTypes)
         {
         }
@@ -135,16 +166,19 @@ namespace MeasureIt
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="counterName"></param>
+        /// <param name="name"></param>
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public MeasurePerformanceDescriptor(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public PerformanceMeasurementDescriptor(string name, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
-            CounterName = counterName;
+            _lazyAdapters = new Lazy<IEnumerable<IPerformanceCounterAdapter>>(
+                () => new List<IPerformanceCounterAdapter>().ToArray());
 
-            AdapterTypes = new[] {adapterType}.Concat(otherAdapterTypes);
+            Name = name;
+
             CategoryType = categoryType;
+            AdapterTypes = new[] {adapterType}.Concat(otherAdapterTypes);
 
             InstanceLifetime = PerformanceCounterInstanceLifetime.Process;
 
@@ -155,20 +189,16 @@ namespace MeasureIt
             SampleRate = Constants.DefaultSampleRate;
         }
 
-        internal MeasurePerformanceDescriptor(IMeasurePerformanceDescriptor other)
+        internal PerformanceMeasurementDescriptor(IPerformanceMeasurementDescriptor other)
         {
             _adapterTypes = other.AdapterTypes;
 
-            _lazyAdapterDescriptors = new Lazy<IEnumerable<IPerformanceCounterAdapterDescriptor>>(
-                () => other.AdapterDescriptors);
-
-            if (!AdapterDescriptors.Any())
-                throw new ArgumentException("Invalid descriptor instance.", "other");
+            _lazyAdapters = new Lazy<IEnumerable<IPerformanceCounterAdapter>>(CreateAdapters);
 
             _categoryType = other.CategoryType;
             CategoryDescriptor = other.CategoryDescriptor;
 
-            CounterName = other.CounterName;
+            Name = other.Name;
             InstanceLifetime = other.InstanceLifetime;
 
             RootType = other.RootType;
@@ -183,43 +213,41 @@ namespace MeasureIt
             ReadOnly = other.ReadOnly;
         }
 
-        public IEnumerable<PerformanceCounter> GetPerformanceCounters()
+        private IEnumerable<IPerformanceCounterAdapter> CreateAdapters()
         {
-            var categoryName = CategoryDescriptor.Name;
+            const BindingFlags publicNonPublicInstance
+                = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            return AdapterDescriptors.SelectMany(d => d.CreationDataDescriptors.Select(x =>
-            {
-                var readOnly = x.ReadOnly;
-                // TODO: TBD: build a Name/path here...
-                var name = x.Name;
-                // TODO: TBD: may want to account for non-instance name here...
-                var instanceName = x.InstanceName;
+            var ctors = AdapterTypes.Select(a => a.GetConstructor(publicNonPublicInstance, Type.DefaultBinder
+                , new[] {typeof(IPerformanceMeasurementDescriptor)}, null)).ToArray();
 
-                // ReSharper disable once SwitchStatementMissingSomeCases
-                switch (readOnly)
-                {
-                    case true:
-                    case false:
-                        return new PerformanceCounter(categoryName, name, instanceName, readOnly.Value);
-                    default:
-                        return new PerformanceCounter(categoryName, name, instanceName);
-                }
-            }));
-        }
-
-        public virtual IEnumerable<IPerformanceCounterAdapter> CreateAdapters()
-        {
-            const BindingFlags nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
-
-            var ctors = AdapterTypes.Select(a => a.GetConstructor(nonPublicInstance, Type.DefaultBinder,
-                new[] {typeof(IMeasurePerformanceDescriptor)}, null));
+            if (!ctors.Any())
+                throw new InvalidOperationException("Invalid descriptor instance.");
 
             return ctors.Select(ctor => ctor.Invoke(new object[] {this})).Cast<IPerformanceCounterAdapter>();
         }
 
-        public virtual IPerformanceCounterContext CreateContext()
+        public virtual IPerformanceMeasurementContext CreateContext()
         {
-            return new PerformanceCounterContext(this);
+            return new PerformanceMeasurementContext(this, Adapters.ToArray());
+        }
+
+        private IEnumerable<CounterCreationData> GetCounterCreationData()
+        {
+            var prefix = Name;
+
+            foreach (var datum in Adapters.SelectMany(a => a.Descriptor.CreationDataDescriptors))
+            {
+                var counterName = string.Join(".", prefix, datum.Name);
+                yield return new CounterCreationData(counterName, datum.Help, datum.CounterType);
+            }
+        }
+
+        private readonly CounterCreationDataComparer _dataComparer = new CounterCreationDataComparer();
+
+        public virtual IEnumerable<CounterCreationData> Data
+        {
+            get { return GetCounterCreationData().OrderBy(x => x, _dataComparer); }
         }
 
         /// <summary>
@@ -228,7 +256,7 @@ namespace MeasureIt
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        protected static bool Equals(IMeasurePerformanceDescriptor a, IMeasurePerformanceDescriptor b)
+        protected static bool Equals(IPerformanceMeasurementDescriptor a, IPerformanceMeasurementDescriptor b)
         {
             return ReferenceEquals(a, b)
                    || (
@@ -239,16 +267,17 @@ namespace MeasureIt
                        && !(a.CategoryType == null || b.CategoryType == null
                             || a.AdapterTypes == null || b.AdapterTypes == null)
                        && a.CategoryType == b.CategoryType
-                       && a.AdapterTypes.SequenceEqual(b.AdapterTypes)
+                       && a.AdapterTypes.OrderBy(x => x.FullName)
+                           .SequenceEqual(b.AdapterTypes.OrderBy(x => x.FullName))
                        );
         }
 
-        public bool Equals(IMeasurePerformanceDescriptor other)
+        public bool Equals(IPerformanceMeasurementDescriptor other)
         {
             return Equals(this, other);
         }
 
-        public bool Equals(MeasurePerformanceDescriptor other)
+        public bool Equals(PerformanceMeasurementDescriptor other)
         {
             return Equals(this, other);
         }

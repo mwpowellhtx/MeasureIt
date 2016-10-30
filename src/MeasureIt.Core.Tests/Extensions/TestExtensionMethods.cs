@@ -94,8 +94,8 @@ namespace MeasureIt
         {
         }
 
-        internal static IEnumerable<IMeasurePerformanceDescriptor> Order(
-            this IEnumerable<IMeasurePerformanceDescriptor> descriptors)
+        internal static IEnumerable<IPerformanceMeasurementDescriptor> Order(
+            this IEnumerable<IPerformanceMeasurementDescriptor> descriptors)
         {
             // ReSharper disable once PossibleMultipleEnumeration
             Assert.All(descriptors, d =>
@@ -123,8 +123,8 @@ namespace MeasureIt
                 ;
         }
 
-        internal static IMeasurePerformanceDescriptor VerifyPublishingOptions(
-            this IMeasurePerformanceDescriptor descriptor,
+        internal static IPerformanceMeasurementDescriptor VerifyPublishingOptions(
+            this IPerformanceMeasurementDescriptor descriptor,
             bool expectedPublishCounters = true, bool expectedPublishEvent = true,
             bool expectedThrowPublishErrors = false, bool? expectedMayProceedUnabated = null)
         {
@@ -149,8 +149,8 @@ namespace MeasureIt
         /// <param name="expectedSampleRate"></param>
         /// <param name="expectedReadOnly"></param>
         /// <param name="expectedInstanceLifetime"></param>
-        internal static IMeasurePerformanceDescriptor VerifySamplingOptions(
-            this IMeasurePerformanceDescriptor descriptor
+        internal static IPerformanceMeasurementDescriptor VerifySamplingOptions(
+            this IPerformanceMeasurementDescriptor descriptor
             , double expectedSampleRate = Constants.MaxSampleRate
             , bool? expectedReadOnly = null
             , PerformanceCounterInstanceLifetime expectedInstanceLifetime = PerformanceCounterInstanceLifetime.Process
@@ -182,7 +182,7 @@ namespace MeasureIt
         //    verify(descriptor.AdapterDescriptor);
         //}
 
-        internal static void VerifyCounterCategoryAdapter<TCategory>(this IMeasurePerformanceDescriptor descriptor,
+        internal static void VerifyCounterCategoryAdapter<TCategory>(this IPerformanceMeasurementDescriptor descriptor,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
             Action<IPerformanceCounterCategoryDescriptor> verify = null)
             where TCategory : PerformanceCounterCategoryAdapterBase
@@ -198,7 +198,7 @@ namespace MeasureIt
         /// <param name="expectedCategoryType"></param>
         /// <param name="verify"></param>
         internal static void VerifyCounterCategoryAdapter(
-            this IMeasurePerformanceDescriptor descriptor, Type expectedType = null,
+            this IPerformanceMeasurementDescriptor descriptor, Type expectedType = null,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
             Action<IPerformanceCounterCategoryDescriptor> verify = null)
         {
@@ -246,7 +246,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageTimer, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Null(y.Help);
@@ -255,7 +254,6 @@ namespace MeasureIt
                         , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageBase, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Null(y.Help);
@@ -272,6 +270,7 @@ namespace MeasureIt
         private static void VerifyCurrentConcurrentCountCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
+
             const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
 
             descriptor.VerifyCreationData<CurrentConcurrentCountPerformanceCounterAdapter>(
@@ -281,7 +280,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Number of requests running concurrently.", y.Help);
@@ -298,6 +296,7 @@ namespace MeasureIt
         private static void VerifyErrorRateCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
+
             const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
 
             descriptor.VerifyCreationData<ErrorRatePerformanceCounterAdapter>(
@@ -307,7 +306,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Number of errors per second.", y.Help);
@@ -324,6 +322,7 @@ namespace MeasureIt
         private static void VerifyLastMemberAccessTimeCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
+
             const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
 
             descriptor.VerifyCreationData<LastMemberExecutionTimePerformanceCounterAdapter>(
@@ -333,7 +332,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Last member execution time in milliseconds.", y.Help);
@@ -350,6 +348,7 @@ namespace MeasureIt
         private static void VerifyMemberAccessRateCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
+
             const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
 
             descriptor.VerifyCreationData<MemberAccessRatePerformanceCounterAdapter>(
@@ -359,7 +358,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Number of member accesses per second.", y.Help);
@@ -376,6 +374,7 @@ namespace MeasureIt
         private static void VerifyTotalMemberAccessesCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
+
             const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
 
             descriptor.VerifyCreationData<TotalMemberAccessesPerformanceCounterAdapter>(
@@ -385,7 +384,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Total number of member accesses.", y.Help);
@@ -402,6 +400,7 @@ namespace MeasureIt
         private static void VerifyMemberActivityTimerCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType timer = PerformanceCounterType.Timer100Ns;
+
             const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
 
             descriptor.VerifyCreationData<MemberActivityTimerPerformanceCounterAdapter>(
@@ -411,7 +410,6 @@ namespace MeasureIt
                         y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
-                            y.InstanceName.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(timer, y.CounterType);
                             Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Measure of member activity in nanoseconds.", y.Help);

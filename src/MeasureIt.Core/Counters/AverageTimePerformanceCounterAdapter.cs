@@ -13,7 +13,7 @@ namespace MeasureIt
     public class AverageTimePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         AverageTimePerformanceCounterAdapter>
     {
-        internal AverageTimePerformanceCounterAdapter(IMeasurePerformanceDescriptor descriptor)
+        internal AverageTimePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
             : base(descriptor)
         {
             // We need the Descriptor in order to convey necessary details to the Adapter.
@@ -36,12 +36,12 @@ namespace MeasureIt
 
         // TODO: TBD: begin/end may not be a good pattern here; we may simple want to "take sample" ...
 
-        public override void BeginMeasurement(IMeasurePerformanceDescriptor descriptor)
+        public override void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)
         {
             // Nothing to do in this instance.
         }
 
-        public override void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor)
+        public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
             TimerCounter.IncrementBy(elapsed.Ticks);
             BaseCounter.Increment();

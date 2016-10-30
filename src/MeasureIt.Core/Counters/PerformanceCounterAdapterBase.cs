@@ -7,6 +7,8 @@ using System.Linq;
 namespace MeasureIt
 {
     using IExpandoObjectDictionary = IDictionary<string, object>;
+    using IPerformanceCounterDictionary = IDictionary<Guid, PerformanceCounter>;
+    using PerformanceCounterDictionary = Dictionary<Guid, PerformanceCounter>;
 
     /* fulfills a man in the middle design pattern; performance counters are defined,
      * both installation/creation and runtime, on the front side, and on the back side
@@ -20,19 +22,26 @@ namespace MeasureIt
     public abstract class PerformanceCounterAdapterBase<TAdapter> : Disposable, IPerformanceCounterAdapter
         where TAdapter : PerformanceCounterAdapterBase<TAdapter>
     {
+        private IPerformanceMeasurementDescriptor MeasurementDescriptor { get; set; }
+
+        /// <summary>
+        /// Lazy Descriptor backing field.
+        /// </summary>
+        private readonly Lazy<IPerformanceCounterAdapterDescriptor> _lazyDescriptor;
+
         /// <summary>
         /// 
         /// </summary>
-        private class CounterCreationDataComparer : Comparer<CounterCreationData>
+        public virtual IPerformanceCounterAdapterDescriptor Descriptor
         {
-            public override int Compare(CounterCreationData x, CounterCreationData y)
-            {
-                if (x == null && y == null) return 0;
-                if (x != null && y == null) return 1;
-                if (x == null) return -1;
-                if (x.CounterType > y.CounterType) return -1;
-                return x.CounterType < y.CounterType ? 1 : 0;
-            }
+            get { return _lazyDescriptor.Value; }
+        }
+
+        private readonly Lazy<IEnumerable<ICounterCreationDataDescriptor>> _lazyDataDescriptors;
+
+        private IEnumerable<ICounterCreationDataDescriptor> DataDescriptors
+        {
+            get { return _lazyDataDescriptors.Value; }
         }
 
         /// <summary>
@@ -83,19 +92,24 @@ namespace MeasureIt
             return dictionary.Values.OfType<T>().Where(predicate);
         }
 
-        private readonly IMeasurePerformanceDescriptor _descriptor;
-
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="descriptor"></param>
-        protected PerformanceCounterAdapterBase(IMeasurePerformanceDescriptor descriptor)
+        /// <param name="measurementDescriptor"></param>
+        protected PerformanceCounterAdapterBase(IPerformanceMeasurementDescriptor measurementDescriptor)
         {
-            _descriptor = descriptor;
             Parts = new ExpandoObject();
-        }
 
-        private readonly CounterCreationDataComparer _dataComparer = new CounterCreationDataComparer();
+            MeasurementDescriptor = measurementDescriptor;
+
+            var type = GetType();
+
+            _lazyDescriptor = new Lazy<IPerformanceCounterAdapterDescriptor>(() => type
+                .GetAttributeValue((PerformanceCounterAdapterAttribute a) => a.Descriptor));
+
+            _lazyDataDescriptors = new Lazy<IEnumerable<ICounterCreationDataDescriptor>>(() => type
+                .GetAttributeValues((CounterCreationDataAttribute a) => a.Descriptor).ToArray());
+        }
 
         private readonly PerformanceCounterComparer _counterComparer = new PerformanceCounterComparer();
 
@@ -103,33 +117,53 @@ namespace MeasureIt
 
         private readonly Func<PerformanceCounter, bool> _findAllCounters = x => true;
 
+        private static IEnumerable<PerformanceCounter> CreatePerformanceCounters(
+            IPerformanceMeasurementDescriptor measurementDescriptor
+            , IEnumerable<ICounterCreationDataDescriptor> dataDescriptors)
+        {
+            var prefix = measurementDescriptor.Name;
+
+            var categoryName = measurementDescriptor.CategoryDescriptor.Name;
+            var readOnly = measurementDescriptor.ReadOnly;
+
+            foreach (var datum in dataDescriptors)
+            {
+                var moniker = new DefaultMoniker();
+
+                var instanceName = moniker.ToString();
+
+                var counterName = string.Join(".", prefix, datum.Name);
+
+                PerformanceCounter pc;
+
+                // ReSharper disable once SwitchStatementMissingSomeCases
+                switch (readOnly)
+                {
+                    case true:
+                    case false:
+                        pc = new PerformanceCounter(categoryName, counterName, instanceName, readOnly.Value);
+                        break;
+
+                    default:
+                        pc = new PerformanceCounter(categoryName, counterName, instanceName);
+                        break;
+                }
+
+                pc.InstanceLifetime = measurementDescriptor.InstanceLifetime;
+
+                yield return pc;
+            }
+        }
+
+        // TODO: TBD: whereas initializing Counters is an "individual" MEASUREPERFORMANCE concern...
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="parts"></param>
-        protected virtual void InitializeData(ExpandoObject parts)
-        {
-            if (HasAny<CounterCreationData>(parts)) return;
-
-            var adapters = _descriptor.AdapterDescriptors;
-
-            // TODO: TBD: let's assume for the time being that the counter has already been named in an appropriate manner here...
-            // TODO: TBD: if we need to provide some naming service/strategy, seems like we'd want to do it during discovery and/or in the agents
-            var data = adapters.SelectMany(a => a.CreationDataDescriptors.Select(x => x.GetCounterCreationData()));
-
-            IExpandoObjectDictionary dictionary = parts;
-
-            foreach (var datum in data) dictionary.Add(datum.CounterName, datum);
-        }
-
-        /// <summary>
-        /// InitializeCounters
-        /// </summary>
-        protected virtual void InitializeCounters(ExpandoObject parts)
+        protected virtual void InitializePerformanceCounters(ExpandoObject parts)
         {
             if (HasAny<PerformanceCounter>(parts)) return;
 
-            var counters = _descriptor.GetPerformanceCounters();
+            var counters = CreatePerformanceCounters(MeasurementDescriptor, DataDescriptors);
 
             IExpandoObjectDictionary dictionary = parts;
 
@@ -139,23 +173,11 @@ namespace MeasureIt
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable<CounterCreationData> Data
+        protected IEnumerable<PerformanceCounter> Counters
         {
             get
             {
-                InitializeData(Parts);
-                return GetAll(Parts, _findAllData).OrderBy(x => x, _dataComparer);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<PerformanceCounter> Counters
-        {
-            get
-            {
-                InitializeCounters(Parts);
+                InitializePerformanceCounters(Parts);
                 return GetAll(Parts, _findAllCounters).OrderBy(x => x, _counterComparer);
             }
         }
@@ -164,23 +186,24 @@ namespace MeasureIt
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        public abstract void BeginMeasurement(IMeasurePerformanceDescriptor descriptor);
+        public abstract void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="elapsed"></param>
         /// <param name="descriptor"></param>
-        public abstract void EndMeasurement(TimeSpan elapsed, IMeasurePerformanceDescriptor descriptor);
+        public abstract void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor);
 
         protected override void Dispose(bool disposing)
         {
+            // TODO: TBD: what to do about disposal here?
             if (!IsDisposed && disposing)
             {
-                foreach (var counter in Counters)
-                {
-                    counter.Dispose();
-                }
+                //foreach (var counter in Counters)
+                //{
+                //    counter.Dispose();
+                //}
             }
 
             base.Dispose(disposing);

@@ -53,6 +53,14 @@
     <Compile Include="Attributes\ICounterCreationDataAttribute.cs" />
     <Compile Include="Attributes\IAttribute.cs" />
     <Compile Include="Castle\Interception\IMeasurementContext.cs" />
+    <Compile Include="Collections\Generic\BidirectionalList.cs" />
+    <Compile Include="Collections\Generic\Delegates.cs" />
+    <Compile Include="Collections\Generic\IBidirectionalList.cs" />
+    <Compile Include="Collections\Generic\IPerformanceCounterDictionary.cs" />
+    <Compile Include="Collections\Generic\PerformanceCounterDictionary.cs" />
+    <Compile Include="Contexts\ContextBase.cs" />
+    <Compile Include="Contexts\IContext.cs" />
+    <Compile Include="Contexts\InstallerContext.cs" />
     <Compile Include="Core\DefaultMoniker.cs" />
     <Compile Include="Core\IDefaultMoniker.cs" />
     <Compile Include="Core\IMoniker.cs" />
@@ -72,6 +80,8 @@
     <Compile Include="Counters\CurrentConcurrentCountPerformanceCounterAdapter.cs" />
     <Compile Include="Counters\DefaultPerformanceCounterCategoryAdapter.cs" />
     <Compile Include="Counters\AverageTimePerformanceCounterAdapter.cs" />
+    <Compile Include="Descriptors\DescriptorBase.cs" />
+    <Compile Include="Descriptors\IInstallablePerformanceCounterCategory.cs" />
     <Compile Include="Descriptors\IMeasurementOptions.cs" />
     <Compile Include="Descriptors\IPublishingOptions.cs" />
     <Compile Include="Descriptors\ISamplingOptions.cs" />
@@ -82,18 +92,18 @@
     <Compile Include="Counters\IPerformanceCounterAdapter.cs" />
     <Compile Include="Descriptors\PerformanceCounterCategoryDescriptor.cs" />
     <Compile Include="Attributes\PerformanceCounterCategoryAttribute.cs" />
-    <Compile Include="Descriptors\MeasurePerformanceDescriptor.cs" />
+    <Compile Include="Descriptors\PerformanceMeasurementDescriptor.cs" />
     <Compile Include="Descriptors\PerformanceCounterAdapterDescriptor.cs" />
     <Compile Include="Descriptors\CounterCreationDataDescriptor.cs" />
     <Compile Include="Descriptors\IPerformanceCounterAdapterDescriptor.cs" />
-    <Compile Include="Descriptors\IMeasurePerformanceDescriptor.cs" />
+    <Compile Include="Descriptors\IPerformanceMeasurementDescriptor.cs" />
     <Compile Include="Descriptors\IPerformanceCounterCategoryDescriptor.cs" />
     <Compile Include="Descriptors\IDescriptor.cs" />
     <Compile Include="Descriptors\ICounterCreationDataDescriptor.cs" />
-    <Compile Include="Discovery\Agents\MeasurePerformanceDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
-    <Compile Include="Discovery\Agents\IMeasurePerformanceDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\IPerformanceMeasurementDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\IPerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\IPerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\DiscoveryAgentBase.cs" />
@@ -109,12 +119,13 @@
     <Compile Include="Extensions\ModelExtensionMethods.cs" />
     <Compile Include="Extensions\EnumExtensionMethods.cs" />
     <Compile Include="Extensions\ReflectionExtensionMethods.cs" />
-    <Compile Include="Measurement\IMeasurementContext.cs" />
-    <Compile Include="Measurement\IMeasurementProvider.cs" />
-    <Compile Include="Measurement\IPerformanceCounterContext.cs" />
-    <Compile Include="Measurement\MeasurementContext.cs" />
-    <Compile Include="Measurement\MeasurementProviderBase.cs" />
-    <Compile Include="Measurement\PerformanceCounterContext.cs" />
+    <Compile Include="Contexts\IInstallerContext.cs" />
+    <Compile Include="Contexts\IMeasurementContext.cs" />
+    <Compile Include="Contexts\IMeasurementProvider.cs" />
+    <Compile Include="Contexts\IPerformanceMeasurementContext.cs" />
+    <Compile Include="Contexts\MeasurementContext.cs" />
+    <Compile Include="Contexts\MeasurementProviderBase.cs" />
+    <Compile Include="Contexts\PerformanceMeasurementContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

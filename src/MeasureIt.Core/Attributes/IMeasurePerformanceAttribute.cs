@@ -10,6 +10,6 @@ namespace MeasureIt
         /// <summary>
         /// Gets the Descriptor.
         /// </summary>
-        IMeasurePerformanceDescriptor Descriptor { get; }
+        IPerformanceMeasurementDescriptor Descriptor { get; }
     }
 }

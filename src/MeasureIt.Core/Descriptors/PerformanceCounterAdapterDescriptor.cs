@@ -7,7 +7,7 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public class PerformanceCounterAdapterDescriptor : IPerformanceCounterAdapterDescriptor
+    public class PerformanceCounterAdapterDescriptor : DescriptorBase, IPerformanceCounterAdapterDescriptor
     {
         private IMoniker _counterMoniker;
 
@@ -35,6 +35,7 @@ namespace MeasureIt
             set
             {
                 _adapterType = value.VerifyType<IPerformanceCounterAdapter>();
+
                 CreationDataDescriptors = _adapterType.GetAttributeValues(
                     (CounterCreationDataAttribute a) => a.Descriptor)
                     .OrderBy(d => d.CounterType);

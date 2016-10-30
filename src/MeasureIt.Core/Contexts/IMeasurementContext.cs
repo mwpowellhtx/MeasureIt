@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MeasureIt.Measurement
+namespace MeasureIt.Contexts
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IMeasurementContext : IDisposable
+    public interface IMeasurementContext : IContext
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        IEnumerable<IPerformanceCounterContext> CounterContexts { get; }
-
+        // TODO: TBD: Descriptor? or simply "options" ?
         /// <summary>
         /// Gets the Descriptor.
         /// </summary>
-        IMeasurePerformanceDescriptor Descriptor { get; }
+        IPerformanceMeasurementDescriptor Descriptor { get; }
 
         /// <summary>
         /// 

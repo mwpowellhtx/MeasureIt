@@ -1,35 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace MeasureIt.Measurement
+namespace MeasureIt.Contexts
 {
     /// <summary>
     /// 
     /// </summary>
-    public class PerformanceCounterContext : Disposable, IPerformanceCounterContext
+    public class PerformanceMeasurementContext : Disposable, IPerformanceMeasurementContext
     {
-        private readonly Lazy<IEnumerable<IPerformanceCounterAdapter>> _lazyAdapters;
+        private readonly IPerformanceMeasurementDescriptor _descriptor;
+
+        private readonly IEnumerable<IPerformanceCounterAdapter> _adapters;
 
         private IEnumerable<IPerformanceCounterAdapter> Adapters
         {
-            get { return _lazyAdapters.Value; }
+            get { return _adapters; }
         }
-
-        private readonly IMeasurePerformanceDescriptor _descriptor;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        internal PerformanceCounterContext(IMeasurePerformanceDescriptor descriptor)
+        /// <param name="adapters"></param>
+        internal PerformanceMeasurementContext(IPerformanceMeasurementDescriptor descriptor,
+            params IPerformanceCounterAdapter[] adapters)
         {
             _descriptor = descriptor;
-            _lazyAdapters = new Lazy<IEnumerable<IPerformanceCounterAdapter>>(
-                () => (_descriptor == null
-                    ? new IPerformanceCounterAdapter[0]
-                    : _descriptor.CreateAdapters()).ToList()
-                );
+            _adapters = adapters;
         }
 
         public void BeginMeasurement()

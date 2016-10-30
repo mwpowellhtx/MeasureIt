@@ -8,8 +8,8 @@ namespace MeasureIt.Descriptors
     using Xunit;
     using BuildDescriptorAnonymousDelegate = Func<MethodInfo, bool>;
 
-    public class MeasurePerformanceDescriptorTests : MeasurePerformanceDescriptorTestFixtureBase<
-        MeasureMeasurePerformanceDescriptorFixture>
+    public class PerformanceMeasurementDescriptorTests : PerformanceMeasurementDescriptorTestFixtureBase<
+        PerformanceMeasurementDescriptorFixture>
     {
         /// <summary>
         /// This is intentionally derived from <see cref="B"/>.
@@ -75,7 +75,7 @@ namespace MeasureIt.Descriptors
             }
         }
 
-        protected override MeasureMeasurePerformanceDescriptorFixture BuildDescriptor(Type type
+        protected override PerformanceMeasurementDescriptorFixture BuildDescriptor(Type type
             , BuildDescriptorAnonymousDelegate predicate)
         {
             Assert.NotNull(type);
@@ -108,11 +108,7 @@ namespace MeasureIt.Descriptors
 
             descriptor.VerifyCounterCategoryAdapter();
 
-            Assert.Collection(descriptor.AdapterDescriptors
-                , a => Assert.Null(a.AdapterType)
-                );
-
-            return new MeasureMeasurePerformanceDescriptorFixture(descriptor);
+            return new PerformanceMeasurementDescriptorFixture(descriptor);
         }
 
         private static class MethodNames

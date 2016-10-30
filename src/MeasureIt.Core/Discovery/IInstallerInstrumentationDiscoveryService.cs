@@ -2,6 +2,8 @@
 
 namespace MeasureIt.Discovery
 {
+    using Contexts;
+
     /// <summary>
     /// 
     /// </summary>
@@ -11,5 +13,11 @@ namespace MeasureIt.Discovery
         /// 
         /// </summary>
         IEnumerable<IPerformanceCounterCategoryDescriptor> CategoryDescriptors { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IInstallerContext GetInstallerContext();
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace MeasureIt
@@ -33,24 +30,23 @@ namespace MeasureIt
         {
             base.Install(stateSaver);
 
-            Func<string, bool> exists = PerformanceCounterCategory.Exists;
-
-            foreach (var c in _discoveryService.CategoryDescriptors.Where(d => !exists(d.Name)))
+            using (var context = _discoveryService.GetInstallerContext())
             {
-                var data = c.GetCounterCreationDataCollection();
-                PerformanceCounterCategory.Create(c.Name, c.Help, c.CategoryType, data);
+                context.InstallAsync().Wait();
             }
         }
 
         public override void Uninstall(IDictionary savedState)
         {
-            Func<string, bool> exists = PerformanceCounterCategory.Exists;
-            Action<string> delete = PerformanceCounterCategory.Delete;
-
-            foreach (var category in _discoveryService.CategoryDescriptors.Where(d => exists(d.Name)))
-                delete(category.Name);
+            using (var context = _discoveryService.GetInstallerContext())
+            {
+                context.UninstallAsync().Wait();
+            }
 
             base.Uninstall(savedState);
         }
+
+        // TODO: TBD: run async with cancelation token...
+
     }
 }

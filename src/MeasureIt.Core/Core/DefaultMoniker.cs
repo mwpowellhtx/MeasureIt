@@ -8,12 +8,12 @@ namespace MeasureIt
     /// </summary>
     internal class DefaultMoniker : MonikerBase, IDefaultMoniker
     {
+        public Guid Id { get; private set; }
+
         public static IMoniker New()
         {
             return new DefaultMoniker();
         }
-
-        private Guid _guid;
 
         /// <summary>
         /// 
@@ -27,13 +27,13 @@ namespace MeasureIt
         {
             do
             {
-                _guid = Guid.NewGuid();
-            } while (_guid.ToByteArray().ElementAt(3) < 0xa0);
+                Id = Guid.NewGuid();
+            } while (Id.ToByteArray().ElementAt(3) < 0xa0);
         }
 
         public override string ToString()
         {
-            return _guid.ToString("N");
+            return Id.ToString("N");
         }
     }
 }

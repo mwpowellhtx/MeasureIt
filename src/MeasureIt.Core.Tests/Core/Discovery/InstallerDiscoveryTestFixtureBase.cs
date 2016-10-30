@@ -31,16 +31,16 @@ namespace MeasureIt.Discovery
 
             OnVerifyCategoryDescriptors(service.CategoryDescriptors);
 
-            Assert.NotNull(service.CounterDescriptors);
-            Assert.NotEmpty(service.CounterDescriptors);
+            Assert.NotNull(service.MeasurementDescriptors);
+            Assert.NotEmpty(service.MeasurementDescriptors);
 
-            OnVerifyCounterDescriptors(service.CounterDescriptors);
+            OnVerifyCounterDescriptors(service.MeasurementDescriptors);
         }
 
         protected abstract void OnVerifyCategoryDescriptors(
             IEnumerable<IPerformanceCounterCategoryDescriptor> descriptors);
 
         protected abstract void OnVerifyCounterDescriptors(
-            IEnumerable<IMeasurePerformanceDescriptor> descriptors);
+            IEnumerable<IPerformanceMeasurementDescriptor> descriptors);
     }
 }

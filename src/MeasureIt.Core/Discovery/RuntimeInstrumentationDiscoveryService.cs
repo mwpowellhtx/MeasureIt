@@ -6,7 +6,7 @@ using System.Reflection;
 namespace MeasureIt.Discovery
 {
     using Agents;
-    using Measurement;
+    using Contexts;
     using DataAttribute = CounterCreationDataAttribute;
 
     /// <summary>
@@ -15,17 +15,17 @@ namespace MeasureIt.Discovery
     public class RuntimeInstrumentationDiscoveryService : InstrumentationDiscoveryServiceBase
         , IRuntimeInstrumentationDiscoveryService
     {
-        private readonly Lazy<IMeasurePerformanceDescriptorDiscoveryAgent> _performanceCounterDescriptorDiscoveryAgent;
+        private readonly Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent> _performanceCounterDescriptorDiscoveryAgent;
 
-        private IEnumerable<IMeasurePerformanceDescriptor> _counterDescriptors;
+        private IEnumerable<IPerformanceMeasurementDescriptor> _measurePerformanceDescriptors;
 
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable<IMeasurePerformanceDescriptor> CounterDescriptors
+        public IEnumerable<IPerformanceMeasurementDescriptor> MeasurementDescriptors
         {
-            get { return _counterDescriptors; }
-            private set { _counterDescriptors = (value ?? new List<IMeasurePerformanceDescriptor>()).ToArray(); }
+            get { return _measurePerformanceDescriptors; }
+            private set { _measurePerformanceDescriptors = (value ?? new List<IPerformanceMeasurementDescriptor>()).ToArray(); }
         }
 
         /// <summary>
@@ -46,11 +46,11 @@ namespace MeasureIt.Discovery
             IEnumerable<Assembly> assemblies)
             : base(options, assemblies)
         {
-            CounterDescriptors = null;
+            MeasurementDescriptors = null;
 
             _performanceCounterDescriptorDiscoveryAgent
-                = new Lazy<IMeasurePerformanceDescriptorDiscoveryAgent>(
-                    () => new MeasurePerformanceDescriptorDiscoveryAgent(options, GetExportedTypes));
+                = new Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent>(
+                    () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes));
         }
 
         /* TODO: TBD: we may need/want different discovery services for different purposes:
@@ -59,7 +59,7 @@ namespace MeasureIt.Discovery
 
         private void OnDiscoverCounterDescriptors()
         {
-            CounterDescriptors = _performanceCounterDescriptorDiscoveryAgent.Value.ToArray();
+            MeasurementDescriptors = _performanceCounterDescriptorDiscoveryAgent.Value.ToArray();
         }
 
         protected override void OnDiscover()
@@ -67,6 +67,11 @@ namespace MeasureIt.Discovery
             base.OnDiscover();
 
             OnDiscoverCounterDescriptors();
+        }
+
+        public IMeasurementContext GetMeasurementContext()
+        {
+            return null;
         }
 
         public IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo methodInfo)

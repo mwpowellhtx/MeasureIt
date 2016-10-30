@@ -11,9 +11,9 @@ namespace MeasureIt
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class MeasurePerformanceAttribute : Attribute, IMeasurePerformanceAttribute
     {
-        private readonly Lazy<IMeasurePerformanceDescriptor> _lazyDescriptor;
+        private readonly Lazy<IPerformanceMeasurementDescriptor> _lazyDescriptor;
 
-        public IMeasurePerformanceDescriptor Descriptor
+        public IPerformanceMeasurementDescriptor Descriptor
         {
             get { return _lazyDescriptor.Value; }
         }
@@ -101,8 +101,8 @@ namespace MeasureIt
         /// <param name="otherAdapterTypes"></param>
         public MeasurePerformanceAttribute(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
-            _lazyDescriptor = new Lazy<IMeasurePerformanceDescriptor>(
-                () => new MeasurePerformanceDescriptor(counterName, categoryType, adapterType, otherAdapterTypes));
+            _lazyDescriptor = new Lazy<IPerformanceMeasurementDescriptor>(
+                () => new PerformanceMeasurementDescriptor(counterName, categoryType, adapterType, otherAdapterTypes));
         }
 
         // TODO: TBD: not sure I want something like this on the attribute, but rather the Descriptors
