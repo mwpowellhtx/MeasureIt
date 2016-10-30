@@ -25,25 +25,21 @@ namespace MeasureIt.Discovery.Agents
         {
         }
 
-        protected static IEnumerable<IPerformanceCounterCategoryDescriptor> ApplyOrdering(
+        protected override void OnItemsDiscovered(
             IEnumerable<IPerformanceCounterCategoryDescriptor> discoveredItems)
         {
-            Assert.NotNull(discoveredItems);
+            var orderedItems = discoveredItems.Order().ToArray();
 
-            return discoveredItems.OrderBy(x => x.Name);
-        }
-
-        protected override void OnItemsDiscovered(IEnumerable<IPerformanceCounterCategoryDescriptor> discoveredItems)
-        {
-            var orderedItems = ApplyOrdering(discoveredItems);
+            /* This is all the more we can verify at this level.
+             * More is definitely expected from an integration test perspective, however. */
 
             Assert.Collection(orderedItems,
                 d =>
                 {
-                    Assert.NotNull(d);
                     d.Name.CanParse<string, Guid>(Guid.TryParse);
                     Assert.Equal(string.Empty, d.Help);
                     Assert.Equal(PerformanceCounterCategoryType.MultiInstance, d.CategoryType);
+                    d.Type.Confirm<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 );
         }

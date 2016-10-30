@@ -90,6 +90,27 @@ namespace MeasureIt
                 .ThenBy(x => x.CounterName);
         }
 
+        internal static IEnumerable<IPerformanceCounterCategoryDescriptor> Order(
+            this IEnumerable<IPerformanceCounterCategoryDescriptor> descriptors)
+        {
+            // ReSharper disable once PossibleMultipleEnumeration
+            Assert.All(descriptors
+                , d =>
+                {
+                    Assert.NotNull(d);
+                    Assert.NotNull(d.Name);
+                    Assert.NotEmpty(d.Name);
+                    // May be empty here; depending on which discovery agents has "seen" them yet.
+                    Assert.NotNull(d.CreationDataDescriptors);
+                    Assert.NotNull(d.Measurements);
+                });
+
+            // ReSharper disable once PossibleMultipleEnumeration
+            return descriptors
+                .OrderBy(x => x.CategoryType)
+                .ThenBy(x => x.Name);
+        }
+
         internal static void VerifyCounterAdapter(this IPerformanceCounterAdapterDescriptor descriptor)
         {
         }
