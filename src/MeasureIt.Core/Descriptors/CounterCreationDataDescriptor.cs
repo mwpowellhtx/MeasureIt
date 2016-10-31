@@ -24,17 +24,13 @@ namespace MeasureIt
 
         public string Help { get; set; }
 
-        public bool? ReadOnly { get; set; }
-
         public PerformanceCounterType CounterType { get; set; }
-
-        public PerformanceCounterInstanceLifetime InstanceLifetime { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         public CounterCreationDataDescriptor()
-            : this(string.Empty)
+            : this(null)
         {
         }
 
@@ -42,14 +38,10 @@ namespace MeasureIt
         /// 
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="readOnly"></param>
-        public CounterCreationDataDescriptor(string name, bool? readOnly = null)
+        public CounterCreationDataDescriptor(string name)
         {
             Name = name;
             Help = null;
-            ReadOnly = readOnly;
-            // Unlike InstanceLifetime, we cannot really know the CounterType at this moment.
-            InstanceLifetime = PerformanceCounterInstanceLifetime.Process;
         }
 
         //public CounterCreationData GetCounterCreationData(IMeasurePerformanceDescriptor descriptor)

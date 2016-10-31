@@ -6,8 +6,9 @@ namespace MeasureIt.Discovery
 {
     using Xunit;
 
-    public class RuntimeDiscoveryServicePublicInstanceMembersTests : RuntimeDiscoveryTestFixtureBase<
-        RuntimeInstrumentationDiscoveryService>
+    public class RuntimeDiscoveryServicePublicInstanceMembersTests
+        : RuntimeDiscoveryServiceTestFixtureBase<
+            RuntimeInstrumentationDiscoveryService>
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
         {

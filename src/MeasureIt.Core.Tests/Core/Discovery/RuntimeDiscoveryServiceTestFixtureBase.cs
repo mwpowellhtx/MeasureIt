@@ -5,10 +5,11 @@ namespace MeasureIt.Discovery
 {
     using Xunit;
 
-    public abstract class RuntimeDiscoveryTestFixtureBase<TService> : DiscoveryServiceTestFixtureBase<TService>
+    public abstract class RuntimeDiscoveryServiceTestFixtureBase<TService>
+        : DiscoveryServiceTestFixtureBase<TService>
         where TService : RuntimeInstrumentationDiscoveryService
     {
-        protected RuntimeDiscoveryTestFixtureBase(IInstrumentationDiscoveryOptions options,
+        protected RuntimeDiscoveryServiceTestFixtureBase(IInstrumentationDiscoveryOptions options,
             IEnumerable<Assembly> assemblies, ServiceFactoryDelegate serviceFactory)
             : base(options, assemblies, serviceFactory)
         {

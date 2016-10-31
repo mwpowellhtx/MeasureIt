@@ -37,15 +37,6 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// Gets or sets whether ReadOnly. Leaving unspecified assumes read-only.
-        /// </summary>
-        public bool? ReadOnly
-        {
-            get { return Descriptor.ReadOnly; }
-            set { Descriptor.ReadOnly = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the CounterType.
         /// </summary>
         public PerformanceCounterType CounterType
@@ -55,19 +46,10 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// Gets or sets the InstanceLifetime.
-        /// </summary>
-        public PerformanceCounterInstanceLifetime InstanceLifetime
-        {
-            get { return Descriptor.InstanceLifetime; }
-            set { Descriptor.InstanceLifetime = value; }
-        }
-
-        /// <summary>
         /// Constructor
         /// </summary>
         public CounterCreationDataAttribute()
-            : this(string.Empty, null)
+            : this(null)
         {
         }
 
@@ -76,38 +58,9 @@ namespace MeasureIt
         /// </summary>
         /// <param name="name"></param>
         public CounterCreationDataAttribute(string name)
-            : this(name, null)
-        {
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="readOnly"></param>
-        public CounterCreationDataAttribute(bool readOnly)
-            : this(string.Empty, (bool?) readOnly)
-        {
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="readOnly"></param>
-        public CounterCreationDataAttribute(string name, bool readOnly)
-            : this(name, (bool?) readOnly)
-        {
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="readOnly"></param>
-        private CounterCreationDataAttribute(string name, bool? readOnly)
         {
             _lazyDescriptor = new Lazy<ICounterCreationDataDescriptor>(
-                () => new CounterCreationDataDescriptor {Name = name, ReadOnly = readOnly});
+                () => new CounterCreationDataDescriptor {Name = name});
         }
 
         ///// <summary>

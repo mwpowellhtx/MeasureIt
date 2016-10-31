@@ -23,19 +23,9 @@ namespace MeasureIt
         string Help { get; set; }
 
         /// <summary>
-        /// Gets or sets whether ReadOnly.
-        /// </summary>
-        bool? ReadOnly { get; set; }
-
-        /// <summary>
         /// Gets or sets the <see cref="PerformanceCounterType"/>.
         /// </summary>
         PerformanceCounterType CounterType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the <see cref="PerformanceCounterInstanceLifetime"/>.
-        /// </summary>
-        PerformanceCounterInstanceLifetime InstanceLifetime { get; set; }
 
         ///// <summary>
         ///// Returns the a <see cref="CounterCreationData"/> corresponding to the Descriptor.

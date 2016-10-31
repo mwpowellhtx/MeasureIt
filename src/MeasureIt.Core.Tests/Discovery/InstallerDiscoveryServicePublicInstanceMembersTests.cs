@@ -9,7 +9,7 @@ namespace MeasureIt.Discovery
     using Xunit;
 
     public class InstallerDiscoveryServicePublicInstanceMembersTests
-        : InstallerDiscoveryTestFixtureBase<
+        : InstallerDiscoveryServiceTestFixtureBase<
             InstallerInstrumentationDiscoveryService>
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
@@ -49,7 +49,6 @@ namespace MeasureIt.Discovery
 
             var orderedCategories = descriptors.OrderBy(x => x.Name).ThenBy(x => x.CategoryType).ToArray();
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
             const PerformanceCounterCategoryType multiInstance = PerformanceCounterCategoryType.MultiInstance;
 
             // Listed in order of enumerated integral value...
@@ -60,9 +59,9 @@ namespace MeasureIt.Discovery
                 d =>
                 {
                     d.Name.CanParse<string, Guid>(Guid.TryParse);
-                    d.Type.Confirm<DefaultPerformanceCounterCategoryAdapter>();
                     Assert.Equal(string.Empty, d.Help);
                     Assert.Equal(multiInstance, d.CategoryType);
+                    d.Type.Confirm<DefaultPerformanceCounterCategoryAdapter>();
 
                     // TODO: TBD: how come this is losing the instances?
                     var orderedData = d.CreationDataDescriptors
@@ -73,18 +72,14 @@ namespace MeasureIt.Discovery
                         x =>
                         {
                             x.Name.CanParse<string, Guid>(Guid.TryParse);
-                            Assert.Equal(process, x.InstanceLifetime);
                             Assert.Equal(averageTimer, x.CounterType);
                             Assert.Null(x.Help);
-                            Assert.Null(x.ReadOnly);
                         }
                         , x =>
                         {
                             x.Name.CanParse<string, Guid>(Guid.TryParse);
-                            Assert.Equal(process, x.InstanceLifetime);
                             Assert.Equal(averageBase, x.CounterType);
                             Assert.Null(x.Help);
-                            Assert.Null(x.ReadOnly);
                         }
                         );
                 }

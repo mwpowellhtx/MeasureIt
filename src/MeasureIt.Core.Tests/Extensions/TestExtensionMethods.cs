@@ -144,6 +144,25 @@ namespace MeasureIt
                 ;
         }
 
+        internal static IEnumerable<ICounterCreationDataDescriptor> Order(
+            this IEnumerable<ICounterCreationDataDescriptor> descriptors)
+        {
+            // ReSharper disable once PossibleMultipleEnumeration
+            Assert.All(descriptors, d =>
+            {
+                Assert.NotNull(d.Name);
+                Assert.NotEmpty(d.Name);
+                Assert.NotNull(d.Help);
+                Assert.NotEmpty(d.Help);
+            });
+
+            // ReSharper disable once PossibleMultipleEnumeration
+            return descriptors
+                .OrderBy(x => x.CounterType)
+                .ThenBy(x => x.Help)
+                ;
+        }
+
         internal static IPerformanceMeasurementDescriptor VerifyPublishingOptions(
             this IPerformanceMeasurementDescriptor descriptor,
             bool expectedPublishCounters = true, bool expectedPublishEvent = true,
@@ -258,8 +277,6 @@ namespace MeasureIt
             const PerformanceCounterType averageTimer = PerformanceCounterType.AverageTimer32;
             const PerformanceCounterType averageBase = PerformanceCounterType.AverageBase;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<AverageTimePerformanceCounterAdapter>(
                 x =>
                 {
@@ -268,17 +285,13 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageTimer, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Null(y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageBase, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Null(y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });
@@ -292,8 +305,6 @@ namespace MeasureIt
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<CurrentConcurrentCountPerformanceCounterAdapter>(
                 x =>
                 {
@@ -302,9 +313,7 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Number of requests running concurrently.", y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });
@@ -318,8 +327,6 @@ namespace MeasureIt
         {
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<ErrorRatePerformanceCounterAdapter>(
                 x =>
                 {
@@ -328,9 +335,7 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Number of errors per second.", y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });
@@ -344,8 +349,6 @@ namespace MeasureIt
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<LastMemberExecutionTimePerformanceCounterAdapter>(
                 x =>
                 {
@@ -354,9 +357,7 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Last member execution time in milliseconds.", y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });
@@ -370,8 +371,6 @@ namespace MeasureIt
         {
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<MemberAccessRatePerformanceCounterAdapter>(
                 x =>
                 {
@@ -380,9 +379,7 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Number of member accesses per second.", y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });
@@ -396,8 +393,6 @@ namespace MeasureIt
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<TotalMemberAccessesPerformanceCounterAdapter>(
                 x =>
                 {
@@ -406,9 +401,7 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Total number of member accesses.", y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });
@@ -422,8 +415,6 @@ namespace MeasureIt
         {
             const PerformanceCounterType timer = PerformanceCounterType.Timer100Ns;
 
-            const PerformanceCounterInstanceLifetime process = PerformanceCounterInstanceLifetime.Process;
-
             descriptor.VerifyCreationData<MemberActivityTimerPerformanceCounterAdapter>(
                 x =>
                 {
@@ -432,9 +423,7 @@ namespace MeasureIt
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(timer, y.CounterType);
-                            Assert.Equal(process, y.InstanceLifetime);
                             Assert.Equal("Measure of member activity in nanoseconds.", y.Help);
-                            Assert.Null(y.ReadOnly);
                         }
                         );
                 });

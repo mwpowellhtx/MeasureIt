@@ -65,8 +65,8 @@
     <Compile Include="Core\Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\DiscoveryAgentTestFixtureBase.cs" />
-    <Compile Include="Core\Discovery\RuntimeDiscoveryTestFixtureBase.cs" />
-    <Compile Include="Core\Discovery\InstallerDiscoveryTestFixtureBase.cs" />
+    <Compile Include="Core\Discovery\RuntimeDiscoveryServiceTestFixtureBase.cs" />
+    <Compile Include="Core\Discovery\InstallerDiscoveryServiceTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\DiscoveryServiceTestFixtureBase.cs" />
     <Compile Include="Descriptors\DescriptorTestFixtureBase.cs" />
     <Compile Include="Descriptors\IPerformanceMeasurementDescriptorFixture.cs" />
