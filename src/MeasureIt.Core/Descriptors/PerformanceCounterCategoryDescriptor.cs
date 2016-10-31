@@ -87,6 +87,8 @@ namespace MeasureIt
 
         public virtual PerformanceCounterCategory CreateCategory()
         {
+            /* The key is in having the Measurements Data presented in such a way
+             * that Category Creation follows smooth as silk. */
             var items = Measurements.SelectMany(d => d.Data).ToArray();
             var data = new CounterCreationDataCollection(items);
             return PerformanceCounterCategory.Create(Name, Help, CategoryType, data);
@@ -97,6 +99,7 @@ namespace MeasureIt
         /// </summary>
         public virtual bool TryDeleteCategory()
         {
+            // Likewise for Category Delete.
             var exists = PerformanceCounterCategory.Exists(Name);
             PerformanceCounterCategory.Delete(Name);
             return exists;
