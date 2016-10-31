@@ -64,8 +64,7 @@ namespace MeasureIt.Discovery
                     d.Type.Confirm<DefaultPerformanceCounterCategoryAdapter>();
 
                     // TODO: TBD: how come this is losing the instances?
-                    var orderedData = d.CreationDataDescriptors
-                        .OrderBy(x => x.CounterType).ThenBy(x => x.Help).ToArray();
+                    var orderedData = d.CreationDataDescriptors.Order().ToArray();
 
                     // TODO: TBD: may need/want a more robust set of examples...
                     Assert.Collection(orderedData,
