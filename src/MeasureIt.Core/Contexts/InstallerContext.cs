@@ -37,6 +37,7 @@ namespace MeasureIt.Contexts
 
             foreach (var category in Service.CategoryDescriptors)
             {
+                // Simple Create the Category, and that's all there is to it.
                 var pcc = category.CreateCategory();
 
                 if (pcc != null) continue;
