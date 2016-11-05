@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeasureIt.Contexts
@@ -11,6 +12,8 @@ namespace MeasureIt.Contexts
     /// </summary>
     public class InstallerContext : ContextBase, IInstallerContext
     {
+        private IInstrumentationDiscoveryOptions Options { get; set; }
+
         private readonly Lazy<IInstallerInstrumentationDiscoveryService> _lazyDiscoveryService;
 
         private IInstallerInstrumentationDiscoveryService Service
@@ -21,9 +24,13 @@ namespace MeasureIt.Contexts
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="options"></param>
         /// <param name="discoveryService"></param>
-        public InstallerContext(IInstallerInstrumentationDiscoveryService discoveryService)
+        public InstallerContext(IInstrumentationDiscoveryOptions options
+            , IInstallerInstrumentationDiscoveryService discoveryService)
         {
+            Options = options;
+
             _lazyDiscoveryService = new Lazy<IInstallerInstrumentationDiscoveryService>(() =>
             {
                 discoveryService.Discover();
@@ -35,18 +42,24 @@ namespace MeasureIt.Contexts
         {
             Uninstall();
 
-            foreach (var category in Service.CategoryDescriptors)
+            var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
+
+            //var created = Service.CategoryDescriptors
+            //    .Where(d => d.CreationDataDescriptors.Any()).Select(d => d.CreateCategory()).ToArray();
+
+            foreach (var category in Service.CategoryDescriptors.Where(d => d.CreationDataDescriptors.Any()))
             {
-                // Simple Create the Category, and that's all there is to it.
                 var pcc = category.CreateCategory();
-
-                if (pcc != null) continue;
-
-                var message = string.Format("Unable to install the {0} '{1}' definition.",
-                    typeof(PerformanceCounterCategory), category.Name);
-
-                throw new InvalidOperationException(message);
             }
+
+            //foreach (var pcc in Service.CategoryDescriptors
+            //    .Where(d => d.CreationDataDescriptors.Any()).Select(d => d.CreateCategory()))
+            //{
+            //    //var message = string.Format("Unable to install the {0} '{1}' definition.",
+            //    //    typeof(PerformanceCounterCategory), category.Name);
+
+            //    //throw new InvalidOperationException(message);
+            //}
         }
 
         public Task InstallAsync()
@@ -56,9 +69,11 @@ namespace MeasureIt.Contexts
 
         public virtual void Uninstall()
         {
+            var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
+
             foreach (var category in Service.CategoryDescriptors)
             {
-                if (category.TryDeleteCategory()) continue;
+                if (category.TryDeleteCategory() || !throwOnInstallerFailure) continue;
 
                 var message = string.Format("Unable to uninstall the {0} '{1}' definition.",
                     typeof(PerformanceCounterCategory), category.Name);

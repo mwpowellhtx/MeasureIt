@@ -134,24 +134,10 @@ namespace MeasureIt
 
                 var counterName = string.Join(".", prefix, datum.Name);
 
-                PerformanceCounter pc;
-
-                // ReSharper disable once SwitchStatementMissingSomeCases
-                switch (readOnly)
+                yield return new PerformanceCounter(categoryName, counterName, instanceName, readOnly ?? false)
                 {
-                    case true:
-                    case false:
-                        pc = new PerformanceCounter(categoryName, counterName, instanceName, readOnly.Value);
-                        break;
-
-                    default:
-                        pc = new PerformanceCounter(categoryName, counterName, instanceName);
-                        break;
-                }
-
-                pc.InstanceLifetime = measurementDescriptor.InstanceLifetime;
-
-                yield return pc;
+                    InstanceLifetime = measurementDescriptor.InstanceLifetime
+                };
             }
         }
 
@@ -173,7 +159,7 @@ namespace MeasureIt
         /// <summary>
         /// 
         /// </summary>
-        protected IEnumerable<PerformanceCounter> Counters
+        public IEnumerable<PerformanceCounter> Counters
         {
             get
             {

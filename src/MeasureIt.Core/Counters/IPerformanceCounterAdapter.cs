@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MeasureIt
 {
@@ -19,10 +21,10 @@ namespace MeasureIt
         ///// </summary>
         //IEnumerable<CounterCreationData> Data { get; }
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //IEnumerable<PerformanceCounter> Counters { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        IEnumerable<PerformanceCounter> Counters { get; }
 
         /// <summary>
         /// 

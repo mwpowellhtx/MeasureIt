@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace MeasureIt.Discovery
 {
@@ -39,18 +38,7 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <param name="options"></param>
         public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
-            : this(options, new List<Assembly>())
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="assemblies"></param>
-        public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Assembly> assemblies)
-            : base(options, assemblies)
+            : base(options)
         {
             CategoryDescriptors = null;
 
@@ -61,7 +49,7 @@ namespace MeasureIt.Discovery
 
         public IInstallerContext GetInstallerContext()
         {
-            return new InstallerContext(this);
+            return new InstallerContext(Options, this);
         }
 
         private void OnDiscoverCounterAdapterDescriptors()

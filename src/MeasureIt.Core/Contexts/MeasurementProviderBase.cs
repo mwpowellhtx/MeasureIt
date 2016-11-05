@@ -43,18 +43,17 @@ namespace MeasureIt.Contexts
 
         public IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo method)
         {
-            // TODO: TBD: everything else seems pretty much boilerplate; I believe aligning descriptors with contexts hinges on this.
+            var descriptors = DiscoveryService.MeasurementDescriptors
+                .Where(
+                    d => d.RootType.IsRelatedTo(targetType)
+                         && d.Method.GetBaseDefinition() == method.GetBaseDefinition()).ToArray();
 
-            var descriptors = DiscoveryService.MeasurementDescriptors.Where(
-                d => d.RootType.IsRelatedTo(targetType)
-                     && d.Method.GetBaseDefinition() == method.GetBaseDefinition()).ToArray();
+            var descriptor = descriptors.SingleOrDefault();
 
             var o = _options;
 
-            // TODO: TBD: this one has me wondering, there should be some sort of factory on the descriptor(s) around this
-
-            return descriptors.Any()
-                ? new MeasurementContext(o, descriptors.Select(d => d.CreateContext()))
+            return descriptor != null
+                ? new MeasurementContext(o, descriptor, descriptor.CreateContext())
                 : null;
         }
     }

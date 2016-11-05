@@ -33,18 +33,7 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <param name="options"></param>
         public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
-            : this(options, new List<Assembly>())
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="assemblies"></param>
-        public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Assembly> assemblies)
-            : base(options, assemblies)
+            : base(options)
         {
             MeasurementDescriptors = null;
 

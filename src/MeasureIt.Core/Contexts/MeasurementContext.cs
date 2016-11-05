@@ -23,10 +23,11 @@ namespace MeasureIt.Contexts
         public IPerformanceMeasurementDescriptor Descriptor { get; private set; }
 
         internal MeasurementContext(IInstrumentationDiscoveryOptions options,
-            IEnumerable<IPerformanceMeasurementContext> contexts)
+            IPerformanceMeasurementDescriptor descriptor,
+            params IPerformanceMeasurementContext[] contexts)
         {
             // TODO: TBD: find the Descriptor from where?
-            Descriptor = null;
+            Descriptor = descriptor;
 
             _rnd = options.RandomSeed.HasValue
                 ? new Random(options.RandomSeed.Value)

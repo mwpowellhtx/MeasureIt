@@ -15,7 +15,10 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// Gets the Assemblies from which to Discover any Instrumentation.
         /// </summary>
-        protected IEnumerable<Assembly> Assemblies { get; private set; }
+        protected IEnumerable<Assembly> Assemblies
+        {
+            get { return Options.Assemblies; }
+        }
 
         private readonly Lazy<IPerformanceCounterAdapterDescriptorDiscoveryAgent>
             _performanceCounterAdapterDescriptorDiscoveryAgent;
@@ -46,21 +49,9 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <param name="options"></param>
         protected InstrumentationDiscoveryServiceBase(IInstrumentationDiscoveryOptions options)
-            : this(options, new List<Assembly>())
-        {
-        }
-
-        /// <summary>
-        /// Protected Constructor
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="assemblies"></param>
-        protected InstrumentationDiscoveryServiceBase(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Assembly> assemblies)
         {
             IsPending = true;
             Options = options;
-            Assemblies = assemblies;
 
             GetExportedTypes = () => Assemblies.SelectMany(a => a.GetExportedTypes());
 

@@ -9,7 +9,7 @@ namespace MeasureIt
     /// </summary>
     public class PerformanceCounterAdapterDescriptor : DescriptorBase, IPerformanceCounterAdapterDescriptor
     {
-        private IMoniker _counterMoniker;
+        private IMoniker _moniker;
 
         private static IMoniker GetNameMoniker(string name)
         {
@@ -18,8 +18,8 @@ namespace MeasureIt
 
         public string CounterName
         {
-            get { return _counterMoniker.ToString(); }
-            set { _counterMoniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
+            get { return _moniker.ToString(); }
+            set { _moniker = GetNameMoniker(value) ?? DefaultMoniker.New(); }
         }
 
         public string CounterHelp { get; set; }
