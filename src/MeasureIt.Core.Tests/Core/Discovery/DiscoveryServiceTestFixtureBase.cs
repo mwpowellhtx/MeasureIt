@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace MeasureIt.Discovery
 {
@@ -9,47 +8,16 @@ namespace MeasureIt.Discovery
     public abstract class DiscoveryServiceTestFixtureBase<TService> : IntegrationTestFixtureBase
         where TService : class, IInstrumentationDiscoveryService
     {
-        private readonly Lazy<TService> _lazyDiscoveryService;
-
-        private static TService VerifyCreatedService(TService service)
-        {
-            Assert.NotNull(service);
-            Assert.True(service.IsPending);
-            Assert.NotNull(service.CounterAdapterDescriptors);
-            Assert.Empty(service.CounterAdapterDescriptors);
-            return service;
-        }
+        protected abstract IInstrumentationDiscoveryOptions Options { get; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="options"></param>
-        /// <param name="assemblies"></param>
         /// <returns></returns>
-        protected delegate TService ServiceFactoryDelegate(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Assembly> assemblies);
+        protected delegate TService ServiceFactoryDelegate(IInstrumentationDiscoveryOptions options);
 
-        protected DiscoveryServiceTestFixtureBase(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Assembly> assemblies, ServiceFactoryDelegate serviceFactory)
-        {
-            Assert.NotNull(assemblies);
-
-            // ReSharper disable once PossibleMultipleEnumeration
-            Assert.NotEmpty(assemblies);
-
-            // ReSharper disable once PossibleMultipleEnumeration
-            _lazyDiscoveryService = new Lazy<TService>(() => VerifyCreatedService(serviceFactory(options, assemblies)));
-        }
-
-        private TService DiscoveryService
-        {
-            get
-            {
-                var result = _lazyDiscoveryService.Value;
-                Assert.NotNull(result);
-                return result;
-            }
-        }
+        protected abstract ServiceFactoryDelegate ServiceFactory { get; }
 
         protected virtual void OnBeforeDiscovery(TService service)
         {
@@ -68,32 +36,49 @@ namespace MeasureIt.Discovery
             OnVerifyCounterAdapterDescriptors(service.CounterAdapterDescriptors);
         }
 
+        private readonly Lazy<TService> _lazyDiscoveryService;
+
+        protected DiscoveryServiceTestFixtureBase()
+        {
+            _lazyDiscoveryService = new Lazy<TService>(() =>
+                ServiceFactory(Options).VerifyDiscoveryService(OnBeforeDiscovery)
+                    .VerifyDiscover().VerifyDiscoveryService(OnAfterDiscovery)
+                );
+        }
+
+        protected TService DiscoveryService
+        {
+            get { return _lazyDiscoveryService.Value; }
+        }
+
         protected virtual void OnVerifyCounterAdapterDescriptors(
             IEnumerable<IPerformanceCounterAdapterDescriptor> descriptors)
         {
             descriptors.Verify();
         }
 
-        protected virtual TService GetDiscoveredDiscoveryService()
-        {
-            var discoveryService = DiscoveryService;
+        //// TODO: TBD: consider re-factoring this for the moment at which discovery service is referenced for the first time, as part of its initialization sequence...
+        //protected virtual TService GetDiscoveredDiscoveryService()
+        //{
+        //    var discoveryService = DiscoveryService;
 
-            // TODO: TBD: may want to initialize the collections up front...
-            Assert.True(discoveryService.IsPending);
-            OnBeforeDiscovery(discoveryService);
+        //    // TODO: TBD: may want to initialize the collections up front...
+        //    Assert.True(discoveryService.IsPending);
+        //    OnBeforeDiscovery(discoveryService);
 
-            discoveryService.Discover();
+        //    discoveryService.Discover();
             
-            Assert.False(discoveryService.IsPending);
-            OnAfterDiscovery(discoveryService);
+        //    Assert.False(discoveryService.IsPending);
+        //    OnAfterDiscovery(discoveryService);
 
-            return discoveryService;
-        }
+        //    return discoveryService;
+        //}
 
         [Fact]
         public void CanDiscover()
         {
-            GetDiscoveredDiscoveryService();
+            // This is it. Just handshake that the Service Is no longer Pending.
+            Assert.False(DiscoveryService.IsPending);
         }
 
         protected abstract void VerifyDiscoveredCounterAdapterDescriptors(
@@ -110,9 +95,7 @@ namespace MeasureIt.Discovery
         [Fact]
         public void VerifyDescriptors()
         {
-            var discoveryService = GetDiscoveredDiscoveryService();
-
-            OnVerifyDescriptors(discoveryService);
+            OnVerifyDescriptors(DiscoveryService);
         }
     }
 }

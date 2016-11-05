@@ -30,6 +30,8 @@ namespace MeasureIt
             Assert.Equal(expectedMethodBindingFlags, options.MethodBindingAttr);
             Assert.Equal(expectedIncludeInherited, options.IncludeInherited);
             Assert.Equal(options.RandomSeed.HasValue, expectedHasRandomSeed);
+            Assert.NotNull(options.Assemblies);
+            Assert.NotEmpty(options.Assemblies);
             return options;
         }
 
@@ -152,8 +154,7 @@ namespace MeasureIt
             {
                 Assert.NotNull(d.Name);
                 Assert.NotEmpty(d.Name);
-                Assert.NotNull(d.Help);
-                Assert.NotEmpty(d.Help);
+                Assert.Null(d.Help);
             });
 
             // ReSharper disable once PossibleMultipleEnumeration
@@ -301,7 +302,8 @@ namespace MeasureIt
         /// <see cref="CurrentConcurrentCountPerformanceCounterAdapter"/> verification is by design.
         /// </summary>
         /// <param name="descriptor"></param>
-        private static void VerifyCurrentConcurrentCountCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        private static void VerifyCurrentConcurrentCountCreationData(
+            this IPerformanceCounterAdapterDescriptor descriptor)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
@@ -477,6 +479,30 @@ namespace MeasureIt
                     d.VerifyTotalMemberAccessesCreationData();
                 }
                 );
+        }
+
+        internal static TService VerifyDiscoveryService<TService>(this TService service, Action<TService> verify = null)
+            where TService : IInstrumentationDiscoveryService
+        {
+            verify = verify ?? (s => { });
+
+            Assert.NotNull(service);
+
+            verify(service);
+
+            return service;
+        }
+
+        internal static TService VerifyDiscover<TService>(this TService service)
+            where TService : IInstrumentationDiscoveryService
+        {
+            Assert.True(service.IsPending);
+
+            service.Discover();
+
+            Assert.False(service.IsPending);
+
+            return service;
         }
     }
 }

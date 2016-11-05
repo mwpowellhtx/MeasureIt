@@ -10,13 +10,6 @@ namespace MeasureIt.Discovery
         : RuntimeDiscoveryServiceTestFixtureBase<
             RuntimeInstrumentationDiscoveryService>
     {
-        private static IInstrumentationDiscoveryOptions GetOptions()
-        {
-            // These are NOT the default options.
-            const BindingFlags expectedBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            return new InstrumentationDiscoveryOptions {MethodBindingAttr = expectedBindingAttr}.VerifyOptions(expectedBindingAttr);
-        }
-
         private static IEnumerable<Assembly> GetAssemblies()
         {
             yield return typeof(Support.Root).Assembly;
@@ -32,10 +25,33 @@ namespace MeasureIt.Discovery
             return items.ToArray();
         }
 
-        public RuntimeDiscoveryIncludingNonPublicInstanceMembersTests()
-            : base(GetOptions(), VerifyCount(GetAssemblies(), 2),
-                (o, a) => new RuntimeInstrumentationDiscoveryService(o, a))
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
+            // These are NOT the default options.
+            const BindingFlags expectedBindingAttr
+                = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            return new InstrumentationDiscoveryOptions
+            {
+                MethodBindingAttr = expectedBindingAttr,
+                Assemblies = VerifyCount(GetAssemblies(), 2)
+            }.VerifyOptions(expectedBindingAttr);
+        }
+
+        private readonly IInstrumentationDiscoveryOptions _options;
+
+        protected override IInstrumentationDiscoveryOptions Options
+        {
+            get { return _options; }
+        }
+
+        protected override ServiceFactoryDelegate ServiceFactory
+        {
+            get { return o => new RuntimeInstrumentationDiscoveryService(o); }
+        }
+
+        public RuntimeDiscoveryIncludingNonPublicInstanceMembersTests()
+        {
+            _options = GetOptions();
         }
 
         protected override void VerifyDiscoveredCounterAdapterDescriptors(

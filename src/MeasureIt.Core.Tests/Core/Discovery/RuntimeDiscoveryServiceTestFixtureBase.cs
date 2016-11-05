@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 
 namespace MeasureIt.Discovery
 {
@@ -9,12 +8,6 @@ namespace MeasureIt.Discovery
         : DiscoveryServiceTestFixtureBase<TService>
         where TService : RuntimeInstrumentationDiscoveryService
     {
-        protected RuntimeDiscoveryServiceTestFixtureBase(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Assembly> assemblies, ServiceFactoryDelegate serviceFactory)
-            : base(options, assemblies, serviceFactory)
-        {
-        }
-
         protected override void OnBeforeDiscovery(TService service)
         {
             base.OnBeforeDiscovery(service);

@@ -78,6 +78,7 @@
     <Compile Include="Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\InstallerDiscoveryServicePublicInstanceMembersTests.cs" />
+    <Compile Include="Discovery\InstallPerformanceCounterCategoriesTests.cs" />
     <Compile Include="Discovery\RuntimeDiscoveryServicePublicInstanceMembersTests.cs" />
     <Compile Include="Discovery\RuntimeDiscoveryIncludingNonPublicInstanceMembersTests.cs" />
     <Compile Include="Extensions\DefaultTestExtensionMethods.cs" />

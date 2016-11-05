@@ -10,11 +10,6 @@ namespace MeasureIt.Discovery
         : RuntimeDiscoveryServiceTestFixtureBase<
             RuntimeInstrumentationDiscoveryService>
     {
-        private static IInstrumentationDiscoveryOptions GetOptions()
-        {
-            return new InstrumentationDiscoveryOptions().VerifyOptions();
-        }
-
         private static IEnumerable<Assembly> GetAssemblies()
         {
             yield return typeof(Support.Root).Assembly;
@@ -31,10 +26,26 @@ namespace MeasureIt.Discovery
             return items.ToArray();
         }
 
-        public RuntimeDiscoveryServicePublicInstanceMembersTests()
-            : base(GetOptions(), VerifyCount(GetAssemblies(), 2),
-                (o, a) => new RuntimeInstrumentationDiscoveryService(o, a))
+        private static IInstrumentationDiscoveryOptions GetOptions()
         {
+            return new InstrumentationDiscoveryOptions {Assemblies = VerifyCount(GetAssemblies(), 2)}.VerifyOptions();
+        }
+
+        private readonly IInstrumentationDiscoveryOptions _options;
+
+        protected override IInstrumentationDiscoveryOptions Options
+        {
+            get { return _options; }
+        }
+
+        protected override ServiceFactoryDelegate ServiceFactory
+        {
+            get { return o => new RuntimeInstrumentationDiscoveryService(o); }
+        }
+
+        public RuntimeDiscoveryServicePublicInstanceMembersTests()
+        {
+            _options = GetOptions();
         }
 
         protected override void VerifyDiscoveredCounterAdapterDescriptors(

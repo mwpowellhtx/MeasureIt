@@ -12,26 +12,27 @@ namespace MeasureIt.Discovery
         : InstallerDiscoveryServiceTestFixtureBase<
             InstallerInstrumentationDiscoveryService>
     {
-        private static IInstrumentationDiscoveryOptions GetOptions()
-        {
-            return new InstrumentationDiscoveryOptions().VerifyOptions();
-        }
-
-        private static IEnumerable<Assembly> GetAssemblies()
+        protected static IEnumerable<Assembly> GetAssemblies()
         {
             yield return typeof(Support.Root).Assembly;
             yield return typeof(IDescriptor).Assembly;
         }
 
-        private static InstallerInstrumentationDiscoveryService CreateService(
-            IInstrumentationDiscoveryOptions options, IEnumerable<Assembly> assemblies)
+        private readonly IInstrumentationDiscoveryOptions _options;
+
+        protected override IInstrumentationDiscoveryOptions Options
         {
-            return new InstallerInstrumentationDiscoveryService(options, assemblies);
+            get { return _options; }
+        }
+
+        protected override ServiceFactoryDelegate ServiceFactory
+        {
+            get { return o => new InstallerInstrumentationDiscoveryService(o); }
         }
 
         public InstallerDiscoveryServicePublicInstanceMembersTests()
-            : base(GetOptions(), GetAssemblies(), CreateService)
         {
+            _options = new InstrumentationDiscoveryOptions {Assemblies = GetAssemblies()}.VerifyOptions();
         }
 
         protected override void VerifyDiscoveredCounterAdapterDescriptors(
