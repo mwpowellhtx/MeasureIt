@@ -14,6 +14,14 @@ namespace MeasureIt.Castle.Interception
         {
         }
 
+        protected virtual void OnMeasuring(IInvocation invocation)
+        {
+        }
+
+        protected virtual void OnMeasured(IInvocation invocation)
+        {
+        }
+
         public override void Intercept(IInvocation invocation)
         {
             var i = invocation;
@@ -32,9 +40,16 @@ namespace MeasureIt.Castle.Interception
                 {
                     if (context.Descriptor.MayProceedUnabated)
                     {
+                        OnMeasuring(invocation);
+
                         i.Proceed();
+
+                        OnMeasured(invocation);
+
                         return;
                     }
+
+                    OnMeasuring(invocation);
 
                     // TODO: proceed with measurements...
                     var returnType = i.Method.ReturnType;
@@ -52,6 +67,8 @@ namespace MeasureIt.Castle.Interception
                     {
                         context.Measure(i.Proceed);
                     }
+
+                    OnMeasured(invocation);
                 }
                 catch (Exception ex)
                 {
