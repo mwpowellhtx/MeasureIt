@@ -8,20 +8,20 @@ namespace MeasureIt.Integration.Installer
 
     public class IntegrationDiscoveryServiceInstaller : DiscoveryServiceInstallerBase
     {
-        private static IInstrumentationDiscoveryOptions GetOptions()
-        {
-            return new InstrumentationDiscoveryOptions();
-        }
-
         private static IEnumerable<Assembly> GetAssemblies()
         {
             yield return typeof(IDescriptor).Assembly;
             yield return typeof(Support.Root).Assembly;
         }
 
+        private static IInstrumentationDiscoveryOptions GetOptions()
+        {
+            return new InstrumentationDiscoveryOptions {Assemblies = GetAssemblies()};
+        }
+
         private static IInstallerInstrumentationDiscoveryService GetService()
         {
-            return new InstallerInstrumentationDiscoveryService(GetOptions(), GetAssemblies());
+            return new InstallerInstrumentationDiscoveryService(GetOptions());
         }
 
         private static readonly Lazy<IInstallerInstrumentationDiscoveryService> LazyService
