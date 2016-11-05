@@ -21,7 +21,9 @@ namespace MeasureIt
         public static bool IsRelatedTo(this Type type, Type otherType)
         {
             return !(type == null || otherType == null)
-                   && (type.IsSubclassOf(otherType) || otherType.IsSubclassOf(type));
+                   && (type == otherType
+                       || type.IsSubclassOf(otherType)
+                       || otherType.IsSubclassOf(type));
         }
 
         /// <summary>
