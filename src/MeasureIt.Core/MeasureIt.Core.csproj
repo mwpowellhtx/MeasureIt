@@ -56,7 +56,9 @@
     <Compile Include="Collections\Generic\BidirectionalList.cs" />
     <Compile Include="Collections\Generic\Delegates.cs" />
     <Compile Include="Collections\Generic\IBidirectionalList.cs" />
+    <Compile Include="Collections\Generic\IMap.cs" />
     <Compile Include="Collections\Generic\IPerformanceCounterDictionary.cs" />
+    <Compile Include="Collections\Generic\Map.cs" />
     <Compile Include="Collections\Generic\PerformanceCounterDictionary.cs" />
     <Compile Include="Contexts\ContextBase.cs" />
     <Compile Include="Contexts\IContext.cs" />
