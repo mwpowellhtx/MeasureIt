@@ -5,3 +5,4 @@ packages/
 _ReSharper.Caches/
 
 *.suo
+*.DotSettings
