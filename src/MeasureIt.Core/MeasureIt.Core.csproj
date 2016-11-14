@@ -44,6 +44,12 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Adapters\ContextAdapter.cs" />
+    <Compile Include="Adapters\IInstallerContextAdapters.cs" />
+    <Compile Include="Adapters\InstallerContextAdapters.cs" />
+    <Compile Include="Adapters\IPerformanceCounterCategoryUninstallerContextAdapter.cs" />
+    <Compile Include="Adapters\PerformanceCounterCategoryInstallerContextAdapter.cs" />
+    <Compile Include="Adapters\PerformanceCounterCategoryUninstallerContextAdapter.cs" />
     <Compile Include="Attributes\CounterCreationDataAttribute.cs" />
     <Compile Include="Attributes\MeasurePerformanceAttribute.cs" />
     <Compile Include="Attributes\IMeasurePerformanceAttribute.cs" />
@@ -56,7 +62,9 @@
     <Compile Include="Collections\Generic\Map.cs" />
     <Compile Include="Contexts\ContextBase.cs" />
     <Compile Include="Contexts\IContext.cs" />
+    <Compile Include="Adapters\IContextAdapter.cs" />
     <Compile Include="Contexts\InstallerContext.cs" />
+    <Compile Include="Adapters\IPerformanceCounterCategoryInstallerContextAdapter.cs" />
     <Compile Include="Core\DefaultMoniker.cs" />
     <Compile Include="Core\IDefaultMoniker.cs" />
     <Compile Include="Core\IMoniker.cs" />

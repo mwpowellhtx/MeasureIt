@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MeasureIt
 {
@@ -79,6 +81,12 @@ namespace MeasureIt
         {
             get { return Descriptor.SampleRate; }
             set { Descriptor.SampleRate = value; }
+        }
+
+        public IEnumerable<string> AdapterNames
+        {
+            get { return Descriptor.AdapterNames; }
+            set { Descriptor.AdapterNames = (value ?? new List<string>()).ToArray(); }
         }
 
         /// <summary>

@@ -35,18 +35,6 @@ namespace MeasureIt
         IList<IPerformanceMeasurementDescriptor> InternalMeasurements { get; }
 
         /// <summary>
-        /// Returns a created <see cref="PerformanceCounterCategory"/> corresponding with the
-        /// <see cref="Measurements"/>.
-        /// </summary>
-        /// <returns></returns>
-        PerformanceCounterCategory CreateCategory();
-
-        /// <summary>
-        /// Tries to Delete the Category.
-        /// </summary>
-        bool TryDeleteCategory();
-
-        /// <summary>
         /// Gets a readonly collection of CreationData.
         /// </summary>
         IReadOnlyCollection<ICounterCreationDataDescriptor> CreationData { get; }

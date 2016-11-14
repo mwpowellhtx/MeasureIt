@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +9,7 @@ namespace MeasureIt
 {
     using Contexts;
     using ICounterAdapter = IPerformanceCounterAdapter;
+    using CounterAdapter = PerformanceCounterAdapterBase;
     using ICategoryAdapter = IPerformanceCounterCategoryAdapter;
     using IMeasurementDescriptor = IPerformanceMeasurementDescriptor;
 
@@ -110,6 +112,15 @@ namespace MeasureIt
         {
             get { return _adapters; }
             private set { _adapters = (value ?? new List<ICounterAdapter>()).ToArray(); }
+        }
+
+        public virtual IEnumerable<string> AdapterNames
+        {
+            get { return new ReadOnlyCollection<string>(Adapters.Select(a => a.Name).ToList()); }
+            set
+            {
+                var zipped = Adapters.Zip(value ?? new List<string>(), (a, name) => ((CounterAdapter) a).Name = name);
+            }
         }
 
         public bool? ReadOnly { get; set; }
@@ -272,6 +283,7 @@ namespace MeasureIt
             }
         }
 
+        // TODO: TBD: we want counter creation data for these? or as a wrapper/facade during installer context? that might make better sense...
         public virtual IEnumerable<CounterCreationData> Data
         {
             get { return GetCounterCreationData(); }

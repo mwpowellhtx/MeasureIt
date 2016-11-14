@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
+using System.Threading;
 
 namespace MeasureIt
 {
@@ -18,8 +19,25 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
+    public abstract class PerformanceCounterAdapterBase : NamedDisposable
+    {
+        /// <summary>
+        /// Protected Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        protected PerformanceCounterAdapterBase(string name)
+            : base(name)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <typeparam name="TAdapter"></typeparam>
-    public abstract class PerformanceCounterAdapterBase<TAdapter> : NamedDisposable, IPerformanceCounterAdapter
+    public abstract class PerformanceCounterAdapterBase<TAdapter> 
+        : PerformanceCounterAdapterBase
+            , IPerformanceCounterAdapter
         where TAdapter : PerformanceCounterAdapterBase<TAdapter>
     {
         public virtual IPerformanceMeasurementDescriptor Measurement { get; set; }
@@ -103,13 +121,18 @@ namespace MeasureIt
 
             var type = GetType();
 
+            const LazyThreadSafetyMode execAndPubSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
+            /* Be careful of initialization: CounterCreationData order is CRITICAL. We do not
+             * care what the attributes say, per se, but we do want the results ordered. */
+
             _lazyCreationData = new Lazy<IEnumerable<ICounterCreationDataDescriptor>>(() => type
                 .GetAttributeValues((CounterCreationDataAttribute a) =>
                 {
                     var cloned = (ICounterCreationDataDescriptor) a.Descriptor.Clone();
                     cloned.Adapter = this;
                     return cloned;
-                }).ToArray());
+                }).OrderBy(x => x.CounterType).ToArray(), execAndPubSafety);
         }
 
         private void Initialize(string help)
@@ -119,16 +142,12 @@ namespace MeasureIt
 
         private readonly PerformanceCounterComparer _counterComparer = new PerformanceCounterComparer();
 
-        private readonly Func<CounterCreationData, bool> _findAllData = x => true;
-
         private readonly Func<PerformanceCounter, bool> _findAllCounters = x => true;
 
         private static IEnumerable<PerformanceCounter> CreatePerformanceCounters(
             IPerformanceMeasurementDescriptor measurement
             , IEnumerable<ICounterCreationDataDescriptor> dataDescriptors)
         {
-            var prefix = measurement.Name;
-
             var categoryName = measurement.CategoryAdapter.Name;
             var readOnly = measurement.ReadOnly;
 
@@ -138,12 +157,20 @@ namespace MeasureIt
 
                 var instanceName = moniker.ToString();
 
-                var counterName = string.Join(".", prefix, datum.Name);
+                /* TODO: TBD: not sure why, but not all of the ctor's work without throwing InvalidOperationException
+                 * to do with "Could not locate Performance Counter with specified category name ...". */
 
-                yield return new PerformanceCounter(categoryName, counterName, instanceName, readOnly ?? false)
+                // However, using an initializer list seems to be just fine.
+                var counter = new PerformanceCounter
                 {
-                    InstanceLifetime = measurement.InstanceLifetime
+                    CategoryName = categoryName,
+                    CounterName = datum.Name,
+                    InstanceLifetime = measurement.InstanceLifetime,
+                    InstanceName = instanceName,
+                    ReadOnly = readOnly ?? false
                 };
+
+                yield return counter;
             }
         }
 

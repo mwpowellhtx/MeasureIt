@@ -40,6 +40,11 @@ namespace MeasureIt
         IEnumerable<IPerformanceCounterAdapter> Adapters { get; }
 
         /// <summary>
+        /// Gets or sets the AdapterNames.
+        /// </summary>
+        IEnumerable<string> AdapterNames { get; set; }
+
+            /// <summary>
         /// 
         /// </summary>
         PerformanceCounterInstanceLifetime InstanceLifetime { get; set; }
