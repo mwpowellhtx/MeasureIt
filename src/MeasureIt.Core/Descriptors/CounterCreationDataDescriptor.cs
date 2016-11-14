@@ -5,9 +5,11 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public class CounterCreationDataDescriptor : DescriptorBase, ICounterCreationDataDescriptor
+    public class CounterCreationDataDescriptor
+        : DescriptorBase
+            , ICounterCreationDataDescriptor
     {
-        public IPerformanceCounterAdapterDescriptor AdapterDescriptor { get; set; }
+        public IPerformanceCounterAdapter Adapter { get; set; }
 
         private IMoniker _nameMoniker;
 
@@ -30,7 +32,7 @@ namespace MeasureIt
         /// 
         /// </summary>
         public CounterCreationDataDescriptor()
-            : this(null)
+            : this((string) null)
         {
         }
 
@@ -41,13 +43,33 @@ namespace MeasureIt
         public CounterCreationDataDescriptor(string name)
         {
             Name = name;
-            Help = null;
+            Help = string.Empty;
         }
 
-        //public CounterCreationData GetCounterCreationData(IMeasurePerformanceDescriptor descriptor)
-        //{
-        //    // TODO: TBD: may need/want a different naming convention...
-        //    return new CounterCreationData(string.Join(".", descriptor.CounterName, Name), Help, CounterType);
-        //}
+        private CounterCreationDataDescriptor(CounterCreationDataDescriptor other)
+            : base(other)
+        {
+            Copy(other);
+        }
+
+        private void Copy(CounterCreationDataDescriptor other)
+        {
+            // Moniker not the Name, per se.
+            _nameMoniker = other._nameMoniker;
+            Help = other.Help;
+            CounterType = other.CounterType;
+            Adapter = other.Adapter;
+        }
+
+        public CounterCreationData GetCounterCreationData()
+        {
+            // TODO: TBD: may look at using a moniker that builds the path of the name...
+            return new CounterCreationData(string.Join(".", Adapter.Name, Name), Help, CounterType);
+        }
+
+        public override object Clone()
+        {
+            return new CounterCreationDataDescriptor(this);
+        }
     }
 }

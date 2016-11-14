@@ -11,8 +11,10 @@ namespace MeasureIt.Discovery.Agents
     public class PerformanceMeasurementDescriptorDiscoveryAgent : DiscoveryAgentBase<
         IPerformanceMeasurementDescriptor>, IPerformanceMeasurementDescriptorDiscoveryAgent
     {
-        internal PerformanceMeasurementDescriptorDiscoveryAgent(IInstrumentationDiscoveryOptions options,
-            DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
+        internal PerformanceMeasurementDescriptorDiscoveryAgent(
+            IInstrumentationDiscoveryOptions options
+            , DiscoveryServiceExportedTypesGetterDelegate getExportedTypes
+            )
             : base(options, getExportedTypes)
         {
         }
@@ -41,9 +43,10 @@ namespace MeasureIt.Discovery.Agents
                 .SelectMany(method => method.GetAttributeValues(
                     (MeasurePerformanceAttribute a) => a.Descriptor).Select(d =>
                     {
-                        d.RootType = rootType;
-                        d.Method = method;
-                        return d;
+                        var cloned = (IPerformanceMeasurementDescriptor) d.Clone();
+                        cloned.RootType = rootType;
+                        cloned.Method = method;
+                        return cloned;
                     })).ToArray();
 
             var forwarded = bases.Where(b => potentials.All(p => !p.Equals(b))).ToArray();

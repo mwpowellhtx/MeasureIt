@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MeasureIt.Discovery
 {
@@ -8,9 +9,14 @@ namespace MeasureIt.Discovery
     public interface IInstrumentationDiscoveryService
     {
         /// <summary>
-        /// 
+        /// Discovered event.
         /// </summary>
-        IEnumerable<IPerformanceCounterAdapterDescriptor> CounterAdapterDescriptors { get; }
+        event EventHandler<EventArgs> Discovered;
+
+        /// <summary>
+        /// Gets the Measurements. Everything stems from the Measurements.
+        /// </summary>
+        IEnumerable<IPerformanceMeasurementDescriptor> Measurements { get; }
 
         /// <summary>
         /// Discovers the Performance Monitoring Instrumentation from the Assemblies.

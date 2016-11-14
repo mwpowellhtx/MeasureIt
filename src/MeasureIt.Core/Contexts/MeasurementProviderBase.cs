@@ -43,7 +43,7 @@ namespace MeasureIt.Contexts
 
         public IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo method)
         {
-            var descriptors = DiscoveryService.MeasurementDescriptors
+            var descriptors = DiscoveryService.Measurements
                 .Where(
                     d => d.RootType.IsRelatedTo(targetType)
                          && d.Method.GetBaseDefinition() == method.GetBaseDefinition()).ToArray();

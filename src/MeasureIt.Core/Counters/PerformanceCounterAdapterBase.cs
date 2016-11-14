@@ -19,29 +19,18 @@ namespace MeasureIt
     /// 
     /// </summary>
     /// <typeparam name="TAdapter"></typeparam>
-    public abstract class PerformanceCounterAdapterBase<TAdapter> : Disposable, IPerformanceCounterAdapter
+    public abstract class PerformanceCounterAdapterBase<TAdapter> : NamedDisposable, IPerformanceCounterAdapter
         where TAdapter : PerformanceCounterAdapterBase<TAdapter>
     {
-        private IPerformanceMeasurementDescriptor MeasurementDescriptor { get; set; }
+        public virtual IPerformanceMeasurementDescriptor Measurement { get; set; }
 
-        /// <summary>
-        /// Lazy Descriptor backing field.
-        /// </summary>
-        private readonly Lazy<IPerformanceCounterAdapterDescriptor> _lazyDescriptor;
+        public virtual string Help { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual IPerformanceCounterAdapterDescriptor Descriptor
+        private readonly Lazy<IEnumerable<ICounterCreationDataDescriptor>> _lazyCreationData;
+
+        public virtual IEnumerable<ICounterCreationDataDescriptor> CreationData
         {
-            get { return _lazyDescriptor.Value; }
-        }
-
-        private readonly Lazy<IEnumerable<ICounterCreationDataDescriptor>> _lazyDataDescriptors;
-
-        private IEnumerable<ICounterCreationDataDescriptor> DataDescriptors
-        {
-            get { return _lazyDataDescriptors.Value; }
+            get { return _lazyCreationData.Value; }
         }
 
         /// <summary>
@@ -93,22 +82,39 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Protected Constructor
         /// </summary>
-        /// <param name="measurementDescriptor"></param>
-        protected PerformanceCounterAdapterBase(IPerformanceMeasurementDescriptor measurementDescriptor)
+        protected PerformanceCounterAdapterBase()
+            : this(null)
         {
-            Parts = new ExpandoObject();
+        }
 
-            MeasurementDescriptor = measurementDescriptor;
+        /// <summary>
+        /// Protected Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="help"></param>
+        protected PerformanceCounterAdapterBase(string name, string help = null)
+            : base(name)
+        {
+            Initialize(help);
+
+            Parts = new ExpandoObject();
 
             var type = GetType();
 
-            _lazyDescriptor = new Lazy<IPerformanceCounterAdapterDescriptor>(() => type
-                .GetAttributeValue((PerformanceCounterAdapterAttribute a) => a.Descriptor));
+            _lazyCreationData = new Lazy<IEnumerable<ICounterCreationDataDescriptor>>(() => type
+                .GetAttributeValues((CounterCreationDataAttribute a) =>
+                {
+                    var cloned = (ICounterCreationDataDescriptor) a.Descriptor.Clone();
+                    cloned.Adapter = this;
+                    return cloned;
+                }).ToArray());
+        }
 
-            _lazyDataDescriptors = new Lazy<IEnumerable<ICounterCreationDataDescriptor>>(() => type
-                .GetAttributeValues((CounterCreationDataAttribute a) => a.Descriptor).ToArray());
+        private void Initialize(string help)
+        {
+            Help = help ?? string.Empty;
         }
 
         private readonly PerformanceCounterComparer _counterComparer = new PerformanceCounterComparer();
@@ -118,13 +124,13 @@ namespace MeasureIt
         private readonly Func<PerformanceCounter, bool> _findAllCounters = x => true;
 
         private static IEnumerable<PerformanceCounter> CreatePerformanceCounters(
-            IPerformanceMeasurementDescriptor measurementDescriptor
+            IPerformanceMeasurementDescriptor measurement
             , IEnumerable<ICounterCreationDataDescriptor> dataDescriptors)
         {
-            var prefix = measurementDescriptor.Name;
+            var prefix = measurement.Name;
 
-            var categoryName = measurementDescriptor.CategoryDescriptor.Name;
-            var readOnly = measurementDescriptor.ReadOnly;
+            var categoryName = measurement.CategoryAdapter.Name;
+            var readOnly = measurement.ReadOnly;
 
             foreach (var datum in dataDescriptors)
             {
@@ -136,7 +142,7 @@ namespace MeasureIt
 
                 yield return new PerformanceCounter(categoryName, counterName, instanceName, readOnly ?? false)
                 {
-                    InstanceLifetime = measurementDescriptor.InstanceLifetime
+                    InstanceLifetime = measurement.InstanceLifetime
                 };
             }
         }
@@ -149,7 +155,7 @@ namespace MeasureIt
         {
             if (HasAny<PerformanceCounter>(parts)) return;
 
-            var counters = CreatePerformanceCounters(MeasurementDescriptor, DataDescriptors);
+            var counters = CreatePerformanceCounters(Measurement, CreationData);
 
             IExpandoObjectDictionary dictionary = parts;
 

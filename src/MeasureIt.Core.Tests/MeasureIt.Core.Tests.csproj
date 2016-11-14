@@ -62,8 +62,7 @@
     </Compile>
     <Compile Include="Core\IntegrationTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgentTestFixtureBase.cs" />
-    <Compile Include="Core\Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgentTestFixtureBase.cs" />
-    <Compile Include="Core\Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase.cs" />
+    <Compile Include="Core\Discovery\Agents\PerformanceCounterAdapterDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\DiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\RuntimeDiscoveryServiceTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\InstallerDiscoveryServiceTestFixtureBase.cs" />
@@ -75,13 +74,11 @@
     <Compile Include="Descriptors\PerformanceMeasurementDescriptorTestFixtureBase.cs" />
     <Compile Include="Descriptors\PerformanceMeasurementDescriptorTests.cs" />
     <Compile Include="Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgentTests.cs" />
-    <Compile Include="Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgentTests.cs" />
-    <Compile Include="Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgentTests.cs" />
+    <Compile Include="Discovery\Agents\PerformanceCounterAdapterDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\InstallerDiscoveryServicePublicInstanceMembersTests.cs" />
     <Compile Include="Discovery\InstallPerformanceCounterCategoriesTests.cs" />
     <Compile Include="Discovery\RuntimeDiscoveryServicePublicInstanceMembersTests.cs" />
     <Compile Include="Discovery\RuntimeDiscoveryIncludingNonPublicInstanceMembersTests.cs" />
-    <Compile Include="Extensions\DefaultTestExtensionMethods.cs" />
     <Compile Include="Extensions\TestExtensionMethods.cs" />
     <Compile Include="Fixtures\CategoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

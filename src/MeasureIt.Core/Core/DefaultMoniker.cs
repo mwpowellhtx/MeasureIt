@@ -23,6 +23,12 @@ namespace MeasureIt
             Initialize();
         }
 
+        private DefaultMoniker(DefaultMoniker other)
+        {
+            // TODO: TBD: not sure it makes much sense to clone anything in this instance... that, or indeed copy the Id also...
+            Initialize();
+        }
+
         private void Initialize()
         {
             do
@@ -34,6 +40,11 @@ namespace MeasureIt
         public override string ToString()
         {
             return Id.ToString("N");
+        }
+
+        public override object Clone()
+        {
+            return new DefaultMoniker(this);
         }
     }
 }

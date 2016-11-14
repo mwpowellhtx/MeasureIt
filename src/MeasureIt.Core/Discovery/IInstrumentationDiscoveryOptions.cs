@@ -25,6 +25,11 @@ namespace MeasureIt.Discovery
         bool IncludeInherited { get; set; }
 
         /// <summary>
+        /// Gets or sets the Constructor <see cref="BindingFlags"/>.
+        /// </summary>
+        BindingFlags ConstructorBindingAttr { get; set; }
+
+        /// <summary>
         /// Gets or sets the Method <see cref="BindingFlags"/>.
         /// </summary>
         BindingFlags MethodBindingAttr { get; set; }

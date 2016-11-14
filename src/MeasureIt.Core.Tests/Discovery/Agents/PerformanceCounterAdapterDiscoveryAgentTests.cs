@@ -3,7 +3,7 @@
 namespace MeasureIt.Discovery.Agents
 {
     public class DefaultOptionsPerformanceCounterAdapterDiscoveryAgentTests
-        : PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase
+        : PerformanceCounterAdapterDiscoveryAgentTestFixtureBase
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
         {
@@ -17,7 +17,7 @@ namespace MeasureIt.Discovery.Agents
     }
 
     public class IncludingNonPublicOptionsPerformanceCounterAdapterDiscoveryAgentTests
-        : PerformanceCounterAdapterDescriptorDiscoveryAgentTestFixtureBase
+        : PerformanceCounterAdapterDiscoveryAgentTestFixtureBase
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
         {

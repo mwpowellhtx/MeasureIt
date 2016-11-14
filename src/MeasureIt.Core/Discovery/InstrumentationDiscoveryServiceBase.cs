@@ -20,24 +20,34 @@ namespace MeasureIt.Discovery
             get { return Options.Assemblies; }
         }
 
-        private readonly Lazy<IPerformanceCounterAdapterDescriptorDiscoveryAgent>
-            _performanceCounterAdapterDescriptorDiscoveryAgent;
+        private readonly Lazy<IPerformanceCounterAdapterDiscoveryAgent> _lazyCounterAdapterDiscoveryAgent;
 
-        private IEnumerable<IPerformanceCounterAdapterDescriptor> _counterAdapterDescriptors;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<IPerformanceCounterAdapterDescriptor> CounterAdapterDescriptors
-        {
-            get { return _counterAdapterDescriptors; }
-            private set
-            {
-                _counterAdapterDescriptors = (value ?? new List<IPerformanceCounterAdapterDescriptor>()).ToArray();
-            }
-        }
+        private readonly Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent> _lazyMeasurementDiscoveryAgent;
 
         protected readonly DiscoveryServiceExportedTypesGetterDelegate GetExportedTypes;
+
+        private IEnumerable<IPerformanceCounterAdapter> _counterAdapters;
+
+        /// <summary>
+        /// Gets the CounterAdapterDescriptors.
+        /// These will be discovered in order to substantiate any Measurement claims.
+        /// </summary>
+        protected IEnumerable<IPerformanceCounterAdapter> CounterAdapters
+        {
+            get { return _counterAdapters; }
+            private set { _counterAdapters= (value ?? new List<IPerformanceCounterAdapter>()).ToArray(); }
+        }
+
+        private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
+
+        public IEnumerable<IPerformanceMeasurementDescriptor> Measurements
+        {
+            get { return _measurements; }
+            private set
+            {
+                _measurements = (value ?? new List<IPerformanceMeasurementDescriptor>()).ToArray();
+            }
+        }
 
         /// <summary>
         /// Gets the Options.
@@ -55,11 +65,13 @@ namespace MeasureIt.Discovery
 
             GetExportedTypes = () => Assemblies.SelectMany(a => a.GetExportedTypes());
 
-            CounterAdapterDescriptors = null;
+            _lazyCounterAdapterDiscoveryAgent = new Lazy<IPerformanceCounterAdapterDiscoveryAgent>(
+                () => new PerformanceCounterAdapterDiscoveryAgent(options, GetExportedTypes));
 
-            _performanceCounterAdapterDescriptorDiscoveryAgent
-                = new Lazy<IPerformanceCounterAdapterDescriptorDiscoveryAgent>(
-                    () => new PerformanceCounterAdapterDescriptorDiscoveryAgent(options, GetExportedTypes));
+            _lazyMeasurementDiscoveryAgent = new Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent>(
+                () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes));
+
+            Measurements = null;
         }
 
         /// <summary>
@@ -67,9 +79,14 @@ namespace MeasureIt.Discovery
         /// </summary>
         public bool IsPending { get; private set; }
 
-        private void OnDiscoverCounterCategoryDescriptors()
+        private void OnDiscoverPerformanceCounterAdapters()
         {
-            CounterAdapterDescriptors = _performanceCounterAdapterDescriptorDiscoveryAgent.Value.ToArray();
+            CounterAdapters = _lazyCounterAdapterDiscoveryAgent.Value.ToArray();
+        }
+
+        private void OnDiscoverMeasurePerformanceDescriptors()
+        {
+            Measurements = _lazyMeasurementDiscoveryAgent.Value.ToArray();
         }
 
         /// <summary>
@@ -77,7 +94,22 @@ namespace MeasureIt.Discovery
         /// </summary>
         protected virtual void OnDiscover()
         {
-            OnDiscoverCounterCategoryDescriptors();
+            OnDiscoverPerformanceCounterAdapters();
+            OnDiscoverMeasurePerformanceDescriptors();
+        }
+
+        /// <summary>
+        /// Discovered event.
+        /// </summary>
+        public event EventHandler<EventArgs> Discovered;
+
+        /// <summary>
+        /// Signals when <see cref="Discovered"/>.
+        /// </summary>
+        protected virtual void OnDiscovered()
+        {
+            if (Discovered == null) return;
+            Discovered(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -90,6 +122,8 @@ namespace MeasureIt.Discovery
             OnDiscover();
 
             IsPending = !IsPending;
+
+            OnDiscovered();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace MeasureIt.Discovery
@@ -11,11 +10,6 @@ namespace MeasureIt.Discovery
     /// </summary>
     public interface IRuntimeInstrumentationDiscoveryService : IInstrumentationDiscoveryService
     {
-        /// <summary>
-        /// Gets the MeasurementDescriptors.
-        /// </summary>
-        IEnumerable<IPerformanceMeasurementDescriptor> MeasurementDescriptors { get; }
-
         /// <summary>
         /// 
         /// </summary>

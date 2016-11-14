@@ -20,9 +20,9 @@ namespace MeasureIt
         Type CategoryType { get; set; }
 
         /// <summary>
-        /// Gets or sets the CounterCategoryDescriptor.
+        /// Gets or sets the CategoryAdapter.
         /// </summary>
-        IPerformanceCounterCategoryDescriptor CategoryDescriptor { get; set; }
+        IPerformanceCounterCategoryAdapter CategoryAdapter { get; set; }
 
         /// <summary>
         /// Gets or sets the Name.

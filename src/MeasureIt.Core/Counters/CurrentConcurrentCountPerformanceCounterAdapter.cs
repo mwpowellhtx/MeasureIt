@@ -7,13 +7,12 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("current concurrent count")]
     [CounterCreationData(CounterType = CountType, Help = "Number of requests running concurrently.")]
     public class CurrentConcurrentCountPerformanceCounterAdapter : PerformanceCounterAdapterBase<
         CurrentConcurrentCountPerformanceCounterAdapter>
     {
-        internal CurrentConcurrentCountPerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal CurrentConcurrentCountPerformanceCounterAdapter()
+            : base("current concurrent count")
         {
         }
 

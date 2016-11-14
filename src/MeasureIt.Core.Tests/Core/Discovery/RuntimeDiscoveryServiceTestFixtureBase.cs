@@ -12,26 +12,23 @@ namespace MeasureIt.Discovery
         {
             base.OnBeforeDiscovery(service);
 
-            Assert.NotNull(service.MeasurementDescriptors);
-            Assert.Empty(service.MeasurementDescriptors);
-
-            Assert.NotNull(service.CounterAdapterDescriptors);
-            Assert.Empty(service.CounterAdapterDescriptors);
+            Assert.NotNull(service.Measurements);
+            Assert.Empty(service.Measurements);
         }
 
         protected override void OnAfterDiscovery(TService service)
         {
             base.OnAfterDiscovery(service);
 
-            Assert.NotNull(service.MeasurementDescriptors);
-            Assert.NotEmpty(service.MeasurementDescriptors);
+            Assert.NotNull(service.Measurements);
+            Assert.NotEmpty(service.Measurements);
         }
 
         protected sealed override void OnVerifyDescriptors(TService service)
         {
             base.OnVerifyDescriptors(service);
 
-            VerifyDiscoveredCounterDescriptors(service.MeasurementDescriptors);
+            VerifyDiscoveredCounterDescriptors(service.Measurements);
         }
 
         protected virtual void VerifyDiscoveredCounterDescriptors(

@@ -48,9 +48,11 @@ namespace MeasureIt.Discovery
         [Fact]
         public void CanDiscoveryServiceDiscoverAndInstall()
         {
+            /* TODO: TBD: okay, so the "problem" here is the fact that one or all discovery services
+             * need; started connecting measurement descriptors with the category adapters, still a work in progress . */
             OnInstall();
 
-            var counters = DiscoveryService.MeasurementDescriptors.SelectMany(
+            var counters = DiscoveryService.Measurements.SelectMany(
                 d => d.Adapters.Select(a => a.Counters)).ToArray();
 
             Assert.All(counters, x => Assert.NotNull(x));

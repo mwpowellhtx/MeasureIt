@@ -12,7 +12,10 @@ namespace MeasureIt.Discovery.Agents
     {
         private static IInstrumentationDiscoveryOptions GetOptions()
         {
-            return new InstrumentationDiscoveryOptions().VerifyOptions();
+            return new InstrumentationDiscoveryOptions()
+                .VerifyOptions(
+                    verify: o => Assert.Empty(o.Assemblies)
+                );
         }
 
         public DefaultOptionsExportedTypesPerformanceMeasurementDescriptorDiscoveryAgentTests()

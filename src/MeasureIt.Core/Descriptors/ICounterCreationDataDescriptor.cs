@@ -8,9 +8,9 @@ namespace MeasureIt
     public interface ICounterCreationDataDescriptor : IDescriptor
     {
         /// <summary>
-        /// Gets or sets the AdapterDescriptor.
+        /// Gets or sets the parent Adapter.
         /// </summary>
-        IPerformanceCounterAdapterDescriptor AdapterDescriptor { get; set; }
+        IPerformanceCounterAdapter Adapter { get; set; }
 
         /// <summary>
         /// Gets or sets the Name.
@@ -27,11 +27,10 @@ namespace MeasureIt
         /// </summary>
         PerformanceCounterType CounterType { get; set; }
 
-        ///// <summary>
-        ///// Returns the a <see cref="CounterCreationData"/> corresponding to the Descriptor.
-        ///// </summary>
-        ///// <param name="descriptor"></param>
-        ///// <returns></returns>
-        //CounterCreationData GetCounterCreationData(IMeasurePerformanceDescriptor descriptor);
+        /// <summary>
+        /// Returns the a <see cref="CounterCreationData"/> corresponding to the Descriptor.
+        /// </summary>
+        /// <returns></returns>
+        CounterCreationData GetCounterCreationData();
     }
 }

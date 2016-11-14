@@ -7,13 +7,12 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("last member execution time")]
     [CounterCreationData(CounterType = MemberAccessType, Help = "Last member execution time in milliseconds.")]
     public class LastMemberExecutionTimePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         LastMemberExecutionTimePerformanceCounterAdapter>
     {
-        internal LastMemberExecutionTimePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal LastMemberExecutionTimePerformanceCounterAdapter()
+            : base("last member execution time")
         {
         }
 

@@ -46,20 +46,14 @@
     </Compile>
     <Compile Include="Attributes\CounterCreationDataAttribute.cs" />
     <Compile Include="Attributes\MeasurePerformanceAttribute.cs" />
-    <Compile Include="Attributes\PerformanceCounterAdapterAttribute.cs" />
-    <Compile Include="Attributes\IPerformanceCounterAdapterAttribute.cs" />
     <Compile Include="Attributes\IMeasurePerformanceAttribute.cs" />
-    <Compile Include="Attributes\IPerformanceCounterCategoryAttribute.cs" />
     <Compile Include="Attributes\ICounterCreationDataAttribute.cs" />
     <Compile Include="Attributes\IAttribute.cs" />
-    <Compile Include="Castle\Interception\IMeasurementContext.cs" />
     <Compile Include="Collections\Generic\BidirectionalList.cs" />
     <Compile Include="Collections\Generic\Delegates.cs" />
     <Compile Include="Collections\Generic\IBidirectionalList.cs" />
     <Compile Include="Collections\Generic\IMap.cs" />
-    <Compile Include="Collections\Generic\IPerformanceCounterDictionary.cs" />
     <Compile Include="Collections\Generic\Map.cs" />
-    <Compile Include="Collections\Generic\PerformanceCounterDictionary.cs" />
     <Compile Include="Contexts\ContextBase.cs" />
     <Compile Include="Contexts\IContext.cs" />
     <Compile Include="Contexts\InstallerContext.cs" />
@@ -83,7 +77,6 @@
     <Compile Include="Counters\DefaultPerformanceCounterCategoryAdapter.cs" />
     <Compile Include="Counters\AverageTimePerformanceCounterAdapter.cs" />
     <Compile Include="Descriptors\DescriptorBase.cs" />
-    <Compile Include="Descriptors\IInstallablePerformanceCounterCategory.cs" />
     <Compile Include="Descriptors\IMeasurementOptions.cs" />
     <Compile Include="Descriptors\IPublishingOptions.cs" />
     <Compile Include="Descriptors\ISamplingOptions.cs" />
@@ -92,22 +85,15 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Counters\IPerformanceCounterCategoryAdapter.cs" />
     <Compile Include="Counters\IPerformanceCounterAdapter.cs" />
-    <Compile Include="Descriptors\PerformanceCounterCategoryDescriptor.cs" />
-    <Compile Include="Attributes\PerformanceCounterCategoryAttribute.cs" />
     <Compile Include="Descriptors\PerformanceMeasurementDescriptor.cs" />
-    <Compile Include="Descriptors\PerformanceCounterAdapterDescriptor.cs" />
     <Compile Include="Descriptors\CounterCreationDataDescriptor.cs" />
-    <Compile Include="Descriptors\IPerformanceCounterAdapterDescriptor.cs" />
     <Compile Include="Descriptors\IPerformanceMeasurementDescriptor.cs" />
-    <Compile Include="Descriptors\IPerformanceCounterCategoryDescriptor.cs" />
     <Compile Include="Descriptors\IDescriptor.cs" />
     <Compile Include="Descriptors\ICounterCreationDataDescriptor.cs" />
     <Compile Include="Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgent.cs" />
-    <Compile Include="Discovery\Agents\PerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
-    <Compile Include="Discovery\Agents\PerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\PerformanceCounterAdapterDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\IPerformanceMeasurementDescriptorDiscoveryAgent.cs" />
-    <Compile Include="Discovery\Agents\IPerformanceCounterCategoryDescriptorDiscoveryAgent.cs" />
-    <Compile Include="Discovery\Agents\IPerformanceCounterAdapterDescriptorDiscoveryAgent.cs" />
+    <Compile Include="Discovery\Agents\IPerformanceCounterAdapterDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\DiscoveryAgentBase.cs" />
     <Compile Include="Discovery\Agents\IDiscoveryAgent.cs" />
     <Compile Include="Discovery\DiscoveryServiceExportedTypesGetterDelegate.cs" />
@@ -128,6 +114,8 @@
     <Compile Include="Contexts\MeasurementContext.cs" />
     <Compile Include="Contexts\MeasurementProviderBase.cs" />
     <Compile Include="Contexts\PerformanceMeasurementContext.cs" />
+    <Compile Include="INamedDisposable.cs" />
+    <Compile Include="NamedDisposable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

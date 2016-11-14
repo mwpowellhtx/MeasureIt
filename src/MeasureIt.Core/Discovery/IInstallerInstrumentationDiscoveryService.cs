@@ -10,9 +10,9 @@ namespace MeasureIt.Discovery
     public interface IInstallerInstrumentationDiscoveryService : IRuntimeInstrumentationDiscoveryService
     {
         /// <summary>
-        /// 
+        /// Gets the CategoryAdapters associated with the Installer.
         /// </summary>
-        IEnumerable<IPerformanceCounterCategoryDescriptor> CategoryDescriptors { get; }
+        IEnumerable<IPerformanceCounterCategoryAdapter> CategoryAdapters { get; }
 
         /// <summary>
         /// 

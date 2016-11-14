@@ -7,14 +7,13 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("average time")]
     [CounterCreationData(CounterType = TimerType)]
     [CounterCreationData(CounterType = BaseType)]
     public class AverageTimePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         AverageTimePerformanceCounterAdapter>
     {
-        internal AverageTimePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal AverageTimePerformanceCounterAdapter()
+            : base("average time")
         {
             // We need the Descriptor in order to convey necessary details to the Adapter.
         }

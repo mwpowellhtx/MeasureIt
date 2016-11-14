@@ -35,20 +35,20 @@ namespace MeasureIt.Discovery
             _options = new InstrumentationDiscoveryOptions {Assemblies = GetAssemblies()}.VerifyOptions();
         }
 
-        protected override void VerifyDiscoveredCounterAdapterDescriptors(
-            IEnumerable<IPerformanceCounterAdapterDescriptor> descriptors)
+        protected override void VerifyDiscoveredCounterAdapters(
+            IEnumerable<IPerformanceCounterAdapter> discoveredItems)
         {
-            var ordered = descriptors.Order().ToArray();
+            var ordered = discoveredItems.Order().ToArray();
 
             ordered.Verify();
         }
 
-        protected override void OnVerifyCategoryDescriptors(
-            IEnumerable<IPerformanceCounterCategoryDescriptor> descriptors)
+        protected override void OnVerifyCategoryAdapters(
+            IEnumerable<IPerformanceCounterCategoryAdapter> categories)
         {
-            Assert.NotNull(descriptors);
+            Assert.NotNull(categories);
 
-            var orderedCategories = descriptors.OrderBy(x => x.Name).ThenBy(x => x.CategoryType).ToArray();
+            var orderedCategories = categories.Order().ToArray();
 
             const PerformanceCounterCategoryType multiInstance = PerformanceCounterCategoryType.MultiInstance;
 
@@ -56,37 +56,151 @@ namespace MeasureIt.Discovery
             const PerformanceCounterType averageTimer = PerformanceCounterType.AverageTimer32;
             const PerformanceCounterType averageBase = PerformanceCounterType.AverageBase;
 
-            Assert.Collection(orderedCategories,
-                d =>
+            Assert.Collection(orderedCategories
+                , c =>
                 {
-                    d.Name.CanParse<string, Guid>(Guid.TryParse);
-                    Assert.Equal(string.Empty, d.Help);
-                    Assert.Equal(multiInstance, d.CategoryType);
-                    d.Type.Confirm<DefaultPerformanceCounterCategoryAdapter>();
+                    Assert.Equal(c.GetType().FullName, c.Name);
+                    Assert.Null(c.Help);
+                    Assert.Equal(multiInstance, c.CategoryType);
 
                     // TODO: TBD: how come this is losing the instances?
-                    var orderedData = d.CreationDataDescriptors.Order().ToArray();
+                    var orderedData = c.CreationData.Order().ToArray();
 
                     // TODO: TBD: may need/want a more robust set of examples...
-                    Assert.Collection(orderedData,
-                        x =>
+                    Assert.Collection(orderedData
+                        , x =>
                         {
                             x.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageTimer, x.CounterType);
-                            Assert.Null(x.Help);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageTimer, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
                         }
                         , x =>
                         {
                             x.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageBase, x.CounterType);
-                            Assert.Null(x.Help);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
+                        }
+                        , x =>
+                        {
+                            x.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.Equal(averageBase, x.CounterType);
+                            Assert.NotNull(x.Help);
+                            Assert.Empty(x.Help);
                         }
                         );
                 }
                 );
         }
 
-        protected override void OnVerifyCounterDescriptors(IEnumerable<IPerformanceMeasurementDescriptor> descriptors)
+        protected override void OnVerifyPerformanceMeasurements(
+            IEnumerable<IPerformanceMeasurementDescriptor> descriptors)
         {
             var ordered = descriptors.Order().ToArray();
 
@@ -105,7 +219,7 @@ namespace MeasureIt.Discovery
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClass>();
                     d.Method.Verify<SubjectClass, SubjectClass>(voidType, methodDeclaredInBaseOnly);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -113,7 +227,7 @@ namespace MeasureIt.Discovery
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClass>();
                     d.Method.Verify<SubjectClass, SubjectClass>(voidType, virtualMethodDecoratedInBaseOnly);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -121,16 +235,15 @@ namespace MeasureIt.Discovery
                     d.VerifyPublishingOptions().VerifySamplingOptions(expectedReadOnly: true);
                     d.RootType.Confirm<SubjectClass>();
                     d.Method.Verify<SubjectClass, SubjectClass>(voidType, virtualMethodDecorationOvershadowed);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
                     Assert.Equal(methodDeclaredInBaseOnly, d.Name);
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
-                    d.Method.Verify<SubjectClass
-                        , SubjectClass>(voidType, methodDeclaredInBaseOnly);
-                    d.VerifyCounterCategoryAdapter();
+                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, methodDeclaredInBaseOnly);
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -139,7 +252,7 @@ namespace MeasureIt.Discovery
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
                         , SubjectClass>(voidType, methodDeclaredInBaseOnly);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -148,7 +261,7 @@ namespace MeasureIt.Discovery
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
                         , SubjectClassWithNonPublicMethods>(voidType, methodDeclaredInDerivedOnly);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -157,7 +270,7 @@ namespace MeasureIt.Discovery
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
                         , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecoratedInBaseOnly);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -166,7 +279,7 @@ namespace MeasureIt.Discovery
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
                         , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecoratedInDerivedClass);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
@@ -176,7 +289,7 @@ namespace MeasureIt.Discovery
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
                         , SubjectClassWithNonPublicMethods>(voidType, virtualMethodDecorationOvershadowed);
-                    d.VerifyCounterCategoryAdapter();
+                    d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 );
         }

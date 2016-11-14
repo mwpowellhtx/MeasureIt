@@ -12,29 +12,29 @@ namespace MeasureIt.Discovery
         {
             base.OnBeforeDiscovery(service);
 
-            Assert.NotNull(service.CategoryDescriptors);
-            Assert.Empty(service.CategoryDescriptors);
+            Assert.NotNull(service.CategoryAdapters);
+            Assert.Empty(service.CategoryAdapters);
         }
 
         protected override void OnAfterDiscovery(TService service)
         {
             base.OnAfterDiscovery(service);
 
-            Assert.NotNull(service.CategoryDescriptors);
-            Assert.NotEmpty(service.CategoryDescriptors);
+            Assert.NotNull(service.CategoryAdapters);
+            Assert.NotEmpty(service.CategoryAdapters);
 
-            OnVerifyCategoryDescriptors(service.CategoryDescriptors);
+            OnVerifyCategoryAdapters(service.CategoryAdapters);
 
-            Assert.NotNull(service.MeasurementDescriptors);
-            Assert.NotEmpty(service.MeasurementDescriptors);
+            Assert.NotNull(service.Measurements);
+            Assert.NotEmpty(service.Measurements);
 
-            OnVerifyCounterDescriptors(service.MeasurementDescriptors);
+            OnVerifyPerformanceMeasurements(service.Measurements);
         }
 
-        protected abstract void OnVerifyCategoryDescriptors(
-            IEnumerable<IPerformanceCounterCategoryDescriptor> descriptors);
+        protected abstract void OnVerifyCategoryAdapters(
+            IEnumerable<IPerformanceCounterCategoryAdapter> categories);
 
-        protected abstract void OnVerifyCounterDescriptors(
+        protected abstract void OnVerifyPerformanceMeasurements(
             IEnumerable<IPerformanceMeasurementDescriptor> descriptors);
     }
 }

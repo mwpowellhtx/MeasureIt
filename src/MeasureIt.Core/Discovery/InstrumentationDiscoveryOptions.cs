@@ -15,6 +15,8 @@ namespace MeasureIt.Discovery
 
         public bool IncludeInherited { get; set; }
 
+        public BindingFlags ConstructorBindingAttr { get; set; }
+
         public BindingFlags MethodBindingAttr { get; set; }
 
         public IEnumerable<Assembly> Assemblies { get; set; }
@@ -35,6 +37,7 @@ namespace MeasureIt.Discovery
             ThrowOnInstallerFailure = true;
             IncludeInherited = true;
             MethodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
+            ConstructorBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             Assemblies = (assemblies ?? new Assembly[0]).ToArray();
         }
     }

@@ -1,9 +1,11 @@
+using System;
+
 namespace MeasureIt
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IMoniker
+    public interface IMoniker : ICloneable
     {
         /// <summary>
         /// 

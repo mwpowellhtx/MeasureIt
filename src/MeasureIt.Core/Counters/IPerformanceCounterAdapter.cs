@@ -10,9 +10,24 @@ namespace MeasureIt
     public interface IPerformanceCounterAdapter : IDisposable
     {
         /// <summary>
-        /// Gets the Descriptor.
+        /// Gets or sets the Measurement.
         /// </summary>
-        IPerformanceCounterAdapterDescriptor Descriptor { get; }
+        IPerformanceMeasurementDescriptor Measurement { get; set; }
+
+        /// <summary>
+        /// Gets the Name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Gets the Help.
+        /// </summary>
+        string Help { get; }
+
+        /// <summary>
+        /// Gets the CreationData.
+        /// </summary>
+        IEnumerable<ICounterCreationDataDescriptor> CreationData { get; }
 
         // TODO: TBD: what to do about installation and/or runtime concerns: collection only? or receive a context?
 

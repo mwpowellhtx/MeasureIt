@@ -211,5 +211,26 @@ namespace MeasureIt
 
             return (PropertyInfo) ((MemberExpression) body).Member;
         }
+
+        private const BindingFlags DefaultCreateInstanceBindingAttr = BindingFlags.Public | BindingFlags.Instance;
+
+        internal static TResult CreateInstance<TResult>(this Type type
+            , BindingFlags bindingAttr = DefaultCreateInstanceBindingAttr
+            , params object[] args)
+        {
+            var resultType = typeof(TResult);
+
+            if (!resultType.IsAssignableFrom(type))
+            {
+                var message = string.Format(@"Type '{0}' does not implement '{1}'.", type, resultType);
+                throw new ArgumentException(message, "type");
+            }
+
+            var argTypes = args.Select(arg => arg.GetType()).ToArray();
+
+            var ctor = type.GetConstructor(bindingAttr, Type.DefaultBinder, argTypes, null);
+
+            return (TResult) ctor.Invoke(args);
+        }
     }
 }

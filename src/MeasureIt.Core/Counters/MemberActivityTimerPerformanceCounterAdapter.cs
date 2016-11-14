@@ -7,13 +7,12 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("member activity timer")]
     [CounterCreationData(CounterType = ActivityTimerType, Help = "Measure of member activity in nanoseconds.")]
     public class MemberActivityTimerPerformanceCounterAdapter : PerformanceCounterAdapterBase<
         MemberActivityTimerPerformanceCounterAdapter>
     {
-        internal MemberActivityTimerPerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal MemberActivityTimerPerformanceCounterAdapter()
+            : base("member activity timer")
         {
         }
 

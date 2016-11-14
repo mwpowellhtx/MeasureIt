@@ -7,13 +7,12 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("total member accesses", Help = "Total number of member accesses.")]
     [CounterCreationData(CounterType = MemberAccessesType, Help = "Total number of member accesses.")]
     public class TotalMemberAccessesPerformanceCounterAdapter : PerformanceCounterAdapterBase<
         TotalMemberAccessesPerformanceCounterAdapter>
     {
-        internal TotalMemberAccessesPerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal TotalMemberAccessesPerformanceCounterAdapter()
+            : base("total member accesses", "Total number of member accesses.")
         {
         }
 

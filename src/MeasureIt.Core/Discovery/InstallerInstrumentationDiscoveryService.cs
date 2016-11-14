@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace MeasureIt.Discovery
 {
-    using Agents;
     using Contexts;
 
     /// <summary>
@@ -13,24 +11,18 @@ namespace MeasureIt.Discovery
     public class InstallerInstrumentationDiscoveryService : RuntimeInstrumentationDiscoveryService
         , IInstallerInstrumentationDiscoveryService
     {
-        private readonly Lazy<IPerformanceCounterCategoryDescriptorDiscoveryAgent>
-            _performanceCounterCategoryDescriptorDiscoveryAgent;
+        /// <summary>
+        /// 
+        /// </summary>
+        private IEnumerable<IPerformanceCounterCategoryAdapter> _categoryAdapters;
 
         /// <summary>
         /// 
         /// </summary>
-        private IEnumerable<IPerformanceCounterCategoryDescriptor> _categoryDescriptors;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<IPerformanceCounterCategoryDescriptor> CategoryDescriptors
+        public IEnumerable<IPerformanceCounterCategoryAdapter> CategoryAdapters
         {
-            get {return _categoryDescriptors;}
-            private set
-            {
-                _categoryDescriptors = (value ?? new IPerformanceCounterCategoryDescriptor[0]).ToArray();
-            }
+            get { return _categoryAdapters; }
+            private set { _categoryAdapters = (value ?? new List<IPerformanceCounterCategoryAdapter>()).ToArray(); }
         }
 
         /// <summary>
@@ -40,11 +32,7 @@ namespace MeasureIt.Discovery
         public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
             : base(options)
         {
-            CategoryDescriptors = null;
-
-            _performanceCounterCategoryDescriptorDiscoveryAgent
-                = new Lazy<IPerformanceCounterCategoryDescriptorDiscoveryAgent>(
-                    () => new PerformanceCounterCategoryDescriptorDiscoveryAgent(options, GetExportedTypes));
+            CategoryAdapters = null;
         }
 
         public IInstallerContext GetInstallerContext()
@@ -54,7 +42,15 @@ namespace MeasureIt.Discovery
 
         private void OnDiscoverCounterAdapterDescriptors()
         {
-            CategoryDescriptors = _performanceCounterCategoryDescriptorDiscoveryAgent.Value.ToArray();
+            CategoryAdapters = Measurements
+                .GroupBy(d => d.CategoryType)
+                .Select(g =>
+                {
+                    var category = g.Key.CreateInstance<IPerformanceCounterCategoryAdapter>();
+                    foreach (var d in g)
+                        category.InternalMeasurements.Add(d);
+                    return category;
+                });
         }
 
         protected override void OnDiscover()
@@ -62,24 +58,6 @@ namespace MeasureIt.Discovery
             base.OnDiscover();
 
             OnDiscoverCounterAdapterDescriptors();
-
-            // TODO: now we must align the categories with the adapters...
-
-            var measurements = MeasurementDescriptors.ToArray();
-            var adapters = CounterAdapterDescriptors.ToArray();
-
-            foreach (var category in CategoryDescriptors)
-            {
-                var c = category;
-
-                var adaptersInUse = adapters.Where(x => measurements.Any(
-                    y => y.AdapterTypes.Contains(x.AdapterType) && y.CategoryType == c.Type));
-
-                if (!adapters.Any()) continue;
-
-                // Make sure that the Descriptors are presented in the correct order.
-                c.CreationDataDescriptors = adaptersInUse.SelectMany(a => a.CreationDataDescriptors);
-            }
         }
     }
 }

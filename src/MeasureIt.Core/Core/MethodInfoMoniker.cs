@@ -7,7 +7,7 @@ namespace MeasureIt
     /// </summary>
     internal class MethodInfoMoniker : MonikerBase
     {
-        private readonly MethodInfo _method;
+        private MethodInfo _method;
 
         /// <summary>
         /// 
@@ -18,9 +18,24 @@ namespace MeasureIt
             _method = method;
         }
 
+        private MethodInfoMoniker(MethodInfoMoniker other)
+        {
+            Copy(other);
+        }
+
         public override string ToString()
         {
             return _method.Name;
+        }
+
+        private void Copy(MethodInfoMoniker other)
+        {
+            _method = other._method;
+        }
+
+        public override object Clone()
+        {
+            return new MethodInfoMoniker(this);
         }
     }
 }

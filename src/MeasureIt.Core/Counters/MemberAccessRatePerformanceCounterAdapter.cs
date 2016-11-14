@@ -7,13 +7,12 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("member access rate", Help = "Number of member accesses per second (Hz).")]
     [CounterCreationData(CounterType = AccessRateType, Help = "Number of member accesses per second.")]
     public class MemberAccessRatePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         MemberAccessRatePerformanceCounterAdapter>
     {
-        internal MemberAccessRatePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal MemberAccessRatePerformanceCounterAdapter()
+            : base("member access rate", "Number of member accesses per second (Hz).")
         {
         }
 

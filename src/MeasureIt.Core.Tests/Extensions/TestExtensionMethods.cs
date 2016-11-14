@@ -23,15 +23,17 @@ namespace MeasureIt
             , BindingFlags expectedMethodBindingFlags = PublicInstance
             , bool expectedIncludeInherited = true
             , bool expectedHasRandomSeed = false
+            , Action<TOptions> verify = null
             )
             where TOptions : class, IInstrumentationDiscoveryOptions
         {
+            verify = verify ?? (o => { });
             Assert.NotNull(options);
             Assert.Equal(expectedMethodBindingFlags, options.MethodBindingAttr);
             Assert.Equal(expectedIncludeInherited, options.IncludeInherited);
             Assert.Equal(options.RandomSeed.HasValue, expectedHasRandomSeed);
             Assert.NotNull(options.Assemblies);
-            Assert.NotEmpty(options.Assemblies);
+            verify(options);
             return options;
         }
 
@@ -74,70 +76,73 @@ namespace MeasureIt
             method.ReturnType.Confirm(expectedReturnType);
         }
 
-        internal static IEnumerable<IPerformanceCounterAdapterDescriptor> Order(
-            this IEnumerable<IPerformanceCounterAdapterDescriptor> descriptors)
+        internal static IEnumerable<IPerformanceCounterAdapter> Order(
+            this IEnumerable<IPerformanceCounterAdapter> discoveredItems)
         {
             // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors, d =>
-            {
-                Assert.NotNull(d);
-                Assert.NotNull(d.AdapterType);
-                Assert.NotNull(d.CreationDataDescriptors);
-                Assert.NotEmpty(d.CreationDataDescriptors);
-            });
+            Assert.All(discoveredItems
+                , d =>
+                {
+                    Assert.NotNull(d);
+                    Assert.NotNull(d.CreationData);
+                    Assert.NotEmpty(d.CreationData);
+                }
+                );
 
             // ReSharper disable once PossibleMultipleEnumeration
-            return descriptors
-                .OrderBy(x => x.AdapterType.FullName)
-                .ThenBy(x => x.CounterName);
+            return discoveredItems
+                .OrderBy(x => x.GetType().FullName)
+                .ThenBy(x => x.Name);
         }
 
-        internal static IEnumerable<IPerformanceCounterCategoryDescriptor> Order(
-            this IEnumerable<IPerformanceCounterCategoryDescriptor> descriptors)
+        internal static IEnumerable<IPerformanceCounterCategoryAdapter> Order(
+            this IEnumerable<IPerformanceCounterCategoryAdapter> categories)
         {
             // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors
+            Assert.All(categories
                 , d =>
                 {
                     Assert.NotNull(d);
                     Assert.NotNull(d.Name);
                     Assert.NotEmpty(d.Name);
                     // May be empty here; depending on which discovery agents has "seen" them yet.
-                    Assert.NotNull(d.CreationDataDescriptors);
+                    Assert.NotNull(d.CreationData);
                     Assert.NotNull(d.Measurements);
                 });
 
             // ReSharper disable once PossibleMultipleEnumeration
-            return descriptors
+            return categories
                 .OrderBy(x => x.CategoryType)
                 .ThenBy(x => x.Name);
         }
 
-        internal static void VerifyCounterAdapter(this IPerformanceCounterAdapterDescriptor descriptor)
+        internal static void VerifyCounterAdapter(this IPerformanceCounterAdapter adapter)
         {
         }
 
         internal static IEnumerable<IPerformanceMeasurementDescriptor> Order(
-            this IEnumerable<IPerformanceMeasurementDescriptor> descriptors)
+            this IEnumerable<IPerformanceMeasurementDescriptor> discoveredItems)
         {
             // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors, d =>
-            {
-                Assert.NotNull(d);
-                Assert.NotNull(d.AdapterTypes);
-                Assert.NotEmpty(d.AdapterTypes);
-                Assert.NotNull(d.CategoryType);
-                Assert.NotNull(d.Method);
-                Assert.NotNull(d.Method.ReflectedType);
-                Assert.NotNull(d.Method.DeclaringType);
-                Assert.NotNull(d.RootType);
-            });
+            Assert.All(discoveredItems
+                , d =>
+                {
+                    Assert.NotNull(d);
+                    Assert.NotNull(d.AdapterTypes);
+                    Assert.NotEmpty(d.AdapterTypes);
+                    Assert.NotNull(d.CategoryType);
+                    Assert.NotNull(d.Method);
+                    Assert.NotNull(d.Method.ReflectedType);
+                    Assert.NotNull(d.Method.DeclaringType);
+                    Assert.NotNull(d.RootType);
+                }
+                );
 
             /* TODO: TBD: ditto along the lines of possible less reliable ReflectedType;
              * here, the theory is that RootType is more important. */
 
             // ReSharper disable once PossibleMultipleEnumeration, PossibleNullReferenceException
-            return descriptors
+            return discoveredItems
                 .OrderBy(x => x.RootType.FullName)
                 //.OrderBy(x => x.Method.ReflectedType.FullName)
                 .ThenBy(x => x.Method.DeclaringType.FullName)
@@ -150,12 +155,13 @@ namespace MeasureIt
             this IEnumerable<ICounterCreationDataDescriptor> descriptors)
         {
             // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors, d =>
-            {
-                Assert.NotNull(d.Name);
-                Assert.NotEmpty(d.Name);
-                Assert.Null(d.Help);
-            });
+            Assert.All(descriptors
+                , d =>
+                {
+                    Assert.NotNull(d.Name);
+                    Assert.NotEmpty(d.Name);
+                }
+                );
 
             // ReSharper disable once PossibleMultipleEnumeration
             return descriptors
@@ -225,7 +231,7 @@ namespace MeasureIt
 
         internal static void VerifyCounterCategoryAdapter<TCategory>(this IPerformanceMeasurementDescriptor descriptor,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
-            Action<IPerformanceCounterCategoryDescriptor> verify = null)
+            Action<IPerformanceCounterCategoryAdapter> verify = null)
             where TCategory : PerformanceCounterCategoryAdapterBase
         {
             VerifyCounterCategoryAdapter(descriptor, typeof(TCategory), expectedCategoryType, verify);
@@ -235,64 +241,78 @@ namespace MeasureIt
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        /// <param name="expectedType">Provide the expected <see cref="Type"/>. May be null under some test cases.</param>
+        /// <param name="expectedType"></param>
         /// <param name="expectedCategoryType"></param>
         /// <param name="verify"></param>
         internal static void VerifyCounterCategoryAdapter(
-            this IPerformanceMeasurementDescriptor descriptor, Type expectedType = null,
+            this IPerformanceMeasurementDescriptor descriptor,
+            Type expectedType = null,
             PerformanceCounterCategoryType expectedCategoryType = PerformanceCounterCategoryType.MultiInstance,
-            Action<IPerformanceCounterCategoryDescriptor> verify = null)
+            Action<IPerformanceCounterCategoryAdapter> verify = null)
         {
             verify = verify ?? (d => { });
+
             Assert.NotNull(descriptor);
-            Assert.NotNull(descriptor.CategoryDescriptor);
-            Assert.Equal(expectedCategoryType, descriptor.CategoryDescriptor.CategoryType);
-            Assert.Equal(expectedType, descriptor.CategoryDescriptor.Type);
-            verify(descriptor.CategoryDescriptor);
+
+            if (expectedType != null)
+            {
+                Assert.NotNull(descriptor.CategoryAdapter);
+                descriptor.CategoryAdapter.GetType().Confirm(expectedType);
+                Assert.Equal(expectedCategoryType, descriptor.CategoryAdapter.CategoryType);
+            }
+            else
+            {
+                Assert.Null(descriptor.CategoryAdapter);
+            }
+
+            verify(descriptor.CategoryAdapter);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="TAdapter"></typeparam>
-        /// <param name="descriptor"></param>
+        /// <param name="adapter"></param>
         /// <param name="verify"></param>
         private static void VerifyCreationData<TAdapter>(
-            this IPerformanceCounterAdapterDescriptor descriptor,
+            this IPerformanceCounterAdapter adapter,
             Action<IEnumerable<ICounterCreationDataDescriptor>> verify = null)
             where TAdapter : class, IPerformanceCounterAdapter
         {
             verify = verify ?? (_ => { });
-            Assert.Equal(typeof(TAdapter), descriptor.AdapterType);
-            Assert.NotNull(descriptor.CreationDataDescriptors);
-            Assert.NotEmpty(descriptor.CreationDataDescriptors);
-            verify(descriptor.CreationDataDescriptors);
+            Assert.IsType<TAdapter>(adapter);
+            Assert.NotNull(adapter.CreationData);
+            Assert.NotEmpty(adapter.CreationData);
+            var orderedData = adapter.CreationData.Order().ToArray();
+            verify(orderedData);
         }
 
         /// <summary>
         /// <see cref="AverageTimePerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyAverageTimeCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyAverageTimeCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType averageTimer = PerformanceCounterType.AverageTimer32;
             const PerformanceCounterType averageBase = PerformanceCounterType.AverageBase;
 
-            descriptor.VerifyCreationData<AverageTimePerformanceCounterAdapter>(
+            adapter.VerifyCreationData<AverageTimePerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageTimer, y.CounterType);
-                            Assert.Null(y.Help);
+                            Assert.NotNull(y.Help);
+                            Assert.Empty(y.Help);
                         }
                         , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageBase, y.CounterType);
-                            Assert.Null(y.Help);
+                            Assert.NotNull(y.Help);
+                            Assert.Empty(y.Help);
                         }
                         );
                 });
@@ -301,17 +321,16 @@ namespace MeasureIt
         /// <summary>
         /// <see cref="CurrentConcurrentCountPerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyCurrentConcurrentCountCreationData(
-            this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyCurrentConcurrentCountCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            descriptor.VerifyCreationData<CurrentConcurrentCountPerformanceCounterAdapter>(
+            adapter.VerifyCreationData<CurrentConcurrentCountPerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
@@ -324,16 +343,16 @@ namespace MeasureIt
         /// <summary>
         /// <see cref="ErrorRatePerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyErrorRateCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyErrorRateCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
 
-            descriptor.VerifyCreationData<ErrorRatePerformanceCounterAdapter>(
+            adapter.VerifyCreationData<ErrorRatePerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
@@ -346,16 +365,16 @@ namespace MeasureIt
         /// <summary>
         /// <see cref="LastMemberExecutionTimePerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyLastMemberAccessTimeCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyLastMemberAccessTimeCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            descriptor.VerifyCreationData<LastMemberExecutionTimePerformanceCounterAdapter>(
+            adapter.VerifyCreationData<LastMemberExecutionTimePerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
@@ -368,16 +387,16 @@ namespace MeasureIt
         /// <summary>
         /// <see cref="MemberAccessRatePerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyMemberAccessRateCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyMemberAccessRateCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
 
-            descriptor.VerifyCreationData<MemberAccessRatePerformanceCounterAdapter>(
+            adapter.VerifyCreationData<MemberAccessRatePerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
@@ -390,16 +409,16 @@ namespace MeasureIt
         /// <summary>
         /// <see cref="TotalMemberAccessesPerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyTotalMemberAccessesCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyTotalMemberAccessesCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            descriptor.VerifyCreationData<TotalMemberAccessesPerformanceCounterAdapter>(
+            adapter.VerifyCreationData<TotalMemberAccessesPerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
@@ -412,16 +431,16 @@ namespace MeasureIt
         /// <summary>
         /// <see cref="MemberActivityTimerPerformanceCounterAdapter"/> verification is by design.
         /// </summary>
-        /// <param name="descriptor"></param>
-        private static void VerifyMemberActivityTimerCreationData(this IPerformanceCounterAdapterDescriptor descriptor)
+        /// <param name="adapter"></param>
+        private static void VerifyMemberActivityTimerCreationData(this IPerformanceCounterAdapter adapter)
         {
             const PerformanceCounterType timer = PerformanceCounterType.Timer100Ns;
 
-            descriptor.VerifyCreationData<MemberActivityTimerPerformanceCounterAdapter>(
+            adapter.VerifyCreationData<MemberActivityTimerPerformanceCounterAdapter>(
                 x =>
                 {
-                    Assert.Collection(x,
-                        y =>
+                    Assert.Collection(x
+                        , y =>
                         {
                             y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(timer, y.CounterType);
@@ -431,51 +450,51 @@ namespace MeasureIt
                 });
         }
 
-        internal static void Verify(this IEnumerable<IPerformanceCounterAdapterDescriptor> discoveredItems)
+        internal static void Verify(this IEnumerable<IPerformanceCounterAdapter> discoveredItems)
         {
             var orderedItems = discoveredItems.Order().ToArray();
 
-            Assert.Collection(orderedItems,
-                d =>
+            Assert.Collection(orderedItems
+                , d =>
                 {
-                    Assert.Equal("average time", d.CounterName);
-                    Assert.Equal(string.Empty, d.CounterHelp);
+                    Assert.Equal("average time", d.Name);
+                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyAverageTimeCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("current concurrent count", d.CounterName);
-                    Assert.Equal(string.Empty, d.CounterHelp);
+                    Assert.Equal("current concurrent count", d.Name);
+                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyCurrentConcurrentCountCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("error rate", d.CounterName);
-                    Assert.Equal("Number of errors per second (Hz).", d.CounterHelp);
+                    Assert.Equal("error rate", d.Name);
+                    Assert.Equal("Number of errors per second (Hz).", d.Help);
                     d.VerifyErrorRateCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("last member execution time", d.CounterName);
-                    Assert.Equal(string.Empty, d.CounterHelp);
+                    Assert.Equal("last member execution time", d.Name);
+                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyLastMemberAccessTimeCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("member access rate", d.CounterName);
-                    Assert.Equal("Number of member accesses per second (Hz).", d.CounterHelp);
+                    Assert.Equal("member access rate", d.Name);
+                    Assert.Equal("Number of member accesses per second (Hz).", d.Help);
                     d.VerifyMemberAccessRateCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("member activity timer", d.CounterName);
-                    Assert.Equal(string.Empty, d.CounterHelp);
+                    Assert.Equal("member activity timer", d.Name);
+                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyMemberActivityTimerCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("total member accesses", d.CounterName);
-                    Assert.Equal("Total number of member accesses.", d.CounterHelp);
+                    Assert.Equal("total member accesses", d.Name);
+                    Assert.Equal("Total number of member accesses.", d.Help);
                     d.VerifyTotalMemberAccessesCreationData();
                 }
                 );

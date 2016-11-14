@@ -7,13 +7,12 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [PerformanceCounterAdapter("error rate", Help = "Number of errors per second (Hz).")]
     [CounterCreationData(CounterType = ErrorRateType, Help = "Number of errors per second.")]
     public class ErrorRatePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         ErrorRatePerformanceCounterAdapter>
     {
-        internal ErrorRatePerformanceCounterAdapter(IPerformanceMeasurementDescriptor descriptor)
-            : base(descriptor)
+        internal ErrorRatePerformanceCounterAdapter()
+            : base("error rate", "Number of errors per second (Hz).")
         {
         }
 

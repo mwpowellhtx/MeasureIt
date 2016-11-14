@@ -33,6 +33,7 @@ namespace MeasureIt.Contexts
 
             _lazyDiscoveryService = new Lazy<IInstallerInstrumentationDiscoveryService>(() =>
             {
+                // Discover if we have not already done so.
                 discoveryService.Discover();
                 return discoveryService;
             });
@@ -44,22 +45,17 @@ namespace MeasureIt.Contexts
 
             var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
 
-            //var created = Service.CategoryDescriptors
-            //    .Where(d => d.CreationDataDescriptors.Any()).Select(d => d.CreateCategory()).ToArray();
-
-            foreach (var category in Service.CategoryDescriptors.Where(d => d.CreationDataDescriptors.Any()))
+            foreach (var category in Service.CategoryAdapters.Where(a => a.CreationData.Any()))
             {
                 var pcc = category.CreateCategory();
+
+                if (pcc != null || !throwOnInstallerFailure) continue;
+
+                var message = string.Format("Unable to install the {0} '{1}' definition.",
+                    typeof(PerformanceCounterCategory), category.Name);
+
+                throw new InvalidOperationException(message);
             }
-
-            //foreach (var pcc in Service.CategoryDescriptors
-            //    .Where(d => d.CreationDataDescriptors.Any()).Select(d => d.CreateCategory()))
-            //{
-            //    //var message = string.Format("Unable to install the {0} '{1}' definition.",
-            //    //    typeof(PerformanceCounterCategory), category.Name);
-
-            //    //throw new InvalidOperationException(message);
-            //}
         }
 
         public Task InstallAsync()
@@ -71,7 +67,7 @@ namespace MeasureIt.Contexts
         {
             var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
 
-            foreach (var category in Service.CategoryDescriptors)
+            foreach (var category in Service.CategoryAdapters)
             {
                 if (category.TryDeleteCategory() || !throwOnInstallerFailure) continue;
 

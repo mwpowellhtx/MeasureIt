@@ -10,7 +10,7 @@ namespace MeasureIt.Discovery.Agents
 
     public abstract class DiscoveryAgentTestFixtureBase<TAgent, T> : IntegrationTestFixtureBase
         where TAgent : DiscoveryAgentBase<T>
-        where T : IDescriptor
+        where T : class
     {
         /// <summary>
         /// Returns the <see cref="IEnumerable{Type}"/> corresponding to the

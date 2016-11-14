@@ -22,18 +22,11 @@ namespace MeasureIt.Discovery
         protected virtual void OnBeforeDiscovery(TService service)
         {
             Assert.True(service.IsPending);
-            Assert.NotNull(service.CounterAdapterDescriptors);
-            Assert.Empty(service.CounterAdapterDescriptors);
         }
 
         protected virtual void OnAfterDiscovery(TService service)
         {
             Assert.False(service.IsPending);
-
-            Assert.NotNull(service.CounterAdapterDescriptors);
-            Assert.NotEmpty(service.CounterAdapterDescriptors);
-
-            OnVerifyCounterAdapterDescriptors(service.CounterAdapterDescriptors);
         }
 
         private readonly Lazy<TService> _lazyDiscoveryService;
@@ -49,12 +42,6 @@ namespace MeasureIt.Discovery
         protected TService DiscoveryService
         {
             get { return _lazyDiscoveryService.Value; }
-        }
-
-        protected virtual void OnVerifyCounterAdapterDescriptors(
-            IEnumerable<IPerformanceCounterAdapterDescriptor> descriptors)
-        {
-            descriptors.Verify();
         }
 
         //// TODO: TBD: consider re-factoring this for the moment at which discovery service is referenced for the first time, as part of its initialization sequence...
@@ -81,15 +68,11 @@ namespace MeasureIt.Discovery
             Assert.False(DiscoveryService.IsPending);
         }
 
-        protected abstract void VerifyDiscoveredCounterAdapterDescriptors(
-            IEnumerable<IPerformanceCounterAdapterDescriptor> descriptors);
+        protected abstract void VerifyDiscoveredCounterAdapters(
+            IEnumerable<IPerformanceCounterAdapter> discoveredItems);
 
         protected virtual void OnVerifyDescriptors(TService service)
         {
-            Assert.NotNull(service.CounterAdapterDescriptors);
-            Assert.NotEmpty(service.CounterAdapterDescriptors);
-
-            VerifyDiscoveredCounterAdapterDescriptors(service.CounterAdapterDescriptors);
         }
 
         [Fact]

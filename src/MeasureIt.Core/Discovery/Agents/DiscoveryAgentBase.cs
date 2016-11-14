@@ -8,8 +8,18 @@ namespace MeasureIt.Discovery.Agents
     /// 
     /// </summary>
     public abstract class DiscoveryAgentBase<T> : IDiscoveryAgent<T>
-        where T : IDescriptor
+        where T : class
     {
+        static DiscoveryAgentBase()
+        {
+            var type = typeof(T);
+
+            if (type.IsInterface) return;
+
+            var message = string.Format("{0} type must be an interface.", type);
+            throw new InvalidOperationException(message) {Data = {{"type", type}}};
+        }
+
         private readonly IInstrumentationDiscoveryOptions _options;
 
         private readonly DiscoveryServiceExportedTypesGetterDelegate _getExportedTypes;
