@@ -53,13 +53,15 @@ namespace MeasureIt
             internal PerformanceCounter NewPerformanceCounter(PerformanceCounterCategory category, string instanceName)
             {
                 const string localhost = ".";
-                var counter = new PerformanceCounter();
-                counter.CategoryName = category.CategoryName;
-                counter.CounterName = Name;
-                counter.ReadOnly = ReadOnly ?? false;
-                counter.InstanceLifetime = InstanceLifetime;
-                counter.MachineName = localhost;
-                counter.InstanceName = instanceName;
+                var counter = new PerformanceCounter
+                {
+                    CategoryName = category.CategoryName,
+                    CounterName = Name,
+                    ReadOnly = ReadOnly ?? false,
+                    InstanceLifetime = InstanceLifetime,
+                    MachineName = localhost,
+                    InstanceName = instanceName
+                };
                 return counter;
             }
         }

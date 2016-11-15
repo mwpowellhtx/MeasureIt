@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,38 +7,28 @@ using System.Threading;
 namespace MeasureIt
 {
     using Xunit;
+    using NamedCounterTypeTuple = Tuple<PerformanceCounterType, string>;
 
     public class LongRunningCounterCategoryTests : PerformanceCounterCategoryTestFixtureBase
     {
-        protected readonly IDictionary<PerformanceCounterType, string> NamedCounterTypes
-            = new ConcurrentDictionary<PerformanceCounterType, string>();
+        protected readonly IList<NamedCounterTypeTuple> NamedCounterTypes = new List<NamedCounterTypeTuple>();
 
         public LongRunningCounterCategoryTests()
         {
-            const PerformanceCounterType averageBase = PerformanceCounterType.AverageBase;
             const PerformanceCounterType averageTimer = PerformanceCounterType.AverageTimer32;
+            const PerformanceCounterType averageBase = PerformanceCounterType.AverageBase;
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
-            NamedCounterTypes[averageBase] = GetNewName();
-            NamedCounterTypes[averageTimer] = GetNewName();
-            NamedCounterTypes[rateOfCountsPerSecond] = GetNewName();
-            NamedCounterTypes[numberOfItems] = GetNewName();
+            NamedCounterTypes.Add(averageTimer, GetNewName());
+            NamedCounterTypes.Add(averageBase, GetNewName());
+            NamedCounterTypes.Add(rateOfCountsPerSecond, GetNewName());
+            NamedCounterTypes.Add(numberOfItems, GetNewName());
         }
 
         protected override IEnumerable<PerformanceCounterDescriptorFixture> GetPerformanceCounterDescriptors()
         {
-            const PerformanceCounterType averageBase = PerformanceCounterType.AverageBase;
-            const PerformanceCounterType averageTimer = PerformanceCounterType.AverageTimer32;
-            const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
-            const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
-
-            yield return new PerformanceCounterDescriptorFixture(NamedCounterTypes[averageBase], averageBase);
-            yield return new PerformanceCounterDescriptorFixture(NamedCounterTypes[averageTimer], averageTimer);
-            yield return
-                new PerformanceCounterDescriptorFixture(NamedCounterTypes[rateOfCountsPerSecond], rateOfCountsPerSecond)
-                ;
-            yield return new PerformanceCounterDescriptorFixture(NamedCounterTypes[numberOfItems], numberOfItems);
+            return NamedCounterTypes.Select(tuple => new PerformanceCounterDescriptorFixture(tuple.Item2, tuple.Item1));
         }
 
         protected override void OnVerifyDefaultPerformanceCounters()
@@ -103,6 +92,14 @@ namespace MeasureIt
         internal static void Sleep(this TimeSpan timeSpan)
         {
             Thread.Sleep(timeSpan);
+        }
+
+        internal static TCollection Add<TCollection>(this TCollection collection,
+            PerformanceCounterType counterType, string name)
+            where TCollection : IList<NamedCounterTypeTuple>
+        {
+            collection.Add(Tuple.Create(counterType, name));
+            return collection;
         }
     }
 }
