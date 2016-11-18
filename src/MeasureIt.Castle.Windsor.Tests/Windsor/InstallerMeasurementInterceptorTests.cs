@@ -7,8 +7,6 @@ namespace MeasureIt.Castle.Windsor
     using Interception;
     using Xunit;
 
-    // TODO: TBD: besides verifying that callbacks happen, need to also verify that the category can be installed
-
     /// <summary>
     /// 
     /// </summary>
@@ -80,13 +78,14 @@ namespace MeasureIt.Castle.Windsor
         [Fact]
         public void SubjectCanBeVerified()
         {
-            // TODO: TBD: okay, so the plumbing is there to facilitate the measurement, but the category(ies) do indeed need to be installed...
+            // Verified this is working at time of writing. Pleasantly surprised by that.
             VerifyInvocation(GetSubject(), "Verify", obj => obj.Verify());
         }
 
         [Fact]
         public void SubjectCanBeValidated()
         {
+            // Verified this is working at time of writing. Pleasantly surprised by that.
             VerifyInvocation(GetSubject(), "Validate", obj => obj.Validate());
         }
     }
