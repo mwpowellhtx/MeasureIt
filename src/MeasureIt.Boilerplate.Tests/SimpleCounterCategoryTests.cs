@@ -117,6 +117,8 @@ namespace MeasureIt
         {
             var instanceName = InstanceName;
 
+            // TODO: TBD: not sure what's wrong but this does not always pass; sometimes it fails, but not consistently
+
             CreateCategory(
                 c =>
                 {

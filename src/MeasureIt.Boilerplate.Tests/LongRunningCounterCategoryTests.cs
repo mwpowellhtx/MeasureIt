@@ -59,6 +59,9 @@ namespace MeasureIt
             const PerformanceCounterType rateOfCountsPerSecond = PerformanceCounterType.RateOfCountsPerSecond64;
             const PerformanceCounterType numberOfItems = PerformanceCounterType.NumberOfItems64;
 
+            /* TODO: TBD: not sure what's wrong but this does not always pass; sometimes it fails, but not consistently
+             * Possibly as a function of creating the category and/or validating that the category is successfully created */
+
             CreateCategory(
                 c =>
                 {
