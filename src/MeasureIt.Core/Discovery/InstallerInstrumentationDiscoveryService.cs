@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace MeasureIt.Discovery
 {
@@ -14,50 +13,16 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// 
         /// </summary>
-        private IEnumerable<IPerformanceCounterCategoryAdapter> _categoryAdapters;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<IPerformanceCounterCategoryAdapter> CategoryAdapters
-        {
-            get { return _categoryAdapters; }
-            private set { _categoryAdapters = (value ?? new List<IPerformanceCounterCategoryAdapter>()).ToArray(); }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="options"></param>
         public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
             : base(options)
         {
-            CategoryAdapters = null;
         }
 
+        // TODO: TBD: I'm not sure we need this method quite as much as simple leveraging the Install/TryUninstall extension methods...
         public IInstallerContext GetInstallerContext()
         {
             return new InstallerContext(Options, this);
-        }
-
-        private void OnDiscoverCounterAdapterDescriptors()
-        {
-            CategoryAdapters = Measurements
-                .GroupBy(d => d.CategoryType)
-                .Select(g =>
-                {
-                    var category = g.Key.CreateInstance<IPerformanceCounterCategoryAdapter>();
-                    foreach (var d in g)
-                        category.InternalMeasurements.Add(d);
-                    return category;
-                });
-        }
-
-        protected override void OnDiscover()
-        {
-            base.OnDiscover();
-
-            OnDiscoverCounterAdapterDescriptors();
         }
     }
 }

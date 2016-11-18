@@ -1,6 +1,6 @@
 ﻿namespace MeasureIt
 {
-    public class IntegrationTestFixtureBase : Disposable
+    public class IntegrationTestFixtureBase : TestFixtureBase
     {
     }
 }

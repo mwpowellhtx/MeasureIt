@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -13,22 +12,12 @@ namespace MeasureIt
     /// </summary>
     public abstract class PerformanceCounterCategoryAdapterBase : IPerformanceCounterCategoryAdapter
     {
-        private IMoniker _moniker;
-
-        private static IMoniker GetNameMoniker(string name)
-        {
-            return string.IsNullOrEmpty(name) ? null : new NameMoniker(name);
-        }
-
-        private static IMoniker GetTypeMoniker(Type type)
-        {
-            return type == null ? null : new TypeMoniker(type);
-        }
+        private string _name;
 
         public string Name
         {
-            get { return _moniker.ToString(); }
-            private set { _moniker = GetNameMoniker(value) ?? GetTypeMoniker(GetType()) ?? DefaultMoniker.New(); }
+            get { return _name ?? GetType().FullName; }
+            set { _name = string.IsNullOrEmpty(value) ? null : value; }
         }
 
         public string Help { get; private set; }

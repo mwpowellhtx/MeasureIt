@@ -47,6 +47,10 @@
       <HintPath>..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Xunit.Combinatorial, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b2b52da82b58eb73, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xunit.Combinatorial.1.1.20\lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Xunit.Combinatorial.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
       <Private>True</Private>
@@ -60,6 +64,7 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Core\TestFixtureBase.cs" />
     <Compile Include="Core\IntegrationTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgentTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\Agents\PerformanceCounterAdapterDiscoveryAgentTestFixtureBase.cs" />
@@ -68,11 +73,6 @@
     <Compile Include="Core\Discovery\InstallerDiscoveryServiceTestFixtureBase.cs" />
     <Compile Include="Core\Discovery\DiscoveryServiceTestFixtureBase.cs" />
     <Compile Include="Descriptors\DescriptorTestFixtureBase.cs" />
-    <Compile Include="Descriptors\IPerformanceMeasurementDescriptorFixture.cs" />
-    <Compile Include="Descriptors\ISimilarity.cs" />
-    <Compile Include="Descriptors\PerformanceMeasurementDescriptorFixture.cs" />
-    <Compile Include="Descriptors\PerformanceMeasurementDescriptorTestFixtureBase.cs" />
-    <Compile Include="Descriptors\PerformanceMeasurementDescriptorTests.cs" />
     <Compile Include="Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\Agents\PerformanceCounterAdapterDiscoveryAgentTests.cs" />
     <Compile Include="Discovery\InstallerDiscoveryServicePublicInstanceMembersTests.cs" />
@@ -81,6 +81,8 @@
     <Compile Include="Discovery\RuntimeDiscoveryIncludingNonPublicInstanceMembersTests.cs" />
     <Compile Include="Extensions\TestExtensionMethods.cs" />
     <Compile Include="Fixtures\CategoryFixture.cs" />
+    <Compile Include="Naming\CounterCreationDataDescriptorNamingConventionTests.cs" />
+    <Compile Include="Naming\Core\NamingConventionTestFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Xunit\Internal.cs" />
   </ItemGroup>

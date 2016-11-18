@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace MeasureIt.Adapters
 {
@@ -37,13 +38,15 @@ namespace MeasureIt.Adapters
             )
             : base(categoryAdapters)
         {
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
             _lazyCategories = new Lazy<IEnumerable<CategoryTuple>>(
                 () => CategoryAdapters.Select(a =>
                 {
                     var exists = PerformanceCounterCategory.Exists(a.Name);
                     if (exists) PerformanceCounterCategory.Delete(a.Name);
                     return Tuple.Create(a, exists);
-                }));
+                }), execAndPubThreadSafety);
         }
     }
 }

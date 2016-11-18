@@ -5,6 +5,7 @@
         [MeasurePerformance(
             typeof(WindsorPerformanceCounterCategoryAdapter)
             , typeof(TotalMemberAccessesPerformanceCounterAdapter)
+            , ThrowPublishErrors = true
             )]
         public virtual void Validate()
         {

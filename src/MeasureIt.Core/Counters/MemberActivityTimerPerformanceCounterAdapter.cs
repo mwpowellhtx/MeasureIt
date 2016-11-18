@@ -12,7 +12,6 @@ namespace MeasureIt
         MemberActivityTimerPerformanceCounterAdapter>
     {
         internal MemberActivityTimerPerformanceCounterAdapter()
-            : base("member activity timer")
         {
         }
 

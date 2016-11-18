@@ -11,20 +11,21 @@ namespace MeasureIt
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class CounterCreationDataAttribute : Attribute, ICounterCreationDataAttribute
     {
-        private readonly Lazy<ICounterCreationDataDescriptor> _lazyDescriptor;
+        private readonly ICounterCreationDataDescriptor _descriptor;
 
         public ICounterCreationDataDescriptor Descriptor
         {
-            get { return _lazyDescriptor.Value; }
+            get { return _descriptor; }
         }
 
         /// <summary>
-        /// Gets or sets the Name.
+        /// Gets or sets the Suffix used in formulating the
+        /// <see cref="CounterCreationData.CounterName"/>.
         /// </summary>
-        public string Name
+        public string Suffix
         {
-            get { return Descriptor.Name; }
-            set { Descriptor.Name = value; }
+            get { return Descriptor.Suffix; }
+            set { Descriptor.Suffix = value; }
         }
 
         /// <summary>
@@ -56,21 +57,10 @@ namespace MeasureIt
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="name"></param>
-        public CounterCreationDataAttribute(string name)
+        /// <param name="suffix"></param>
+        public CounterCreationDataAttribute(string suffix)
         {
-            _lazyDescriptor = new Lazy<ICounterCreationDataDescriptor>(
-                () => new CounterCreationDataDescriptor {Name = name});
+            _descriptor = new CounterCreationDataDescriptor {Suffix = suffix};
         }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="attr"></param>
-        ///// <returns></returns>
-        //public static explicit operator CounterCreationData(CounterCreationDataAttribute attr)
-        //{
-        //    return attr.GetCounterCreationData();
-        //}
     }
 }

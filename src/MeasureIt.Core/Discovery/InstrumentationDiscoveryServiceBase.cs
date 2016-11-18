@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace MeasureIt.Discovery
 {
@@ -65,11 +66,13 @@ namespace MeasureIt.Discovery
 
             GetExportedTypes = () => Assemblies.SelectMany(a => a.GetExportedTypes());
 
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
             _lazyCounterAdapterDiscoveryAgent = new Lazy<IPerformanceCounterAdapterDiscoveryAgent>(
-                () => new PerformanceCounterAdapterDiscoveryAgent(options, GetExportedTypes));
+                () => new PerformanceCounterAdapterDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
 
             _lazyMeasurementDiscoveryAgent = new Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent>(
-                () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes));
+                () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
 
             Measurements = null;
         }

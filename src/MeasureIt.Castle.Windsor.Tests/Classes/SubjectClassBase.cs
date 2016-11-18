@@ -12,6 +12,7 @@ namespace MeasureIt.Castle.Classes
             typeof(WindsorPerformanceCounterCategoryAdapter)
             , typeof(TotalMemberAccessesPerformanceCounterAdapter)
             , InstanceLifetime = PerformanceCounterInstanceLifetime.Process
+            , ThrowPublishErrors = true
             )]
         public virtual void Verify()
         {

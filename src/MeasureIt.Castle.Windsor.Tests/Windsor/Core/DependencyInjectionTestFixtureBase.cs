@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace MeasureIt.Castle.Windsor
 {
     using Discovery;
     using Interception.Measurement;
+    using Xunit;
     using global::Castle.Windsor;
 
     public abstract class DependencyInjectionTestFixtureBase<TInterface, TService> : Disposable
@@ -73,16 +76,18 @@ namespace MeasureIt.Castle.Windsor
             options.Assemblies = GetAssemblies().ToArray();
         }
 
+        /// <summary>
+        /// Protected Constructor that also Installs the DiscoveryService PerformanceCounterCategory(ies).
+        /// </summary>
         protected DependencyInjectionTestFixtureBase()
         {
             Container = new WindsorContainer()
                 .EnableMeasurements<TInterface, TService
                     , MeasurementInterceptorFixture>(InitializeOptions);
 
-            _lazyDiscoveryService = new Lazy<TInterface>(() => Container.Resolve<TInterface>());
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
 
-            // This is where the rubber meets the road.
-            DiscoveryService.Discover();
+            _lazyDiscoveryService = new Lazy<TInterface>(() => Container.Resolve<TInterface>(), execAndPubThreadSafety);
         }
 
         protected virtual void OnIntercepted(object sender, InvocationInterceptedEventArgs e)

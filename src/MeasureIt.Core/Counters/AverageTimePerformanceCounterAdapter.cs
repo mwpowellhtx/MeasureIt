@@ -13,7 +13,6 @@ namespace MeasureIt
         AverageTimePerformanceCounterAdapter>
     {
         internal AverageTimePerformanceCounterAdapter()
-            : base("average time")
         {
             // We need the Descriptor in order to convey necessary details to the Adapter.
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace MeasureIt.Discovery
 {
@@ -33,9 +34,10 @@ namespace MeasureIt.Discovery
 
         protected DiscoveryServiceTestFixtureBase()
         {
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
             _lazyDiscoveryService = new Lazy<TService>(() =>
                 ServiceFactory(Options).VerifyDiscoveryService(OnBeforeDiscovery)
-                    .VerifyDiscover().VerifyDiscoveryService(OnAfterDiscovery)
+                    .VerifyDiscover().VerifyDiscoveryService(OnAfterDiscovery), execAndPubThreadSafety
                 );
         }
 
@@ -43,23 +45,6 @@ namespace MeasureIt.Discovery
         {
             get { return _lazyDiscoveryService.Value; }
         }
-
-        //// TODO: TBD: consider re-factoring this for the moment at which discovery service is referenced for the first time, as part of its initialization sequence...
-        //protected virtual TService GetDiscoveredDiscoveryService()
-        //{
-        //    var discoveryService = DiscoveryService;
-
-        //    // TODO: TBD: may want to initialize the collections up front...
-        //    Assert.True(discoveryService.IsPending);
-        //    OnBeforeDiscovery(discoveryService);
-
-        //    discoveryService.Discover();
-            
-        //    Assert.False(discoveryService.IsPending);
-        //    OnAfterDiscovery(discoveryService);
-
-        //    return discoveryService;
-        //}
 
         [Fact]
         public void CanDiscover()

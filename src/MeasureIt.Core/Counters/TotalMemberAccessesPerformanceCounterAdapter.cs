@@ -12,7 +12,6 @@ namespace MeasureIt
         TotalMemberAccessesPerformanceCounterAdapter>
     {
         internal TotalMemberAccessesPerformanceCounterAdapter()
-            : base("total member accesses", "Total number of member accesses.")
         {
         }
 

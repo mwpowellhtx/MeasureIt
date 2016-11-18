@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MeasureIt.Contexts
@@ -33,21 +34,24 @@ namespace MeasureIt.Contexts
         {
             Options = options;
 
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
             _lazyDiscoveryService = new Lazy<IInstallerInstrumentationDiscoveryService>(() =>
             {
                 // Discover if we have not already done so.
                 discoveryService.Discover();
                 return discoveryService;
-            });
+            }, execAndPubThreadSafety);
         }
 
         public virtual void Install()
         {
+            // TODO: TBD: may not need this context quite as much as "simply" the extension methods...
             Uninstall();
 
             var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
 
-            using (var adapter = new PerformanceCounterCategoryInstallerContextAdapter(Service.CategoryAdapters))
+            using (var adapter = new PerformanceCounterCategoryInstallerContextAdapter(Service.CategoryAdapters.Values))
             {
                 foreach (var tuple in adapter.GetInstalledCategories())
                 {
@@ -70,7 +74,8 @@ namespace MeasureIt.Contexts
         {
             var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
 
-            using (var adapter = new PerformanceCounterCategoryUninstallerContextAdapter(Service.CategoryAdapters))
+            // TODO: TBD: ditto Install re: extension methods...
+            using (var adapter = new PerformanceCounterCategoryUninstallerContextAdapter(Service.CategoryAdapters.Values))
             {
 
                 IEnumerable<string> categoryNames;

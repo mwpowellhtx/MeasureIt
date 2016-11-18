@@ -65,15 +65,9 @@
     <Compile Include="Adapters\IContextAdapter.cs" />
     <Compile Include="Contexts\InstallerContext.cs" />
     <Compile Include="Adapters\IPerformanceCounterCategoryInstallerContextAdapter.cs" />
-    <Compile Include="Core\DefaultMoniker.cs" />
-    <Compile Include="Core\IDefaultMoniker.cs" />
-    <Compile Include="Core\IMoniker.cs" />
-    <Compile Include="Core\INameMoniker.cs" />
-    <Compile Include="Core\ITypeMoniker.cs" />
-    <Compile Include="Core\MethodInfoMoniker.cs" />
-    <Compile Include="Core\MonikerBase.cs" />
-    <Compile Include="Core\NameMoniker.cs" />
-    <Compile Include="Core\TypeMoniker.cs" />
+    <Compile Include="Core\MemberInfoEqualityComparer.cs" />
+    <Compile Include="Core\MethodInfoEqualityComparer.cs" />
+    <Compile Include="Core\TypeEqualityComparer.cs" />
     <Compile Include="Counters\TotalMemberAccessesPerformanceCounterAdapter.cs" />
     <Compile Include="Counters\PerformanceCounterCategoryAdapterBase.cs" />
     <Compile Include="Counters\MemberActivityTimerPerformanceCounterAdapter.cs" />
@@ -122,8 +116,6 @@
     <Compile Include="Contexts\MeasurementContext.cs" />
     <Compile Include="Contexts\MeasurementProviderBase.cs" />
     <Compile Include="Contexts\PerformanceMeasurementContext.cs" />
-    <Compile Include="INamedDisposable.cs" />
-    <Compile Include="NamedDisposable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

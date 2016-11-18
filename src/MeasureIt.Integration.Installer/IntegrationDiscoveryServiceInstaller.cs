@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 namespace MeasureIt.Integration.Installer
 {
@@ -24,8 +25,13 @@ namespace MeasureIt.Integration.Installer
             return new InstallerInstrumentationDiscoveryService(GetOptions());
         }
 
+        /// <summary>
+        /// <see cref="LazyThreadSafetyMode.ExecutionAndPublication"/>
+        /// </summary>
+        private const LazyThreadSafetyMode ExecAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
         private static readonly Lazy<IInstallerInstrumentationDiscoveryService> LazyService
-            = new Lazy<IInstallerInstrumentationDiscoveryService>(GetService);
+            = new Lazy<IInstallerInstrumentationDiscoveryService>(GetService, ExecAndPubThreadSafety);
 
         public IntegrationDiscoveryServiceInstaller()
             : base(LazyService.Value)

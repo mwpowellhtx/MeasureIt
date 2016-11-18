@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace MeasureIt
@@ -10,9 +11,12 @@ namespace MeasureIt
     public interface IPerformanceCounterCategoryAdapter
     {
         /// <summary>
-        /// Gets the Name.
+        /// Gets or sets the Name. The default falls back on the <see cref="Type.FullName"/>,
+        /// including namespace. Empty string is interpreted as Null, with the default fall back
+        /// position. This is because we cannot have an empty name appearing for a
+        /// <see cref="PerformanceCounterCategory.CategoryName"/>.
         /// </summary>
-        string Name { get; }
+        string Name { get; set; }
 
         /// <summary>
         /// Gets the Help.

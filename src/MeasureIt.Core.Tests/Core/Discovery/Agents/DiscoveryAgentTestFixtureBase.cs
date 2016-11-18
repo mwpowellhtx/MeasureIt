@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace MeasureIt.Discovery.Agents
 {
@@ -74,7 +75,8 @@ namespace MeasureIt.Discovery.Agents
         protected DiscoveryAgentTestFixtureBase(IInstrumentationDiscoveryOptions options)
         {
             Options = options;
-            _lazyAgent = new Lazy<TAgent>(() => CreateAgent(Options, GetExportedTypes));
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+            _lazyAgent = new Lazy<TAgent>(() => CreateAgent(Options, GetExportedTypes), execAndPubThreadSafety);
         }
 
         /// <summary>

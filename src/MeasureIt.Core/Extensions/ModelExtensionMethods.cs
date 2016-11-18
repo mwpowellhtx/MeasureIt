@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MeasureIt
@@ -78,6 +80,145 @@ namespace MeasureIt
             adapters = adapters ?? new IPerformanceCounterAdapter[0];
 
             foreach (var adapter in adapters) action(adapter);
+        }
+
+        internal static T SetIf<T>(this T value, out T field, T defaultValue = default(T),
+            Func<T, bool> predicate = null)
+        {
+            predicate = predicate ?? delegate { return true; };
+            field = predicate(value) ? value : defaultValue;
+            return field;
+        }
+
+        internal static string PrefixName<T>(this string root, Func<Type, string> prefixer = null)
+        {
+            return root.PrefixName(typeof(T), prefixer);
+        }
+
+        internal static string PrefixName(this string root, Type type, Func<Type, string> prefixer = null)
+        {
+            prefixer = prefixer ?? (t => t.FullName);
+            return string.Join(".", new[] {prefixer(type), root}.Where(s => !string.IsNullOrEmpty(s)));
+        }
+
+        private static readonly IDictionary<PerformanceCounterType, string> CounterTypeSuffixes;
+
+        internal static string GetCounterTypeSuffixes(this PerformanceCounterType value)
+        {
+            var suffixes = CounterTypeSuffixes;
+            return suffixes.ContainsKey(value) ? suffixes[value] : null;
+        }
+
+        internal static bool TryGetBaseSuffix(this PerformanceCounterType value, out string suffix)
+        {
+            const string @base = "Base";
+
+            suffix = null;
+
+            // ReSharper disable once SwitchStatementMissingSomeCases
+            switch (value)
+            {
+                case PerformanceCounterType.SampleBase:
+                case PerformanceCounterType.AverageBase:
+                case PerformanceCounterType.RawBase:
+                case PerformanceCounterType.CounterMultiBase:
+                    suffix = @base;
+                    break;
+            }
+
+            return !string.IsNullOrEmpty(suffix);
+        }
+
+        static ModelExtensionMethods()
+        {
+            // TODO: TBD: or perhaps there is a better way to inject naming conventions/strategies...
+            {
+                const string numberofItemsHex = "NumberOfItems.Hex";
+                const string numberOfItems = "NumberOfItems";
+                const string delta = "delta";
+                const string sample = "sample";
+                const string countPerTimeInterval = "CountPerTimeInterval";
+                const string rateOfCountsPerSecond = "RateOfCountsPerSecond";
+                const string rawFraction = "raw fraction";
+                const string timer = "Timer";
+                const string timerHundredNanoseconds = "Timer100Ns";
+                const string sampleFraction = "sample fraction";
+                const string inverseTimer = "InverseTimer";
+                const string inverseTimerHundredNanoseconds = "InverseTimer100Ns";
+                const string multiTimer = "MultiTimer";
+                const string multiTimerHundredNanoseconds = "MultiTimer100Ns";
+                const string inverseMultiTimer = "InverseMultiTimer";
+                const string inverseMultiTimerHundredNanoseconds = "InverseMultiTimer100Ns";
+                const string averageTimer = "AverageTimer";
+                const string elapsedTime = "ElapsedTime";
+                const string average = "Average";
+                const string sampleBase = "Sample.Base";
+                const string averageBase = "Average.Base";
+                const string rawBase = "Raw.Base";
+                const string multiBase = "Multi.Base";
+
+                var suffixes = new Dictionary<PerformanceCounterType, string>
+                {
+                    // number of items in hex (32-bit)
+                    {PerformanceCounterType.NumberOfItemsHEX32, numberofItemsHex},
+                    // number of items in hex (64-bit)
+                    {PerformanceCounterType.NumberOfItemsHEX64, numberofItemsHex},
+                    // number of items (32-bit)
+                    {PerformanceCounterType.NumberOfItems32, numberOfItems},
+                    // number of items (64-bit)
+                    {PerformanceCounterType.NumberOfItems64, numberOfItems},
+                    // delta (32-bit)
+                    {PerformanceCounterType.CounterDelta32, delta},
+                    // delta (64-bit)
+                    {PerformanceCounterType.CounterDelta64, delta},
+                    // sample
+                    {PerformanceCounterType.SampleCounter, sample},
+                    // count per time interval (32-bit)
+                    {PerformanceCounterType.CountPerTimeInterval32, countPerTimeInterval},
+                    // count per time interval (64-bit)
+                    {PerformanceCounterType.CountPerTimeInterval64, countPerTimeInterval},
+                    // rate of counts per second (32-bit)
+                    {PerformanceCounterType.RateOfCountsPerSecond32, rateOfCountsPerSecond},
+                    // rate of counts per second (64-bit)
+                    {PerformanceCounterType.RateOfCountsPerSecond64, rateOfCountsPerSecond},
+                    // raw fraction
+                    {PerformanceCounterType.RawFraction, rawFraction},
+                    // timer
+                    {PerformanceCounterType.CounterTimer, timer},
+                    // timer (100 nanoseconds)
+                    {PerformanceCounterType.Timer100Ns, timerHundredNanoseconds},
+                    // sample fraction
+                    {PerformanceCounterType.SampleFraction, sampleFraction},
+                    // inverse counter timer
+                    {PerformanceCounterType.CounterTimerInverse, inverseTimer},
+                    // inverse timer (100 nanoseconds)
+                    {PerformanceCounterType.Timer100NsInverse, inverseTimerHundredNanoseconds},
+                    // multi-timer
+                    {PerformanceCounterType.CounterMultiTimer, multiTimer},
+                    // multi-timer (100 nanoseconds)
+                    {PerformanceCounterType.CounterMultiTimer100Ns, multiTimerHundredNanoseconds},
+                    // inverse multi-timer
+                    {PerformanceCounterType.CounterMultiTimerInverse, inverseMultiTimer},
+                    // inverse multi-timer (100 nanoseconds)
+                    {PerformanceCounterType.CounterMultiTimer100NsInverse, inverseMultiTimerHundredNanoseconds},
+                    // average timer (32-bit)
+                    {PerformanceCounterType.AverageTimer32, averageTimer},
+                    // elapsed time
+                    {PerformanceCounterType.ElapsedTime, elapsedTime},
+                    // average (64-bit)
+                    {PerformanceCounterType.AverageCount64, average},
+                    // sample base
+                    {PerformanceCounterType.SampleBase, sampleBase},
+                    // average base
+                    {PerformanceCounterType.AverageBase, averageBase},
+                    // raw base
+                    {PerformanceCounterType.RawBase, rawBase},
+                    // counter multi-base
+                    {PerformanceCounterType.CounterMultiBase, multiBase}
+                };
+
+                CounterTypeSuffixes = new ConcurrentDictionary<PerformanceCounterType, string>(suffixes);
+            }
         }
     }
 }

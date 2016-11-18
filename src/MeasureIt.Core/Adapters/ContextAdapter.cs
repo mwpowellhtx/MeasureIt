@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace MeasureIt.Adapters
 {
@@ -27,8 +28,11 @@ namespace MeasureIt.Adapters
             IEnumerable<IPerformanceCounterCategoryAdapter> categoryAdapters
             )
         {
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
             _lazyCategoryAdapters = new Lazy<IEnumerable<IPerformanceCounterCategoryAdapter>>(
-                () => (categoryAdapters ?? new List<IPerformanceCounterCategoryAdapter>()).ToArray());
+                () => (categoryAdapters ?? new List<IPerformanceCounterCategoryAdapter>()).ToArray(),
+                execAndPubThreadSafety);
         }
     }
 }

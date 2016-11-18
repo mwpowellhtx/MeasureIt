@@ -66,26 +66,11 @@ namespace MeasureIt
             }
         }
 
-        private readonly Lazy<string> _lazyCategoryName;
+        protected string CategoryName { get; private set; }
 
-        private readonly Lazy<string> _lazyCategoryHelp;
+        protected string CategoryHelp { get; private set; }
 
-        private readonly Lazy<string> _lazyInstanceName;
-
-        protected string CategoryName
-        {
-            get { return _lazyCategoryName.Value; }
-        }
-
-        protected string CategoryHelp
-        {
-            get { return _lazyCategoryHelp.Value; }
-        }
-
-        protected string InstanceName
-        {
-            get { return _lazyInstanceName.Value; }
-        }
+        protected string InstanceName { get; private set; }
 
         protected static string GetNewName()
         {
@@ -101,17 +86,7 @@ namespace MeasureIt
             return string.Empty;
         }
 
-        private readonly Lazy<IEnumerable<PerformanceCounterDescriptorFixture>> _lazySpecifications;
-
-        protected IEnumerable<PerformanceCounterDescriptorFixture> Specifications
-        {
-            get { return _lazySpecifications.Value; }
-        }
-
-        private IEnumerable<PerformanceCounterDescriptorFixture> OrderedSpecifications
-        {
-            get { return Specifications.OrderBy(x => x.CounterType).ThenBy(x => x.Name); }
-        }
+        protected IEnumerable<PerformanceCounterDescriptorFixture> Specifications { get; private set; }
 
         protected virtual IEnumerable<CounterCreationData> OnCreationData(IEnumerable<CounterCreationData> items)
         {
@@ -120,18 +95,26 @@ namespace MeasureIt
 
         protected IEnumerable<CounterCreationData> CreationData
         {
-            get { return OnCreationData(OrderedSpecifications.Select(s => s.NewCreationData())); }
+            get
+            {
+                // Let's not "order" the specifications. Provide the specifications in the correct order upon request.
+                return OnCreationData(Specifications.Select(s => s.NewCreationData()));
+            }
         }
 
         protected abstract IEnumerable<PerformanceCounterDescriptorFixture> GetPerformanceCounterDescriptors();
 
         protected PerformanceCounterCategoryTestFixtureBase()
         {
-            _lazyCategoryName = new Lazy<string>(GetNewName);
-            _lazyCategoryHelp = new Lazy<string>(GetCategoryHelp);
-            _lazyInstanceName = new Lazy<string>(GetNewName);
-            _lazySpecifications = new Lazy<IEnumerable<PerformanceCounterDescriptorFixture>>(
-                GetPerformanceCounterDescriptors);
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            CategoryName = GetNewName();
+            CategoryHelp = GetCategoryHelp();
+            InstanceName = GetNewName();
+            Specifications = GetPerformanceCounterDescriptors();
         }
 
         protected void CreateCategory(Action<PerformanceCounterCategory> action = null,

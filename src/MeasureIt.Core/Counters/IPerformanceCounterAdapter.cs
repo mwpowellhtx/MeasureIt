@@ -15,16 +15,6 @@ namespace MeasureIt
         IPerformanceMeasurementDescriptor Measurement { get; set; }
 
         /// <summary>
-        /// Gets the Name.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gets the Help.
-        /// </summary>
-        string Help { get; }
-
-        /// <summary>
         /// Gets the CreationData.
         /// </summary>
         IEnumerable<ICounterCreationDataDescriptor> CreationData { get; }

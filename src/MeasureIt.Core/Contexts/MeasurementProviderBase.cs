@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace MeasureIt.Contexts
 {
@@ -33,12 +34,14 @@ namespace MeasureIt.Contexts
         {
             _options = options;
 
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
             _lazyDiscoveryService = new Lazy<TDiscoveryService>(
                 () =>
                 {
                     discoveryService.Discover();
                     return discoveryService;
-                });
+                }, execAndPubThreadSafety);
         }
 
         public IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo method)

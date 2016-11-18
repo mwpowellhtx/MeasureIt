@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -8,37 +7,37 @@ using System.Reflection;
 namespace MeasureIt
 {
     using Contexts;
-    using ICounterAdapter = IPerformanceCounterAdapter;
-    using CounterAdapter = PerformanceCounterAdapterBase;
-    using ICategoryAdapter = IPerformanceCounterCategoryAdapter;
-    using IMeasurementDescriptor = IPerformanceMeasurementDescriptor;
+    using Collections.Generic;
 
     /// <summary>
     /// 
     /// </summary>
     public class PerformanceMeasurementDescriptor
         : DescriptorBase
-            , IMeasurementDescriptor
+            , IPerformanceMeasurementDescriptor
             , IEquatable<PerformanceMeasurementDescriptor>
     {
-        // TODO: TBD: what, if anything, to do about the RandomSeed?
-        private IMoniker _nameMoniker;
+        private string _prefix;
 
-        private static IMoniker GetNameMoniker(string name)
+        private static string CalculatePrefix(string prefix, Type rootType, MethodInfo method)
         {
-            return string.IsNullOrEmpty(name) ? null : new NameMoniker(name);
+            const string defaultPrefix = "";
+
+            // So we do not want DeclaringType or even ReflectedType here, but rather rootType.
+            return !string.IsNullOrEmpty(prefix)
+                ? prefix
+                : (rootType == null || method == null
+                    ? defaultPrefix
+                    : string.Join(".", rootType.FullName, method.Name));
         }
 
-        private static IMoniker GetMethodMoniker(MethodInfo method)
+        public string Prefix
         {
-            return method == null ? null : new MethodInfoMoniker(method);
+            get { return CalculatePrefix(_prefix, RootType, Method); }
+            set { value.SetIf(out _prefix, string.Empty, s => !string.IsNullOrEmpty(s)); }
         }
 
-        public string Name
-        {
-            get { return _nameMoniker.ToString(); }
-            set { _nameMoniker = GetNameMoniker(value) ?? GetMethodMoniker(Method) ?? DefaultMoniker.New(); }
-        }
+        public bool ShouldIncludeCounterTypeInName { get; set; }
 
         private Type _categoryType;
 
@@ -60,7 +59,7 @@ namespace MeasureIt
             get { return _categoryType; }
             set
             {
-                _categoryType = value.VerifyType<ICategoryAdapter>(TryVerifyCategoryType);
+                _categoryType = value.VerifyType<IPerformanceCounterCategoryAdapter>(TryVerifyCategoryType);
 
                 //// TODO: TBD: leave "registering" or "unregistering" for the moment of discovery, discovery service(s), etc
                 //UnregisterFromCategory(CategoryAdapter);
@@ -71,13 +70,13 @@ namespace MeasureIt
             }
         }
 
-        //private void RegisterWithCategory(ICategoryAdapter category)
+        //private void RegisterWithCategory(IPerformanceCounterCategoryAdapter category)
         //{
         //    if (category == null) return;
         //    category.Register(this);
         //}
 
-        //private void UnregisterFromCategory(ICategoryAdapter category)
+        //private void UnregisterFromCategory(IPerformanceCounterCategoryAdapter category)
         //{
         //    if (category == null) return;
         //    category.Unregister(this);
@@ -86,7 +85,7 @@ namespace MeasureIt
         /// <summary>
         /// Gets or sets the CategoryAdapter.
         /// </summary>
-        public virtual ICategoryAdapter CategoryAdapter { get; set; }
+        public virtual IPerformanceCounterCategoryAdapter CategoryAdapter { get; set; }
 
         private IEnumerable<Type> _adapterTypes;
 
@@ -96,30 +95,32 @@ namespace MeasureIt
         public IEnumerable<Type> AdapterTypes
         {
             get { return _adapterTypes; }
-            set
+            private set
             {
-                _adapterTypes = value.VerifyTypes<ICounterAdapter>();
+                _adapterTypes = value.VerifyTypes<IPerformanceCounterAdapter>();
 
                 foreach (var a in Adapters) a.Dispose();
 
-                _adapters = CreateAdapters();
+                _adapters = CreateAdapters().ToList();
             }
         }
 
-        private IEnumerable<ICounterAdapter> _adapters;
+        private IList<IPerformanceCounterAdapter> _adapters;
 
-        public IEnumerable<ICounterAdapter> Adapters
+        public IEnumerable<IPerformanceCounterAdapter> Adapters
         {
             get { return _adapters; }
-            private set { _adapters = (value ?? new List<ICounterAdapter>()).ToArray(); }
+            private set { _adapters = (value ?? new List<IPerformanceCounterAdapter>()).ToList(); }
         }
 
-        public virtual IEnumerable<string> AdapterNames
+        private IList<IPerformanceCounterAdapter> PrivateAdapters
         {
-            get { return new ReadOnlyCollection<string>(Adapters.Select(a => a.Name).ToList()); }
-            set
+            get
             {
-                var zipped = Adapters.Zip(value ?? new List<string>(), (a, name) => ((CounterAdapter) a).Name = name);
+                return _adapters.ToBidirectionalList(
+                    added => added.Measurement = this
+                    , removed => removed.Measurement = null
+                    );
             }
         }
 
@@ -166,7 +167,7 @@ namespace MeasureIt
             set
             {
                 _method = value;
-                Name = null;
+                Prefix = null;
             }
         }
 
@@ -184,27 +185,27 @@ namespace MeasureIt
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="prefix"></param>
         /// <param name="categoryType"></param>
         /// <param name="adapterType"></param>
         /// <param name="otherAdapterTypes"></param>
-        public PerformanceMeasurementDescriptor(string name, Type categoryType, Type adapterType,
+        public PerformanceMeasurementDescriptor(string prefix, Type categoryType, Type adapterType,
             params Type[] otherAdapterTypes)
         {
-            Initialize(name, categoryType, adapterType, otherAdapterTypes);
+            Initialize(prefix, categoryType, adapterType, otherAdapterTypes);
         }
 
-        internal PerformanceMeasurementDescriptor(IMeasurementDescriptor other)
+        internal PerformanceMeasurementDescriptor(IPerformanceMeasurementDescriptor other)
         {
             Copy(other);
         }
 
-        private void Initialize(string name, Type categoryType, Type adapterType,
+        private void Initialize(string prefix, Type categoryType, Type adapterType,
             params Type[] otherAdapterTypes)
         {
-            Adapters = null;
+            _adapters = new List<IPerformanceCounterAdapter>();
 
-            Name = name;
+            Prefix = prefix;
 
             CategoryType = categoryType;
             AdapterTypes = new[] {adapterType}.Concat(otherAdapterTypes);
@@ -218,15 +219,15 @@ namespace MeasureIt
             SampleRate = Constants.DefaultSampleRate;
         }
 
-        private void Copy(IMeasurementDescriptor other)
+        private void Copy(IPerformanceMeasurementDescriptor other)
         {
-            Adapters = null;
+            _adapters = new List<IPerformanceCounterAdapter>();
             AdapterTypes = other.AdapterTypes.ToArray();
 
             CategoryType = other.CategoryType;
             CategoryAdapter = other.CategoryAdapter;
 
-            Name = other.Name;
+            Prefix = other.Prefix;
             InstanceLifetime = other.InstanceLifetime;
 
             RootType = other.RootType;
@@ -241,7 +242,7 @@ namespace MeasureIt
             ReadOnly = other.ReadOnly;
         }
 
-        private IEnumerable<ICounterAdapter> CreateAdapters()
+        private IEnumerable<IPerformanceCounterAdapter> CreateAdapters()
         {
             // TODO: TBD: might do with relaying Options here...
             const BindingFlags publicNonPublicInstance
@@ -255,10 +256,11 @@ namespace MeasureIt
             if (!ctors.Any())
                 throw new InvalidOperationException("Invalid descriptor instance.");
 
-            foreach (ICounterAdapter adapter in ctors.Select(ctor => ctor.Invoke(new object[0])))
+            var adapters = PrivateAdapters;
+
+            foreach (IPerformanceCounterAdapter adapter in ctors.Select(ctor => ctor.Invoke(new object[0])))
             {
-                // Make sure to connect the Adapter with This Measurement.
-                adapter.Measurement = this;
+                adapters.Add(adapter);
                 yield return adapter;
             }
         }
@@ -268,50 +270,73 @@ namespace MeasureIt
             return new PerformanceMeasurementContext(this, Adapters.ToArray());
         }
 
-        private IEnumerable<CounterCreationData> GetCounterCreationData()
+        //private IEnumerable<CounterCreationData> GetCounterCreationData()
+        //{
+        //    var prefix = Name;
+
+        //    // It does not matter which order the Adapters themselves are turned in.
+        //    foreach (var datum in Adapters.SelectMany(a => a.CreationData))
+        //    {
+        //        /* However, the CounterCreationData SHOULD be ordered properly. This is especially critical for
+        //         * composite counters, which their Bases should appear IMMEDIATELY following their dependents. */
+
+        //        var counterName = string.Join(".", prefix, datum.Name);
+        //        yield return new CounterCreationData(counterName, datum.Help, datum.CounterType);
+        //    }
+        //}
+
+        //// TODO: TBD: we want counter creation data for these? or as a wrapper/facade during installer context? that might make better sense...
+        //public virtual IEnumerable<CounterCreationData> Data
+        //{
+        //    get { return GetCounterCreationData(); }
+        //}
+
+        /// <summary>
+        /// Returns whether <paramref name="x"/> Equals <paramref name="y"/>.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        protected static bool Equals(IPerformanceMeasurementDescriptor x,
+            IPerformanceMeasurementDescriptor y)
         {
-            var prefix = Name;
+            // Rule the instances in or out based on these criteria.
+            if (x == null || y == null) return false;
 
-            // It does not matter which order the Adapters themselves are turned in.
-            foreach (var datum in Adapters.SelectMany(a => a.CreationData))
+            if (ReferenceEquals(x, y)) return true;
+
             {
-                /* However, the CounterCreationData SHOULD be ordered properly. This is especially critical for
-                 * composite counters, which their Bases should appear IMMEDIATELY following their dependents. */
+                var comparer = new MethodInfoEqualityComparer();
 
-                var counterName = string.Join(".", prefix, datum.Name);
-                yield return new CounterCreationData(counterName, datum.Help, datum.CounterType);
+                // Ensure that the Method Base Definitions are in agreement.
+                if (!comparer.Equals(x.Method.GetBaseDefinition(),
+                    y.Method.GetBaseDefinition())) return false;
+            }
+
+            /* Cannot be considered if the Descriptors are not even related by lineage.
+             * This is different from Similarity which requires only requires lineage. */
+
+            if (x.RootType == null || y.RootType == null
+                || x.RootType != y.RootType) return false;
+
+            // Must be aligned with the same CategoryType.
+            if (x.CategoryType == null || y.CategoryType == null
+                || x.CategoryType != y.CategoryType) return false;
+
+            {
+                /* Last but not least ensure that the AdapterTypes are aligned.
+                 * In my estimation, does not matter the order of the types, per se. */
+
+                var comparer = new TypeEqualityComparer();
+
+                return x.AdapterTypes.Count() == y.AdapterTypes.Count()
+                       && x.AdapterTypes.OrderBy(t => t.FullName)
+                           .Zip(y.AdapterTypes.OrderBy(t => t.FullName), (a, b) => new {a, b})
+                           .All(z => comparer.Equals(z.a, z.b));
             }
         }
 
-        // TODO: TBD: we want counter creation data for these? or as a wrapper/facade during installer context? that might make better sense...
-        public virtual IEnumerable<CounterCreationData> Data
-        {
-            get { return GetCounterCreationData(); }
-        }
-
-        /// <summary>
-        /// Returns whether <paramref name="a"/> Equals <paramref name="b"/>.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        protected static bool Equals(IMeasurementDescriptor a, IMeasurementDescriptor b)
-        {
-            return ReferenceEquals(a, b)
-                   || (
-                       !(a.Method == null || b.Method == null)
-                       && a.Method.GetBaseDefinition() == b.Method.GetBaseDefinition()
-                       && !(a.RootType == null || b.RootType == null)
-                       && a.RootType == b.RootType
-                       && !(a.CategoryType == null || b.CategoryType == null
-                            || a.AdapterTypes == null || b.AdapterTypes == null)
-                       && a.CategoryType == b.CategoryType
-                       && a.AdapterTypes.OrderBy(x => x.FullName)
-                           .SequenceEqual(b.AdapterTypes.OrderBy(x => x.FullName))
-                       );
-        }
-
-        public bool Equals(IMeasurementDescriptor other)
+        public bool Equals(IPerformanceMeasurementDescriptor other)
         {
             return Equals(this, other);
         }

@@ -12,7 +12,6 @@ namespace MeasureIt
         ErrorRatePerformanceCounterAdapter>
     {
         internal ErrorRatePerformanceCounterAdapter()
-            : base("error rate", "Number of errors per second (Hz).")
         {
         }
 

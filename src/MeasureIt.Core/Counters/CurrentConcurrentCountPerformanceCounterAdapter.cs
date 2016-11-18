@@ -12,7 +12,6 @@ namespace MeasureIt
         CurrentConcurrentCountPerformanceCounterAdapter>
     {
         internal CurrentConcurrentCountPerformanceCounterAdapter()
-            : base("current concurrent count")
         {
         }
 

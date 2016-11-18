@@ -23,7 +23,7 @@ namespace MeasureIt.Discovery
             Assert.NotNull(service.CategoryAdapters);
             Assert.NotEmpty(service.CategoryAdapters);
 
-            OnVerifyCategoryAdapters(service.CategoryAdapters);
+            OnVerifyCategoryAdapters(service.CategoryAdapters.Values);
 
             Assert.NotNull(service.Measurements);
             Assert.NotEmpty(service.Measurements);

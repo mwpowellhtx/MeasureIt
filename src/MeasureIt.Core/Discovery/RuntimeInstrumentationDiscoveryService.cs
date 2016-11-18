@@ -17,11 +17,10 @@ namespace MeasureIt.Discovery
         private readonly IDictionary<Type, IPerformanceCounterCategoryAdapter> _categoryAdapters
             = new ConcurrentDictionary<Type, IPerformanceCounterCategoryAdapter>();
 
-        private IDictionary<Type, IPerformanceCounterCategoryAdapter> CategoryAdapters
+        public IDictionary<Type, IPerformanceCounterCategoryAdapter> CategoryAdapters
         {
             get { return _categoryAdapters; }
         }
-
 
         private void RegisterCategoryAdapters(
             IDictionary<Type, IPerformanceCounterCategoryAdapter> adapters
@@ -40,7 +39,7 @@ namespace MeasureIt.Discovery
                     ? adapters[t]
                     : (adapters[t] = t.CreateInstance<IPerformanceCounterCategoryAdapter>(bindingAttr));
 
-                adapter.InternalMeasurements.Add(m);
+                adapter.Register(m);
             }
         }
 
@@ -53,11 +52,11 @@ namespace MeasureIt.Discovery
         {
         }
 
-        protected override void OnDiscover()
+        protected override void OnDiscovered()
         {
-            base.OnDiscover();
-
             RegisterCategoryAdapters(CategoryAdapters, Measurements);
+
+            base.OnDiscovered();
         }
 
         /* TODO: TBD: we may need/want different discovery services for different purposes:

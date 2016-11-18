@@ -25,14 +25,14 @@ namespace MeasureIt
         IPerformanceCounterCategoryAdapter CategoryAdapter { get; set; }
 
         /// <summary>
-        /// Gets or sets the Name.
+        /// Gets or sets the Prefix.
         /// </summary>
-        string Name { get; set; }
+        string Prefix { get; set; }
 
         /// <summary>
         /// Connect the <see cref="PerformanceCounter"/> with the adapters themselves.
         /// </summary>
-        IEnumerable<Type> AdapterTypes { get; set; }
+        IEnumerable<Type> AdapterTypes { get; }
 
         /// <summary>
         /// Gets the <see cref="IPerformanceCounterAdapter"/> corresponding with the <see cref="AdapterTypes"/>.
@@ -40,11 +40,6 @@ namespace MeasureIt
         IEnumerable<IPerformanceCounterAdapter> Adapters { get; }
 
         /// <summary>
-        /// Gets or sets the AdapterNames.
-        /// </summary>
-        IEnumerable<string> AdapterNames { get; set; }
-
-            /// <summary>
         /// 
         /// </summary>
         PerformanceCounterInstanceLifetime InstanceLifetime { get; set; }
@@ -62,10 +57,10 @@ namespace MeasureIt
         /// <returns></returns>
         IPerformanceMeasurementContext CreateContext();
 
-        /// <summary>
-        /// Gets the <see cref="CounterCreationData"/> associated with this Descriptor, provided
-        /// to <see cref="IPerformanceCounterCategoryDescriptor"/> for creation purposes.
-        /// </summary>
-        IEnumerable<CounterCreationData> Data { get; }
+        ///// <summary>
+        ///// Gets the <see cref="CounterCreationData"/> associated with this Descriptor, provided
+        ///// to <see cref="IPerformanceCounterCategoryDescriptor"/> for creation purposes.
+        ///// </summary>
+        //IEnumerable<CounterCreationData> Data { get; }
     }
 }

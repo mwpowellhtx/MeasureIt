@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
-using System.Threading;
+using MeasureIt.Collections.Generic;
 
 namespace MeasureIt
 {
@@ -19,50 +19,28 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    public abstract class PerformanceCounterAdapterBase : NamedDisposable
-    {
-        /// <summary>
-        /// Protected Constructor
-        /// </summary>
-        /// <param name="name"></param>
-        protected PerformanceCounterAdapterBase(string name)
-            : base(name)
-        {
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     /// <typeparam name="TAdapter"></typeparam>
-    public abstract class PerformanceCounterAdapterBase<TAdapter> 
-        : PerformanceCounterAdapterBase
+    public abstract class PerformanceCounterAdapterBase<TAdapter> : Disposable
             , IPerformanceCounterAdapter
         where TAdapter : PerformanceCounterAdapterBase<TAdapter>
     {
         public virtual IPerformanceMeasurementDescriptor Measurement { get; set; }
 
-        public virtual string Help { get; set; }
-
-        private readonly Lazy<IEnumerable<ICounterCreationDataDescriptor>> _lazyCreationData;
+        private readonly IList<ICounterCreationDataDescriptor> _creationData;
 
         public virtual IEnumerable<ICounterCreationDataDescriptor> CreationData
         {
-            get { return _lazyCreationData.Value; }
+            get { return _creationData; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private class PerformanceCounterComparer : Comparer<PerformanceCounter>
+        private IList<ICounterCreationDataDescriptor> PrivateCreationData
         {
-            public override int Compare(PerformanceCounter x, PerformanceCounter y)
+            get
             {
-                if (x == null && y == null) return 0;
-                if (x != null && y == null) return 1;
-                if (x == null) return -1;
-                if (x.CounterType > y.CounterType) return -1;
-                return x.CounterType < y.CounterType ? 1 : 0;
+                return _creationData.ToBidirectionalList(
+                    added => added.Adapter = this
+                    , removed => removed.Adapter = null
+                    );
             }
         }
 
@@ -103,44 +81,24 @@ namespace MeasureIt
         /// Protected Constructor
         /// </summary>
         protected PerformanceCounterAdapterBase()
-            : this(null)
         {
-        }
-
-        /// <summary>
-        /// Protected Constructor
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="help"></param>
-        protected PerformanceCounterAdapterBase(string name, string help = null)
-            : base(name)
-        {
-            Initialize(help);
-
             Parts = new ExpandoObject();
-
-            var type = GetType();
-
-            const LazyThreadSafetyMode execAndPubSafety = LazyThreadSafetyMode.ExecutionAndPublication;
 
             /* Be careful of initialization: CounterCreationData order is CRITICAL. We do not
              * care what the attributes say, per se, but we do want the results ordered. */
 
-            _lazyCreationData = new Lazy<IEnumerable<ICounterCreationDataDescriptor>>(() => type
-                .GetAttributeValues((CounterCreationDataAttribute a) =>
-                {
-                    var cloned = (ICounterCreationDataDescriptor) a.Descriptor.Clone();
-                    cloned.Adapter = this;
-                    return cloned;
-                }).OrderBy(x => x.CounterType).ToArray(), execAndPubSafety);
-        }
+            _creationData = new List<ICounterCreationDataDescriptor>();
 
-        private void Initialize(string help)
-        {
-            Help = help ?? string.Empty;
-        }
+            var type = GetType();
 
-        private readonly PerformanceCounterComparer _counterComparer = new PerformanceCounterComparer();
+            var creationData = PrivateCreationData;
+
+            foreach (var datum in type.GetAttributeValues((CounterCreationDataAttribute a) =>
+                (ICounterCreationDataDescriptor) a.Descriptor.Clone()).OrderBy(x => x.CounterType))
+            {
+                creationData.Add(datum);
+            }
+        }
 
         private readonly Func<PerformanceCounter, bool> _findAllCounters = x => true;
 
@@ -153,9 +111,7 @@ namespace MeasureIt
 
             foreach (var datum in dataDescriptors)
             {
-                var moniker = new DefaultMoniker();
-
-                var instanceName = moniker.ToString();
+                var instanceName = Guid.NewGuid().ToString("N");
 
                 /* TODO: TBD: not sure why, but not all of the ctor's work without throwing InvalidOperationException
                  * to do with "Could not locate Performance Counter with specified category name ...". */
@@ -180,13 +136,24 @@ namespace MeasureIt
         /// </summary>
         protected virtual void InitializePerformanceCounters(ExpandoObject parts)
         {
-            if (HasAny<PerformanceCounter>(parts)) return;
+            IExpandoObjectDictionary dictionary = parts;
+
+            const string countersInitialized = "_countersInitialized";
+
+            if (dictionary.ContainsKey(countersInitialized)
+                && (bool) dictionary[countersInitialized])
+            {
+                return;
+            }
+
+            //// TODO: TBD: could do this in lieu of or in addition to, but let's not complicate matters...
+            //if (HasAny<PerformanceCounter>(parts)) return;
 
             var counters = CreatePerformanceCounters(Measurement, CreationData);
 
-            IExpandoObjectDictionary dictionary = parts;
-
             foreach (var c in counters) dictionary.Add(c.InstanceName, c);
+
+            dictionary[countersInitialized] = true;
         }
 
         /// <summary>
@@ -197,7 +164,7 @@ namespace MeasureIt
             get
             {
                 InitializePerformanceCounters(Parts);
-                return GetAll(Parts, _findAllCounters).OrderBy(x => x, _counterComparer);
+                return GetAll(Parts, _findAllCounters).OrderBy(x => x.CounterType);
             }
         }
 

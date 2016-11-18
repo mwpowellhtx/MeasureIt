@@ -12,7 +12,6 @@ namespace MeasureIt
         MemberAccessRatePerformanceCounterAdapter>
     {
         internal MemberAccessRatePerformanceCounterAdapter()
-            : base("member access rate", "Number of member accesses per second (Hz).")
         {
         }
 

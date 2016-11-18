@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace MeasureIt.Adapters
 {
@@ -30,6 +31,8 @@ namespace MeasureIt.Adapters
             )
             : base(categoryAdapters)
         {
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
             _lazyCategories = new Lazy<IEnumerable<CategoryTuple>>(
                 () => CategoryAdapters.Select(a =>
                 {
@@ -37,14 +40,10 @@ namespace MeasureIt.Adapters
                     var items = a.CreationData.Select(x => new CounterCreationData(x.Name, x.Help, x.CounterType)).ToArray();
                     var data = new CounterCreationDataCollection(items);
 
-#if DEBUG
-                    var names = items.Select(x => x.CounterName).ToArray();
-#endif
-
                     return Tuple.Create(a, PerformanceCounterCategory.Exists(a.Name)
                         ? null
                         : PerformanceCounterCategory.Create(a.Name, a.Help, a.CategoryType, data));
-                }));
+                }), execAndPubThreadSafety);
         }
     }
 }

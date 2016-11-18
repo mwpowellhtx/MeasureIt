@@ -101,5 +101,12 @@ namespace MeasureIt
             collection.Add(Tuple.Create(counterType, name));
             return collection;
         }
+
+        internal static IEnumerable<string> GetItem2<TCollection>(this TCollection collection,
+            PerformanceCounterType counterType)
+            where TCollection : IList<NamedCounterTypeTuple>
+        {
+            return collection.Where(x => x.Item1 == counterType).Select(x => x.Item2);
+        }
     }
 }

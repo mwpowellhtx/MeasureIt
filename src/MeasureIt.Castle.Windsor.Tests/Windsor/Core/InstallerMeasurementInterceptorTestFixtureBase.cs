@@ -2,7 +2,6 @@ using System;
 
 namespace MeasureIt.Castle.Windsor
 {
-    using Contexts;
     using Discovery;
     using Interception.Measurement;
     using Xunit;
@@ -20,30 +19,31 @@ namespace MeasureIt.Castle.Windsor
         {
             base.InitializeOptions(options);
 
+            // TODO: TBD: ???
             // Should throw under normal circumstances, but not here.
-            options.ThrowOnInstallerFailure = false;
+            options.ThrowOnInstallerFailure = true;
         }
 
-        private void RunInstallerContext(Action<IInstallerContext> action)
+        private void UseDiscoveryService(Action<IInstallerInstrumentationDiscoveryService> action)
         {
             Assert.NotNull(action);
-
-            using (var context = DiscoveryService.GetInstallerContext())
-            {
-                action(context);
-            }
+            action(DiscoveryService);
         }
 
         protected InstallerMeasurementInterceptorTestFixtureBase()
         {
-            RunInstallerContext(context => context.Install());
+            UseDiscoveryService(ds =>
+            {
+                Assert.True(ds.TryUninstall());
+                ds.Install();
+            });
         }
 
         protected override void Dispose(bool disposing)
         {
             if (!IsDisposed && disposing)
             {
-                RunInstallerContext(context => context.Uninstall());
+                UseDiscoveryService(ds => Assert.True(ds.TryUninstall()));
             }
 
             base.Dispose(disposing);

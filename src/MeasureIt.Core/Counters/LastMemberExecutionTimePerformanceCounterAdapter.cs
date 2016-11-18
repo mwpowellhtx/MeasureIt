@@ -12,7 +12,6 @@ namespace MeasureIt
         LastMemberExecutionTimePerformanceCounterAdapter>
     {
         internal LastMemberExecutionTimePerformanceCounterAdapter()
-            : base("last member execution time")
         {
         }
 

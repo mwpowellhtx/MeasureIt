@@ -92,7 +92,7 @@ namespace MeasureIt
             // ReSharper disable once PossibleMultipleEnumeration
             return discoveredItems
                 .OrderBy(x => x.GetType().FullName)
-                .ThenBy(x => x.Name);
+                ;
         }
 
         internal static IEnumerable<IPerformanceCounterCategoryAdapter> Order(
@@ -152,16 +152,11 @@ namespace MeasureIt
         }
 
         internal static IEnumerable<ICounterCreationDataDescriptor> Order(
-            this IEnumerable<ICounterCreationDataDescriptor> descriptors)
+            this IEnumerable<ICounterCreationDataDescriptor> descriptors
+            )
         {
             // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors
-                , d =>
-                {
-                    Assert.NotNull(d.Name);
-                    Assert.NotEmpty(d.Name);
-                }
-                );
+            Assert.All(descriptors, d => Assert.NotNull(d.Name));
 
             // ReSharper disable once PossibleMultipleEnumeration
             return descriptors
@@ -302,14 +297,13 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(averageTimer, y.CounterType);
                             Assert.NotNull(y.Help);
                             Assert.Empty(y.Help);
                         }
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
+                            Assert.EndsWith("Base", y.Name);
                             Assert.Equal(averageBase, y.CounterType);
                             Assert.NotNull(y.Help);
                             Assert.Empty(y.Help);
@@ -332,7 +326,6 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal("Number of requests running concurrently.", y.Help);
                         }
@@ -354,7 +347,6 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
                             Assert.Equal("Number of errors per second.", y.Help);
                         }
@@ -376,7 +368,6 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal("Last member execution time in milliseconds.", y.Help);
                         }
@@ -398,7 +389,6 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(rateOfCountsPerSecond, y.CounterType);
                             Assert.Equal("Number of member accesses per second.", y.Help);
                         }
@@ -420,7 +410,6 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(numberOfItems, y.CounterType);
                             Assert.Equal("Total number of member accesses.", y.Help);
                         }
@@ -442,7 +431,6 @@ namespace MeasureIt
                     Assert.Collection(x
                         , y =>
                         {
-                            y.Name.CanParse<string, Guid>(Guid.TryParse);
                             Assert.Equal(timer, y.CounterType);
                             Assert.Equal("Measure of member activity in nanoseconds.", y.Help);
                         }
@@ -457,44 +445,30 @@ namespace MeasureIt
             Assert.Collection(orderedItems
                 , d =>
                 {
-                    Assert.Equal("average time", d.Name);
-                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyAverageTimeCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("current concurrent count", d.Name);
-                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyCurrentConcurrentCountCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("error rate", d.Name);
-                    Assert.Equal("Number of errors per second (Hz).", d.Help);
                     d.VerifyErrorRateCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("last member execution time", d.Name);
-                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyLastMemberAccessTimeCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("member access rate", d.Name);
-                    Assert.Equal("Number of member accesses per second (Hz).", d.Help);
                     d.VerifyMemberAccessRateCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("member activity timer", d.Name);
-                    Assert.Equal(string.Empty, d.Help);
                     d.VerifyMemberActivityTimerCreationData();
                 }
                 , d =>
                 {
-                    Assert.Equal("total member accesses", d.Name);
-                    Assert.Equal("Total number of member accesses.", d.Help);
                     d.VerifyTotalMemberAccessesCreationData();
                 }
                 );
