@@ -68,16 +68,7 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Counters\WindsorPerformanceCounterCategoryAdapter.cs" />
-    <Compile Include="Interception\Measurement\IMeasurementInterceptorFixture.cs" />
-    <Compile Include="Interception\Measurement\InvocationInterceptedEventArgs.cs" />
-    <Compile Include="Interception\Measurement\MeasurementInterceptorFixture.cs" />
-    <Compile Include="Classes\SubjectClass.cs" />
-    <Compile Include="Classes\SubjectClassBase.cs" />
-    <Compile Include="Windsor\Core\DependencyInjectionTestFixtureBase.cs" />
-    <Compile Include="Windsor\Core\InstallerMeasurementInterceptorTestFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Support\Root.cs" />
     <Compile Include="Windsor\InstallerMeasurementInterceptorTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +87,10 @@
     <ProjectReference Include="..\MeasureIt.Core\MeasureIt.Core.csproj">
       <Project>{8B6F3A40-A8C8-407B-914A-3692454FC110}</Project>
       <Name>MeasureIt.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MeasureIt.Integration.Tests.Core\MeasureIt.Integration.Tests.Core.csproj">
+      <Project>{C9A81A6F-A2EB-46CD-9F18-AFE832DCFA66}</Project>
+      <Name>MeasureIt.Integration.Tests.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

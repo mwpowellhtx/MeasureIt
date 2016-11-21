@@ -3,28 +3,48 @@ using System.Reflection;
 
 namespace MeasureIt.Castle.Windsor
 {
-    using Classes;
+    using Discovery;
     using Interception;
+    using Interception.Measurement;
     using Xunit;
+    using global::Castle.Windsor;
 
     /// <summary>
     /// 
     /// </summary>
     // ReSharper disable UnusedParameter.Local
-    public class InstallerMeasurementInterceptorTests : InstallerMeasurementInterceptorTestFixtureBase
+    public class InstallerMeasurementInterceptorTests
+        : InstallerMeasurementInterceptorTestFixtureBase<IWindsorContainer>
     {
-        private SubjectClass GetSubject()
+        protected override IWindsorContainer GetContainer()
         {
-            var obj = new SubjectClass();
+            // With Windsor, we just start with the Container and register from there.
+            var container = new WindsorContainer()
+                .EnableMeasurements<IInstallerInstrumentationDiscoveryService
+                    , InstallerInstrumentationDiscoveryService
+                    , MeasurementInterceptorFixture>(InitializeOptions);
+
+            Assert.NotNull(container);
+
+            return container;
+        }
+
+        protected override IInstallerInstrumentationDiscoveryService GetInterface()
+        {
+            var service = Container.Resolve<IInstallerInstrumentationDiscoveryService>();
+            Assert.NotNull(service);
+            return service;
+        }
+
+        protected override SubjectClass GetMeasuredSubject(SubjectClass obj)
+        {
+            /* It is the "same" code as for Autofac and yet it isn't so do not be fooled by the lines of code.
+             * The similarity is by design. */
 
             var measured = Container.MeasureInstance<SubjectClass, IMeasurementInterceptor>(obj);
 
             Assert.NotNull(measured);
 
-            // ReSharper disable once UseMethodIsInstanceOfType
-            Assert.True(obj.GetType().IsAssignableFrom(measured.GetType()));
-
-            // Having tested the Types, that is no mistake, since we are expecting a Proxy.
             return measured;
         }
 
