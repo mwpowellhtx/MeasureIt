@@ -67,6 +67,7 @@
     <Compile Include="Adapters\IPerformanceCounterCategoryInstallerContextAdapter.cs" />
     <Compile Include="Core\MemberInfoEqualityComparer.cs" />
     <Compile Include="Core\MethodInfoEqualityComparer.cs" />
+    <Compile Include="Core\CoreRegistrationExtensionMethods.cs" />
     <Compile Include="Core\TypeEqualityComparer.cs" />
     <Compile Include="Counters\TotalMemberAccessesPerformanceCounterAdapter.cs" />
     <Compile Include="Counters\PerformanceCounterCategoryAdapterBase.cs" />
