@@ -6,6 +6,7 @@ namespace MeasureIt
 {
     using Autofac;
     using Autofac.Extras.DynamicProxy;
+    using Castle.DynamicProxy;
     using Castle.Interception;
     using Castle.Interception.Measurement;
     using Discovery;
@@ -73,24 +74,55 @@ namespace MeasureIt
             return builder;
         }
 
-        public static ContainerBuilder EnableClassInterception<TImplementer, TService, TInterceptor>(
-            this ContainerBuilder builder, Action<ProxyGenerationOptions> optsProxyGeneration = null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TImplementer"></typeparam>
+        /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TInterceptor"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="optsProxyGeneration"></param>
+        /// <returns></returns>
+        public static ContainerBuilder EnableMeasurementInterception<TImplementer, TService, TInterceptor>(
+            this ContainerBuilder builder, Action<AutofacProxyGenerationOptions> optsProxyGeneration = null)
             where TImplementer : class
             where TInterceptor : class, IMeasurementInterceptor
         {
             optsProxyGeneration = optsProxyGeneration ?? delegate { };
 
-            var opts = new ProxyGenerationOptions();
+            var opts = new AutofacProxyGenerationOptions();
 
             optsProxyGeneration(opts);
 
+            // TODO: TBD: may want to derive this "feature" based on TImplementer/TService types instead...
+            const AutofacEnableInterceptionOption cls = AutofacEnableInterceptionOption.Class;
+            const AutofacEnableInterceptionOption intf = AutofacEnableInterceptionOption.Interface;
+
+            if (!((opts.EnableInterception & cls) == cls
+                || (opts.EnableInterception & intf) == intf))
+            {
+                const string message = "Expected an option for Autofac EnableInterception.";
+                throw new InvalidOperationException(message);
+            }
+
             var interceptorType = typeof(TInterceptor);
 
-            builder
+            var regBuilder = builder
                 .RegisterType<TImplementer>()
-                .As<TService>()
-                .EnableClassInterceptors(opts)
-                .InterceptedBy(interceptorType);
+                .As<TService>();
+
+            // TODO: TBD: whether to capture enable xyz interceptors (Type[] additionalInterfaces) args via options
+            if ((opts.EnableInterception & cls) == cls)
+            {
+                regBuilder.EnableClassInterceptors(opts);
+            }
+
+            if ((opts.EnableInterception & intf) == intf)
+            {
+                regBuilder.EnableInterfaceInterceptors(opts);
+            }
+
+            regBuilder.InterceptedBy(interceptorType);
 
             return builder;
         }
@@ -106,13 +138,13 @@ namespace MeasureIt
         /// <param name="optsProxyGeneration"></param>
         /// <returns></returns>
         public static T MeasureInstance<T, TInterceptor>(this IContainer container
-            , T obj, Action<ProxyGenerationOptions> optsProxyGeneration = null)
+            , T obj, Action<AutofacProxyGenerationOptions> optsProxyGeneration = null)
             where T : class
             where TInterceptor : class, IMeasurementInterceptor
         {
             optsProxyGeneration = optsProxyGeneration ?? delegate { };
 
-            var opts = new ProxyGenerationOptions();
+            var opts = new AutofacProxyGenerationOptions();
 
             optsProxyGeneration(opts);
 
