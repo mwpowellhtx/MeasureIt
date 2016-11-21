@@ -36,7 +36,7 @@ namespace MeasureIt.Discovery
         protected IEnumerable<IPerformanceCounterAdapter> CounterAdapters
         {
             get { return _counterAdapters; }
-            private set { _counterAdapters= (value ?? new List<IPerformanceCounterAdapter>()).ToArray(); }
+            private set { _counterAdapters = (value ?? new List<IPerformanceCounterAdapter>()).ToArray(); }
         }
 
         private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
