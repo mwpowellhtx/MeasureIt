@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MeasureIt.Discovery.Agents
 {
@@ -47,8 +48,21 @@ namespace MeasureIt.Discovery.Agents
         /// <param name="options"></param>
         /// <param name="exportedTypes"></param>
         /// <returns></returns>
-        protected abstract IEnumerable<T> DiscoverValues(IInstrumentationDiscoveryOptions options,
-            IEnumerable<Type> exportedTypes);
+        protected virtual IEnumerable<T> DiscoverValues(IInstrumentationDiscoveryOptions options,
+            IEnumerable<Type> exportedTypes)
+        {
+            /* If the end user is evaluating a discovery agent it is because discovery is
+             * desired, which requires exported types. */
+
+            // ReSharper disable once InvertIf
+            if (!exportedTypes.Any())
+            {
+                const string message = "Proper discovery requires one or more exported types.";
+                throw new ArgumentException(message, "exportedTypes");
+            }
+
+            yield break;
+        }
 
         public IEnumerator<T> GetEnumerator()
         {

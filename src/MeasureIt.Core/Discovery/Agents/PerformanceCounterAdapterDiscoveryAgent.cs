@@ -30,7 +30,14 @@ namespace MeasureIt.Discovery.Agents
         {
             var adapterType = typeof(IPerformanceCounterAdapter);
 
+            // There is nothing we use from the base class except to vet the parameters themselves.
+
+            // ReSharper disable once IteratorMethodResultIsIgnored, PossibleMultipleEnumeration
+            base.DiscoverValues(options, exportedTypes);
+
             // TODO: TBD: re-fit this one to include include inherited discernment
+
+            // ReSharper disable once PossibleMultipleEnumeration
             var types = exportedTypes.Where(
                 type => type.IsClass && !type.IsAbstract
                         && adapterType.IsAssignableFrom(type)
