@@ -52,12 +52,7 @@ namespace MeasureIt.Castle.Windsor
             {
                 var interfaceType = typeof(TInterface);
 
-                // Rule out whether TInterface is indeed an interface.
-                if (!interfaceType.IsInterface)
-                {
-                    var message = string.Format("Requires an Interface type instead of {0}", interfaceType.FullName);
-                    throw new InvalidOperationException(message);
-                }
+                interfaceType.VerifyIsInterface();
 
                 var interfaceReg = Component.For<TInterface>()
                     .ImplementedBy<TService>().LifestyleTransient();
