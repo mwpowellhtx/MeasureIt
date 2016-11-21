@@ -74,15 +74,23 @@ namespace MeasureIt
         }
 
         public static ContainerBuilder EnableClassInterception<TImplementer, TService, TInterceptor>(
-            this ContainerBuilder builder)
+            this ContainerBuilder builder, Action<ProxyGenerationOptions> optsProxyGeneration = null)
             where TImplementer : class
             where TInterceptor : class, IMeasurementInterceptor
         {
+            optsProxyGeneration = optsProxyGeneration ?? delegate { };
+
+            var opts = new ProxyGenerationOptions();
+
+            optsProxyGeneration(opts);
+
+            var interceptorType = typeof(TInterceptor);
+
             builder
                 .RegisterType<TImplementer>()
                 .As<TService>()
-                .EnableClassInterceptors()
-                .InterceptedBy(typeof(TInterceptor));
+                .EnableClassInterceptors(opts)
+                .InterceptedBy(interceptorType);
 
             return builder;
         }
@@ -102,7 +110,7 @@ namespace MeasureIt
             where T : class
             where TInterceptor : class, IMeasurementInterceptor
         {
-            optsProxyGeneration = optsProxyGeneration ?? (o => { });
+            optsProxyGeneration = optsProxyGeneration ?? delegate { };
 
             var opts = new ProxyGenerationOptions();
 
