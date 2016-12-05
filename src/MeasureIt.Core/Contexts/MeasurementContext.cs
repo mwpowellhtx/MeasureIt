@@ -1,95 +1,45 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace MeasureIt.Contexts
 {
     using Discovery;
 
+    // TODO: TBD: could potentially re-factor this into the Castle.Interception assembly...
     /// <summary>
     /// 
     /// </summary>
-    public class MeasurementContext : ContextBase, IMeasurementContext
+    public class MeasurementContext : MeasurementContextBase, IInterceptionMeasurementContext
     {
-        // ReSharper disable once NotAccessedField.Local
-        private readonly Random _rnd;
-
-        // ReSharper disable once NotAccessedField.Local
-        private readonly IInstrumentationDiscoveryOptions _options;
-
-        private readonly IEnumerable<IPerformanceMeasurementContext> _contexts;
-
-        public IPerformanceMeasurementDescriptor Descriptor { get; private set; }
-
         internal MeasurementContext(IInstrumentationDiscoveryOptions options,
             IPerformanceMeasurementDescriptor descriptor,
             params IPerformanceMeasurementContext[] contexts)
+            : base(options, descriptor, contexts)
         {
-            // TODO: TBD: find the Descriptor from where?
-            Descriptor = descriptor;
-
-            _rnd = options.RandomSeed.HasValue
-                ? new Random(options.RandomSeed.Value)
-                : new Random();
-
-            _options = options;
-            _contexts = contexts;
-        }
-
-        private class Gauge : Disposable
-        {
-            private readonly Stopwatch _stopwatch;
-
-            private readonly IEnumerable<IPerformanceMeasurementContext> _contexts;
-
-            internal Gauge(IEnumerable<IPerformanceMeasurementContext> contexts)
-            {
-                _stopwatch = new Stopwatch();
-                _contexts = contexts;
-            }
-
-            internal void Start()
-            {
-                foreach (var context in _contexts)
-                    context.BeginMeasurement();
-
-                if (_stopwatch.IsRunning)
-                    _stopwatch.Restart();
-                else
-                    _stopwatch.Start();
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                if (!IsDisposed && disposing)
-                {
-                    var elapsed = _stopwatch.Elapsed;
-
-                    foreach (var context in _contexts)
-                    {
-                        context.EndMeasurement(elapsed);
-                        context.Dispose();
-                    }
-                }
-
-                base.Dispose(disposing);
-            }
         }
 
         public void Measure(Action aspect)
         {
-            // TODO: TBD: not clear I would need anything else, descriptors, etc...
-            using (var gauge = new Gauge(_contexts))
-            {
-                gauge.Disposed += (sender, e) =>
-                {
-                };
+            // Reset the Error condition prior to any timed gauges.
+            Descriptor.SetError();
 
+            // TODO: TBD: not clear I would need anything else, descriptors, etc...
+            using (var gauge = new Gauge(Contexts))
+            {
                 // Do not actually start running until after we have setup.
                 gauge.Start();
 
-                aspect();
+                try
+                {
+                    // Try the aspect, providing an opportunity to measure the Error rate.
+                    aspect();
+                }
+                catch (Exception ex)
+                {
+                    Descriptor.SetError(ex);
+                    // At this level we throw.
+                    throw;
+                }
             }
         }
 
@@ -97,34 +47,29 @@ namespace MeasureIt.Contexts
         {
             return Task.Run(() =>
             {
-                using (var gauge = new Gauge(_contexts))
-                {
-                    gauge.Disposed += (sender, e) =>
-                    {
-                    };
+                // Reset the Error condition.
+                Descriptor.SetError();
 
+                using (var gauge = new Gauge(Contexts))
+                {
                     // Start running after setup.
                     gauge.Start();
 
-                    var aspect = aspectGetter();
+                    try
+                    {
+                        // Ditto the non-threaded Measure method.
+                        var aspect = aspectGetter();
 
-                    aspect.Wait();
+                        aspect.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        Descriptor.SetError(ex);
+                        // Also ditto the non-threaded Measure method.
+                        throw;
+                    }
                 }
             });
-        }
-
-        // TODO: TBD: how much of an active context needs to be disposed here...
-
-        protected override void Dispose(bool disposing)
-        {
-            if (!IsDisposed && disposing)
-            {
-                // Fine to Dispose the Contexts themselves, but avoid disposing the contexts.Adapters.
-                foreach (var context in _contexts)
-                    context.Dispose();
-            }
-
-            base.Dispose(disposing);
         }
     }
 }

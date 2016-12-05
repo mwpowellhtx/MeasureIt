@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace MeasureIt.Contexts
+﻿namespace MeasureIt.Contexts
 {
     /// <summary>
     /// 
@@ -13,18 +10,20 @@ namespace MeasureIt.Contexts
         /// Gets the Descriptor.
         /// </summary>
         IPerformanceMeasurementDescriptor Descriptor { get; }
+    }
 
+    internal static class MeasurementContextExtensionMethods
+    {
         /// <summary>
-        /// 
+        /// Returns whether the calling scope MayReturn depending on the nature of the
+        /// <paramref name="context"/>. Returning from the scope may not be appropriate in all use
+        /// cases, so hence the recommended, not mandatory, verbiage.
         /// </summary>
-        /// <param name="aspect"></param>
-        void Measure(Action aspect);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="aspectGetter"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        Task MeasureAsync(Func<Task> aspectGetter);
+        internal static bool MayReturn(this IMeasurementContext context)
+        {
+            return context == null || context.Descriptor.MayProceedUnabated;
+        }
     }
 }

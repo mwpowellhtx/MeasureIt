@@ -1,19 +1,37 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace MeasureIt.Discovery
 {
+    using Agents;
     using Contexts;
     using DataAttribute = CounterCreationDataAttribute;
 
+    // TODO: TBD: copy (or inherit) from this one extending into WebApi (and later, Mvc)...
     /// <summary>
     /// 
     /// </summary>
     public class RuntimeInstrumentationDiscoveryService : InstrumentationDiscoveryServiceBase
         , IRuntimeInstrumentationDiscoveryService
     {
+        private readonly Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent> _lazyMeasurementDiscoveryAgent;
+
+        private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
+
+        public override IEnumerable<IPerformanceMeasurementDescriptor> Measurements
+        {
+            get { return _measurements; }
+        }
+
+        private IEnumerable<IPerformanceMeasurementDescriptor> PrivateMeasurements
+        {
+            set { _measurements = (value ?? new List<IPerformanceMeasurementDescriptor>()).ToArray(); }
+        }
+
         private readonly IDictionary<Type, IPerformanceCounterCategoryAdapter> _categoryAdapters
             = new ConcurrentDictionary<Type, IPerformanceCounterCategoryAdapter>();
 
@@ -50,13 +68,26 @@ namespace MeasureIt.Discovery
         public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
             : base(options)
         {
+            PrivateMeasurements = null;
+
+            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
+            _lazyMeasurementDiscoveryAgent = new Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent>(
+                () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
+        }
+
+        private void OnDiscoverMeasurePerformanceDescriptors()
+        {
+            PrivateMeasurements = _lazyMeasurementDiscoveryAgent.Value.ToArray();
         }
 
         protected override void OnDiscovered()
         {
-            RegisterCategoryAdapters(CategoryAdapters, Measurements);
-
             base.OnDiscovered();
+
+            OnDiscoverMeasurePerformanceDescriptors();
+
+            RegisterCategoryAdapters(CategoryAdapters, Measurements);
         }
 
         /* TODO: TBD: we may need/want different discovery services for different purposes:

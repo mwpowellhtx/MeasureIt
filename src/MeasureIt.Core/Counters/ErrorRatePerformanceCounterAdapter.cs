@@ -29,6 +29,8 @@ namespace MeasureIt
 
         public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
+            // TODO: TBD: error rate, or errors per second, implies we also need the time component?
+            if (!descriptor.HasError) return;
             ErrorRateCounter.Increment();
         }
     }

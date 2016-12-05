@@ -6,7 +6,9 @@ namespace MeasureIt.Contexts
     /// <summary>
     /// 
     /// </summary>
-    public interface IMeasurementProvider
+    /// <typeparamref name="TContext"/>
+    public interface IMeasurementProvider<out TContext>
+        where TContext : class, IMeasurementContext
     {
         // TODO: TBD: do we need any other arguments?
         /// <summary>
@@ -15,6 +17,6 @@ namespace MeasureIt.Contexts
         /// <param name="targetType"></param>
         /// <param name="method"></param>
         /// <returns></returns>
-        IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo method);
+        TContext GetMeasurementContext(Type targetType, MethodInfo method);
     }
 }

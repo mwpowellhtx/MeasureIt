@@ -23,11 +23,11 @@ namespace MeasureIt.Discovery
 
         private readonly Lazy<IPerformanceCounterAdapterDiscoveryAgent> _lazyCounterAdapterDiscoveryAgent;
 
-        private readonly Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent> _lazyMeasurementDiscoveryAgent;
-
         protected readonly DiscoveryServiceExportedTypesGetterDelegate GetExportedTypes;
 
         private IEnumerable<IPerformanceCounterAdapter> _counterAdapters;
+
+        public abstract IEnumerable<IPerformanceMeasurementDescriptor> Measurements { get; }
 
         /// <summary>
         /// Gets the CounterAdapterDescriptors.
@@ -37,17 +37,6 @@ namespace MeasureIt.Discovery
         {
             get { return _counterAdapters; }
             private set { _counterAdapters = (value ?? new List<IPerformanceCounterAdapter>()).ToArray(); }
-        }
-
-        private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
-
-        public IEnumerable<IPerformanceMeasurementDescriptor> Measurements
-        {
-            get { return _measurements; }
-            private set
-            {
-                _measurements = (value ?? new List<IPerformanceMeasurementDescriptor>()).ToArray();
-            }
         }
 
         /// <summary>
@@ -70,11 +59,6 @@ namespace MeasureIt.Discovery
 
             _lazyCounterAdapterDiscoveryAgent = new Lazy<IPerformanceCounterAdapterDiscoveryAgent>(
                 () => new PerformanceCounterAdapterDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
-
-            _lazyMeasurementDiscoveryAgent = new Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent>(
-                () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
-
-            Measurements = null;
         }
 
         /// <summary>
@@ -87,18 +71,12 @@ namespace MeasureIt.Discovery
             CounterAdapters = _lazyCounterAdapterDiscoveryAgent.Value.ToArray();
         }
 
-        private void OnDiscoverMeasurePerformanceDescriptors()
-        {
-            Measurements = _lazyMeasurementDiscoveryAgent.Value.ToArray();
-        }
-
         /// <summary>
         /// <see cref="Discover"/> handler.
         /// </summary>
         protected virtual void OnDiscover()
         {
             OnDiscoverPerformanceCounterAdapters();
-            OnDiscoverMeasurePerformanceDescriptors();
         }
 
         /// <summary>

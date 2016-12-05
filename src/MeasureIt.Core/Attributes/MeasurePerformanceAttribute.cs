@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace MeasureIt
 {
@@ -40,7 +38,7 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets whether to PublishCounters.
         /// </summary>
         public bool PublishCounters
         {
@@ -49,7 +47,7 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets whether to ThrowPublishErrors.
         /// </summary>
         public bool ThrowPublishErrors
         {
@@ -58,7 +56,7 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets whether to PublishEvent.
         /// </summary>
         public bool PublishEvent
         {
@@ -67,7 +65,7 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Gets whether MayproceedUnabated.
         /// </summary>
         public bool MayProceedUnabated
         {
@@ -75,7 +73,7 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets the SampleRate.
         /// </summary>
         public double SampleRate
         {
@@ -105,20 +103,5 @@ namespace MeasureIt
         {
             _descriptor = new PerformanceMeasurementDescriptor(counterName, categoryType, adapterType, otherAdapterTypes);
         }
-
-        // TODO: TBD: not sure I want something like this on the attribute, but rather the Descriptors
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="attr"></param>
-        ///// <returns></returns>
-        //public static explicit operator PerformanceCounter(PerformanceCounterAttribute attr)
-        //{
-        //    var categoryName = attr.AdapterType.GetAttributeValue((CategoryNameAttribute a) => a.Name);
-        //    return string.IsNullOrEmpty(categoryName) ? null : attr.GetPerformanceCounter(categoryName);
-        //}
     }
-
-    //// TODO: TBD: may need to deal with this one?
-    //PerformanceCounter.CloseSharedResources();
 }

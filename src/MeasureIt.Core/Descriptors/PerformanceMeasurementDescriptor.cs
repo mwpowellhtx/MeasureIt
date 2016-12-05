@@ -265,6 +265,18 @@ namespace MeasureIt
             }
         }
 
+        public virtual Exception Exception { get; private set; }
+
+        public virtual bool HasError
+        {
+            get { return Exception != null; }
+        }
+
+        public virtual void SetError(Exception ex)
+        {
+            Exception = ex;
+        }
+
         public virtual IPerformanceMeasurementContext CreateContext()
         {
             return new PerformanceMeasurementContext(this, Adapters.ToArray());

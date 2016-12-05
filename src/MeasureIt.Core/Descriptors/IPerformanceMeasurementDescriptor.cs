@@ -44,6 +44,22 @@ namespace MeasureIt
         /// </summary>
         PerformanceCounterInstanceLifetime InstanceLifetime { get; set; }
 
+        /// <summary>
+        /// Gets the Exception which occurred during invocation of the target method.
+        /// </summary>
+        Exception Exception { get; }
+
+        /// <summary>
+        /// Gets whether the Descriptor Has <see cref="Exception"/>.
+        /// </summary>
+        bool HasError { get; }
+
+        /// <summary>
+        /// Sets the <see cref="Exception"/> which occurred during invocation of the target method.
+        /// </summary>
+        /// <param name="ex"></param>
+        void SetError(Exception ex = null);
+
         //// TODO: TBD: no need to expose this via interface...
         ///// <summary>
         ///// Returns a new set of <see cref="IPerformanceCounterAdapter"/> instances corresponding to the Descriptor.
