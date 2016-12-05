@@ -63,8 +63,13 @@
     <Compile Include="Contexts\ContextBase.cs" />
     <Compile Include="Contexts\IContext.cs" />
     <Compile Include="Adapters\IContextAdapter.cs" />
+    <Compile Include="Contexts\IInterceptionMeasurementContext.cs" />
     <Compile Include="Contexts\InstallerContext.cs" />
     <Compile Include="Adapters\IPerformanceCounterCategoryInstallerContextAdapter.cs" />
+    <Compile Include="Contexts\ITwoStageMeasurementContext.cs" />
+    <Compile Include="Contexts\ITwoStageMeasurementProvider.cs" />
+    <Compile Include="Contexts\MeasurementContextBase.cs" />
+    <Compile Include="Contexts\TwoStageMeasurementContext.cs" />
     <Compile Include="Core\MemberInfoEqualityComparer.cs" />
     <Compile Include="Core\MethodInfoEqualityComparer.cs" />
     <Compile Include="Core\CoreRegistrationExtensionMethods.cs" />
@@ -83,6 +88,7 @@
     <Compile Include="Descriptors\IMeasurementOptions.cs" />
     <Compile Include="Descriptors\IPublishingOptions.cs" />
     <Compile Include="Descriptors\ISamplingOptions.cs" />
+    <Compile Include="Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgentBase.cs" />
     <Compile Include="Discovery\IInstrumentationDiscoveryOptions.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Constants.cs" />
