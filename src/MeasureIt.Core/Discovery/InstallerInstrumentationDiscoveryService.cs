@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace MeasureIt.Discovery
+﻿namespace MeasureIt.Discovery
 {
     using Contexts;
 
