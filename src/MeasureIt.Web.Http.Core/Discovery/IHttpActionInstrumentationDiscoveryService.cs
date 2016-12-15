@@ -1,6 +1,6 @@
 namespace MeasureIt.Discovery
 {
-    public interface IHttpActionInstrumentationDiscoveryService : IInstrumentationDiscoveryService
+    public interface IHttpActionInstrumentationDiscoveryService : IInstallerInstrumentationDiscoveryService
     {
     }
 }

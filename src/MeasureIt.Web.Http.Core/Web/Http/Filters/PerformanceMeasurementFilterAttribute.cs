@@ -18,7 +18,7 @@ namespace MeasureIt.Web.Http.Filters
     {
         //public IHttpActionMeasurementProvider
 
-        protected PerformanceMeasurementFilterAttribute(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
+        public PerformanceMeasurementFilterAttribute(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
             : base(categoryType, adapterType, otherAdapterTypes)
         {
         }
@@ -76,7 +76,7 @@ namespace MeasureIt.Web.Http.Filters
                 if (measurementContext.MayReturn()) return;
 
                 // Start the Measurement ONLY. Leave Disposal for the End.
-                measurementContext.Start();
+                measurementContext.Start(actionContext.Response);
             }
             catch (Exception ex)
             {
