@@ -44,6 +44,7 @@ namespace MeasureIt.Discovery.Agents
                 // Equate X and Y based on their Method Base Definitions.
                 var xMethodBaseDef = x.Method.GetBaseDefinition();
                 var yMethodBaseDef = y.Method.GetBaseDefinition();
+                // This is when we want the Base Definition.
                 return _comparer.Equals(xMethodBaseDef, yMethodBaseDef);
             }
 
