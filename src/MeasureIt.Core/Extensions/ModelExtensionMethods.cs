@@ -90,11 +90,53 @@ namespace MeasureIt
             return field;
         }
 
+        internal static string BuildMethodSignature<TReturn, TRoot>(this string methodName
+            , Accessibility accessibility = Accessibility.None
+            , Virtuality virtuality = Virtuality.None
+            , PerformanceCounterType? counterType = null, params ParameterDescriptor[] args)
+        {
+            return methodName.BuildMethodSignature<TRoot>(typeof(TReturn), accessibility, virtuality, counterType, args);
+        }
+
+        private static string BuildParameterSignature(this ParameterDescriptor arg)
+        {
+            return string.Format(@"{0} {1}", arg.ParameterType, arg.Name);
+        }
+
+        private static string Append(this string s, string b)
+        {
+            return string.Join(@" ", s, b).Trim();
+        }
+
+        internal static string BuildMethodSignature<TRoot>(this string methodName, Type returnType
+            , Accessibility accessibility = Accessibility.None
+            , Virtuality virtuality = Virtuality.None
+            , PerformanceCounterType? counterType = null, params ParameterDescriptor[] args)
+        {
+            var decoration = !counterType.HasValue
+                ? null
+                : string.Format("{0}({1})", counterType.Value.GetCounterTypeDecoration(),
+                    counterType.Value.IsBaseCounterType() ? "Base" : string.Empty);
+
+            var signature = string.Format(@"{0} {1}.{2} ({3})",
+                returnType.FullName, typeof(TRoot).FullName, methodName,
+                string.Join(", ", args.Select(a => a.BuildParameterSignature()))).Trim();
+
+            signature = accessibility.GetStringRepresentation()
+                .Append(virtuality.GetStringRepresentation()).Append(signature);
+
+            return string.IsNullOrEmpty(decoration)
+                ? signature
+                : string.Format(@"[{0}] {1}", decoration, signature);
+        }
+
+        [Obsolete]
         internal static string PrefixName<T>(this string root, Func<Type, string> prefixer = null)
         {
             return root.PrefixName(typeof(T), prefixer);
         }
 
+        [Obsolete]
         internal static string PrefixName(this string root, Type type, Func<Type, string> prefixer = null)
         {
             prefixer = prefixer ?? (t => t.FullName);
@@ -103,12 +145,27 @@ namespace MeasureIt
 
         private static readonly IDictionary<PerformanceCounterType, string> CounterTypeSuffixes;
 
-        internal static string GetCounterTypeSuffixes(this PerformanceCounterType value)
+        internal static string GetCounterTypeDecoration(this PerformanceCounterType value)
         {
             var suffixes = CounterTypeSuffixes;
             return suffixes.ContainsKey(value) ? suffixes[value] : null;
         }
 
+        internal static bool IsBaseCounterType(this PerformanceCounterType value)
+        {
+            var bases = new[]
+            {
+                PerformanceCounterType.SampleBase
+                , PerformanceCounterType.AverageBase
+                , PerformanceCounterType.RawBase
+                , PerformanceCounterType.CounterMultiBase
+            };
+
+            return bases.Contains(value);
+        }
+
+        // TODO: TBD: may not be necessary any longer...
+        [Obsolete]
         internal static bool TryGetBaseSuffix(this PerformanceCounterType value, out string suffix)
         {
             const string @base = "Base";
@@ -133,16 +190,16 @@ namespace MeasureIt
         {
             // TODO: TBD: or perhaps there is a better way to inject naming conventions/strategies...
             {
-                const string numberofItemsHex = "NumberOfItems.Hex";
+                const string numberofItemsHex = "NumberOfItemsHex";
                 const string numberOfItems = "NumberOfItems";
-                const string delta = "delta";
-                const string sample = "sample";
+                const string delta = "Delta";
+                const string sample = "Sample";
                 const string countPerTimeInterval = "CountPerTimeInterval";
                 const string rateOfCountsPerSecond = "RateOfCountsPerSecond";
-                const string rawFraction = "raw fraction";
+                const string rawFraction = "RawFraction";
                 const string timer = "Timer";
                 const string timerHundredNanoseconds = "Timer100Ns";
-                const string sampleFraction = "sample fraction";
+                const string sampleFraction = "SampleFraction";
                 const string inverseTimer = "InverseTimer";
                 const string inverseTimerHundredNanoseconds = "InverseTimer100Ns";
                 const string multiTimer = "MultiTimer";
@@ -152,10 +209,10 @@ namespace MeasureIt
                 const string averageTimer = "AverageTimer";
                 const string elapsedTime = "ElapsedTime";
                 const string average = "Average";
-                const string sampleBase = "Sample.Base";
-                const string averageBase = "Average.Base";
-                const string rawBase = "Raw.Base";
-                const string multiBase = "Multi.Base";
+                //const string sampleBase = "Sample.Base";
+                //const string averageBase = "Average.Base";
+                //const string rawBase = "Raw.Base";
+                //const string multiBase = "Multi.Base";
 
                 var suffixes = new Dictionary<PerformanceCounterType, string>
                 {
@@ -207,14 +264,14 @@ namespace MeasureIt
                     {PerformanceCounterType.ElapsedTime, elapsedTime},
                     // average (64-bit)
                     {PerformanceCounterType.AverageCount64, average},
-                    // sample base
-                    {PerformanceCounterType.SampleBase, sampleBase},
-                    // average base
-                    {PerformanceCounterType.AverageBase, averageBase},
-                    // raw base
-                    {PerformanceCounterType.RawBase, rawBase},
-                    // counter multi-base
-                    {PerformanceCounterType.CounterMultiBase, multiBase}
+                    //// sample base
+                    //{PerformanceCounterType.SampleBase, sampleBase},
+                    //// average base
+                    //{PerformanceCounterType.AverageBase, averageBase},
+                    //// raw base
+                    //{PerformanceCounterType.RawBase, rawBase},
+                    //// counter multi-base
+                    //{PerformanceCounterType.CounterMultiBase, multiBase}
                 };
 
                 CounterTypeSuffixes = new ConcurrentDictionary<PerformanceCounterType, string>(suffixes);
