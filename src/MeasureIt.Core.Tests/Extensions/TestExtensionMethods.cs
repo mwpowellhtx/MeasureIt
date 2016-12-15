@@ -155,9 +155,7 @@ namespace MeasureIt
             this IEnumerable<ICounterCreationDataDescriptor> descriptors
             )
         {
-            // ReSharper disable once PossibleMultipleEnumeration
-            Assert.All(descriptors, d => Assert.NotNull(d.Name));
-
+            // Comparisons for things like Name do not mean anything at this level.
             // ReSharper disable once PossibleMultipleEnumeration
             return descriptors
                 .OrderBy(x => x.CounterType)
@@ -303,7 +301,7 @@ namespace MeasureIt
                         }
                         , y =>
                         {
-                            Assert.EndsWith("Base", y.Name);
+                            Assert.Contains("(Base)", y.Name);
                             Assert.Equal(averageBase, y.CounterType);
                             Assert.NotNull(y.Help);
                             Assert.Empty(y.Help);
