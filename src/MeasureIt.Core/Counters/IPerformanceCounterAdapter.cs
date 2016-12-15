@@ -10,6 +10,12 @@ namespace MeasureIt
     public interface IPerformanceCounterAdapter : IDisposable
     {
         /// <summary>
+        /// Gets the Name of the PerformanceCounterAdapter. Defaults to the class name,
+        /// sans the convention of stripping the PerformanceCounterAdapter suffix.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Gets or sets the Measurement.
         /// </summary>
         IPerformanceMeasurementDescriptor Measurement { get; set; }

@@ -13,11 +13,6 @@ namespace MeasureIt
         IPerformanceCounterAdapter Adapter { get; set; }
 
         /// <summary>
-        /// Gets or sets the Suffix.
-        /// </summary>
-        string Suffix { get; set; }
-
-        /// <summary>
         /// Gets the Name for the <see cref="CounterCreationData"/>.
         /// </summary>
         string Name { get; }

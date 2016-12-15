@@ -19,16 +19,6 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// Gets or sets the Suffix used in formulating the
-        /// <see cref="CounterCreationData.CounterName"/>.
-        /// </summary>
-        public string Suffix
-        {
-            get { return Descriptor.Suffix; }
-            set { Descriptor.Suffix = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the Help.
         /// </summary>
         public string Help
@@ -50,17 +40,8 @@ namespace MeasureIt
         /// Constructor
         /// </summary>
         public CounterCreationDataAttribute()
-            : this(null)
         {
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="suffix"></param>
-        public CounterCreationDataAttribute(string suffix)
-        {
-            _descriptor = new CounterCreationDataDescriptor {Suffix = suffix};
+            _descriptor = new CounterCreationDataDescriptor();
         }
     }
 }

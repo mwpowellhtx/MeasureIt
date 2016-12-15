@@ -24,6 +24,22 @@ namespace MeasureIt
             , IPerformanceCounterAdapter
         where TAdapter : PerformanceCounterAdapterBase<TAdapter>
     {
+        /// <summary>
+        /// Returns the Calculated <see cref="Name"/>.
+        /// </summary>
+        /// <returns></returns>
+        private string CalculateAdapterName()
+        {
+            var type = GetType();
+            const string performanceCounterAdapterSuffix = "PerformanceCounterAdapter";
+            return type.Name.Substring(0, type.Name.Length - performanceCounterAdapterSuffix.Length);
+        }
+
+        public virtual string Name
+        {
+            get { return CalculateAdapterName(); }
+        }
+
         public virtual IPerformanceMeasurementDescriptor Measurement { get; set; }
 
         private readonly IList<ICounterCreationDataDescriptor> _creationData;
