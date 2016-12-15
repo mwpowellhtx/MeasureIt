@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace MeasureIt
 {
@@ -15,6 +16,11 @@ namespace MeasureIt
             , IEquatable<IPerformanceMeasurementDescriptor>
     {
         /// <summary>
+        /// Gets or sets the Prefix. Prefix supersedes the <see cref="MemberSignature"/>.
+        /// </summary>
+        string Prefix { get; set; }
+
+        /// <summary>
         /// Gets or sets the CategoryType.
         /// </summary>
         Type CategoryType { get; set; }
@@ -25,9 +31,10 @@ namespace MeasureIt
         IPerformanceCounterCategoryAdapter CategoryAdapter { get; set; }
 
         /// <summary>
-        /// Gets or sets the Prefix.
+        /// Gets or sets the MemberSignature, either based on the <see cref="MethodInfo"/>,
+        /// or the set <see cref="Prefix"/>, which ever came first.
         /// </summary>
-        string Prefix { get; set; }
+        string MemberSignature { get; set; }
 
         /// <summary>
         /// Connect the <see cref="PerformanceCounter"/> with the adapters themselves.

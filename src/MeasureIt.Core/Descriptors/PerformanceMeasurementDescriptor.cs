@@ -19,25 +19,29 @@ namespace MeasureIt
     {
         private string _prefix;
 
-        private static string CalculatePrefix(string prefix, Type rootType, MethodInfo method)
+        public string Prefix
+        {
+            get { return _prefix; }
+            set { _prefix = value; }
+        }
+
+        private static string CalculateMemberSignature(ref string prefix, Type rootType, MethodInfo method)
         {
             const string defaultPrefix = "";
 
             // So we do not want DeclaringType or even ReflectedType here, but rather rootType.
-            return !string.IsNullOrEmpty(prefix)
+            return prefix = (!string.IsNullOrEmpty(prefix)
                 ? prefix
                 : (rootType == null || method == null
                     ? defaultPrefix
-                    : string.Join(".", rootType.FullName, method.Name));
+                    : method.GetMethodSignature(rootType, prefix)));
         }
 
-        public string Prefix
+        public string MemberSignature
         {
-            get { return CalculatePrefix(_prefix, RootType, Method); }
+            get { return CalculateMemberSignature(ref _prefix, RootType, Method); }
             set { value.SetIf(out _prefix, string.Empty, s => !string.IsNullOrEmpty(s)); }
         }
-
-        public bool ShouldIncludeCounterTypeInName { get; set; }
 
         private Type _categoryType;
 
@@ -167,7 +171,7 @@ namespace MeasureIt
             set
             {
                 _method = value;
-                Prefix = null;
+                // TODO: TBD: may need a Prefix after all? or just use its successor alone...
             }
         }
 
@@ -200,12 +204,11 @@ namespace MeasureIt
             Copy(other);
         }
 
+        // TODO: TBD: do nothing with Prefix?
         private void Initialize(string prefix, Type categoryType, Type adapterType,
             params Type[] otherAdapterTypes)
         {
             _adapters = new List<IPerformanceCounterAdapter>();
-
-            Prefix = prefix;
 
             CategoryType = categoryType;
             AdapterTypes = new[] {adapterType}.Concat(otherAdapterTypes);
@@ -227,7 +230,6 @@ namespace MeasureIt
             CategoryType = other.CategoryType;
             CategoryAdapter = other.CategoryAdapter;
 
-            Prefix = other.Prefix;
             InstanceLifetime = other.InstanceLifetime;
 
             RootType = other.RootType;
@@ -361,6 +363,112 @@ namespace MeasureIt
         public override object Clone()
         {
             return new PerformanceMeasurementDescriptor(this);
+        }
+    }
+
+    internal static class PerformanceMeasurementDescriptorExtensionMethods
+    {
+        /// <summary>
+        /// Returns the Signature corresponding with the <paramref name="parameter"/>.
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        private static string GetParameterSignature(this ParameterInfo parameter)
+        {
+            var attrib = string.Empty;
+            var keyword = string.Empty;
+            var defaultValue = string.Empty;
+
+            if (parameter.ParameterType.IsByRef)
+                keyword = parameter.IsOut ? "out" : "ref";
+            else if (parameter.IsOut)
+                attrib = "[Out]";
+            else if (parameter.IsIn)
+                attrib = "[In]";
+
+            if (parameter.GetCustomAttributes<ParamArrayAttribute>().Any()) keyword = "params";
+
+            // ReSharper disable once InvertIf
+            if (parameter.IsOptional)
+            {
+                /* I believe this will get the default case done. Assume first of all that
+                 * the Parameter may be Null. Then decide whether the Parameter is a String.
+                 * Otherwise, just take the Default As-Is. */
+
+                if (parameter.DefaultValue == null)
+                    defaultValue = @"null";
+                else if (parameter.DefaultValue is string)
+                    defaultValue = string.Format(@"""{0}""", parameter.DefaultValue);
+                else
+                    defaultValue = string.Format(@"{0}", parameter.DefaultValue);
+
+                if (!string.IsNullOrEmpty(defaultValue))
+                    defaultValue = @" = " + defaultValue;
+            }
+
+            // Mind the spacing amid elements.
+            return string.Join(@" ", attrib, keyword, parameter.ParameterType.FullName,
+                parameter.Name, defaultValue).Trim();
+        }
+
+        private static string Append(this string s, string t)
+        {
+            return string.Join(@" ", s, t).Trim();
+        }
+
+        // TODO: TBD: include visibility...
+        /// <summary>
+        /// Returns the Signature corresponding with the <paramref name="method"/>.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="rootType"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        internal static string GetMethodSignature(this MethodInfo method, Type rootType, string prefix = null)
+        {
+            var accessibility = string.Empty;
+            var virtuality = string.Empty;
+
+            const string @public = "public";
+            const string @private = "private";
+            const string @protected = "protected";
+            const string @internal = "internal";
+
+            const string @sealed = "sealed";
+            const string @override = "override";
+            const string @virtual = "virtual";
+
+            if (method.IsPrivate)
+                accessibility = accessibility.Append(@private);
+            // TODO: TBD: may need/want to leverage IsFamilyAnd/OrAssembly...
+            if (method.IsFamily)
+                accessibility = accessibility.Append(@protected);
+            if (method.IsAssembly)
+                accessibility = accessibility.Append(@internal);
+            if (method.IsPublic)
+                accessibility = accessibility.Append(@public);
+
+            if (method.IsFinal)
+                virtuality = virtuality.Append(@sealed);
+            if (method.GetBaseDefinition().DeclaringType != method.DeclaringType)
+                virtuality = virtuality.Append(@override);
+            else if (method.IsVirtual)
+                virtuality = virtuality.Append(@virtual);
+
+            const string dot = @".";
+
+            var fullName = string.IsNullOrEmpty(prefix)
+                ? string.Join(dot, rootType.FullName, method.Name)
+                : string.Join(dot, rootType.FullName, prefix, method.Name);
+
+            var args = method.GetParameters().Select(a => a.GetParameterSignature());
+
+            var sig = accessibility
+                .Append(virtuality)
+                .Append(string.Join(@" ", method.ReturnType.FullName, fullName,
+                    string.Join(string.Join(", ", args), @"(", @")")));
+
+            return sig;
         }
     }
 }

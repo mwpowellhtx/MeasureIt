@@ -9,11 +9,6 @@ namespace MeasureIt
     public interface IMeasurementOptions : IPublishingOptions, ISamplingOptions
     {
         /// <summary>
-        /// Gets or sets whether ShouldIncludeCounterTypeInName.
-        /// </summary>
-        bool ShouldIncludeCounterTypeInName { get; set; }
-
-        /// <summary>
         /// Gets or sets the RootType. Due to the strategy in terms of how
         /// </summary>
         Type RootType { get; set; }
