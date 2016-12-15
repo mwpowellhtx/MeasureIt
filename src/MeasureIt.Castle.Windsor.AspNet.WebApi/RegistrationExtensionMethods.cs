@@ -76,17 +76,10 @@ namespace MeasureIt.Castle.Windsor
                 interfaceType.VerifyIsInterface();
 
                 var interfaceReg = Component.For<TInterface>()
-                    .ImplementedBy<TService>().LifestyleTransient();
-
-                var discoveryServiceType = typeof(IRuntimeInstrumentationDiscoveryService);
-
-                // Register the Runtime Instrumentation when necessary.
-                if (interfaceType != discoveryServiceType
-                    && discoveryServiceType.IsAssignableFrom(interfaceType))
-                {
-                    // IRuntimeInstrumentationDiscoveryService is required by InterceptionMeasurementProvider.
-                    interfaceReg.Forward<TInterface, IRuntimeInstrumentationDiscoveryService>();
-                }
+                    .ImplementedBy<TService>().LifestyleTransient()
+                    .Forward<TInterface, IRuntimeInstrumentationDiscoveryService>()
+                    .Forward<TInterface, IInstallerInstrumentationDiscoveryService>()
+                    ;
 
                 container.Register(interfaceReg);
             }
