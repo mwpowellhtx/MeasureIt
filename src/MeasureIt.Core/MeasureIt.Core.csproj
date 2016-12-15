@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -115,6 +116,7 @@
     <Compile Include="Discovery\InstrumentationDiscoveryOptions.cs" />
     <Compile Include="Extensions\ModelExtensionMethods.cs" />
     <Compile Include="Extensions\EnumExtensionMethods.cs" />
+    <Compile Include="Extensions\ParameterDescriptor.cs" />
     <Compile Include="Extensions\ReflectionExtensionMethods.cs" />
     <Compile Include="Contexts\IInstallerContext.cs" />
     <Compile Include="Contexts\IMeasurementContext.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Contexts\MeasurementContext.cs" />
     <Compile Include="Contexts\MeasurementProviderBase.cs" />
     <Compile Include="Contexts\PerformanceMeasurementContext.cs" />
+    <Compile Include="Extensions\SignatureEnums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
