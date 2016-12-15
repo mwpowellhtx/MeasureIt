@@ -60,6 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="IWindsorHttpControllerActivator.cs" />
     <Compile Include="RegistrationExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
