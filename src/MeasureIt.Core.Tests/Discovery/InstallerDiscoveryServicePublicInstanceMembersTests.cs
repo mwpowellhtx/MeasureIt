@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -72,9 +71,12 @@ namespace MeasureIt.Discovery
                     const string virtualMethodDecoratedInDerivedClass = "VirtualMethodDecoratedInDerivedClass";
                     const string virtualMethodDecorationOvershadowed = "VirtualMethodDecorationOvershadowed";
 
-                    const string dot = ".";
+                    const Accessibility @public = Accessibility.Public;
+
+                    const Virtuality @virtual = Virtuality.Virtual;
+                    const Virtuality @override = Virtuality.Override;
+
                     const string empty = "";
-                    const string @base = "Base";
 
 #if DEBUG
                     //var names = orderedData.Select(x => x.Name).OrderBy(x => x).ToArray();
@@ -86,96 +88,99 @@ namespace MeasureIt.Discovery
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(virtualMethodDecorationOvershadowed.PrefixName<SubjectClass>(), d.Name);
+                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, @virtual, d.CounterType), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(virtualMethodDecoratedInBaseOnly.PrefixName<SubjectClass>(), d.Name);
+                            Assert.Equal(virtualMethodDecoratedInBaseOnly.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, @virtual, averageTimer), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(methodDeclaredInBaseOnly.PrefixName<SubjectClass>(), d.Name);
+                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, counterType: averageTimer), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(virtualMethodDecorationOvershadowed
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageTimer), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(virtualMethodDecoratedInDerivedClass
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(virtualMethodDecoratedInDerivedClass.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageTimer), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(methodDeclaredInDerivedOnly
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(methodDeclaredInDerivedOnly.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageTimer), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(methodDeclaredInBaseOnly
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageTimer), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, virtualMethodDecorationOvershadowed, @base)
-                                .PrefixName<SubjectClass>(), d.Name);
+                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, @virtual, averageBase), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, virtualMethodDecoratedInBaseOnly, @base)
-                                .PrefixName<SubjectClass>(), d.Name);
+                            Assert.Equal(virtualMethodDecoratedInBaseOnly.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, @virtual, averageBase), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, methodDeclaredInBaseOnly, @base)
-                                .PrefixName<SubjectClass>(), d.Name);
+                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, counterType: averageBase), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, virtualMethodDecorationOvershadowed, @base)
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageBase), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, virtualMethodDecoratedInDerivedClass, @base)
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(virtualMethodDecoratedInDerivedClass.BuildMethodSignature
+                                <SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageBase), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, methodDeclaredInDerivedOnly, @base)
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(methodDeclaredInDerivedOnly.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageBase), d.Name);
                         }
                         , d =>
                         {
                             Assert.Equal(empty, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(string.Join(dot, methodDeclaredInBaseOnly, @base)
-                                .PrefixName<SubjectClassWithNonPublicMethods>(), d.Name);
+                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageBase), d.Name);
                         }
                         );
                 }
@@ -187,41 +192,42 @@ namespace MeasureIt.Discovery
         {
             var ordered = descriptors.Order().ToArray();
 
-            var voidType = typeof(void);
-
             const string methodDeclaredInBaseOnly = "MethodDeclaredInBaseOnly";
             const string methodDeclaredInDerivedOnly = "MethodDeclaredInDerivedOnly";
             const string virtualMethodDecoratedInBaseOnly = "VirtualMethodDecoratedInBaseOnly";
             const string virtualMethodDecoratedInDerivedClass = "VirtualMethodDecoratedInDerivedClass";
             const string virtualMethodDecorationOvershadowed = "VirtualMethodDecorationOvershadowed";
 
-            //const string empty = "";
-            //const string dot = ".";
-            //const string @base = "Base";
+            const Accessibility @public = Accessibility.Public;
+
+            const Virtuality @virtual = Virtuality.Virtual;
 
             Assert.Collection(ordered
                 , d =>
                 {
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClass>();
-                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, methodDeclaredInBaseOnly);
-                    Assert.Equal(methodDeclaredInBaseOnly.PrefixName<SubjectClass>(), d.Prefix);
+                    d.Method.Verify<SubjectClass, SubjectClass>(VoidType, methodDeclaredInBaseOnly);
+                    Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                        SubjectClass>(VoidType, @public), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClass>();
-                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, virtualMethodDecoratedInBaseOnly);
-                    Assert.Equal(virtualMethodDecoratedInBaseOnly.PrefixName<SubjectClass>(), d.Prefix);
+                    d.Method.Verify<SubjectClass, SubjectClass>(VoidType, virtualMethodDecoratedInBaseOnly);
+                    Assert.Equal(virtualMethodDecoratedInBaseOnly.BuildMethodSignature<
+                        SubjectClass>(VoidType, @public, @virtual), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
                     d.VerifyPublishingOptions().VerifySamplingOptions(expectedReadOnly: true);
                     d.RootType.Confirm<SubjectClass>();
-                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, virtualMethodDecorationOvershadowed);
-                    Assert.Equal(virtualMethodDecorationOvershadowed.PrefixName<SubjectClass>(), d.Prefix);
+                    d.Method.Verify<SubjectClass, SubjectClass>(VoidType, virtualMethodDecorationOvershadowed);
+                    Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                        SubjectClass>(VoidType, @public, @virtual), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
@@ -229,16 +235,18 @@ namespace MeasureIt.Discovery
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
-                        , SubjectClass>(voidType, methodDeclaredInBaseOnly);
-                    Assert.Equal(methodDeclaredInBaseOnly.PrefixName<SubjectClassWithNonPublicMethods>(), d.Prefix);
+                        , SubjectClass>(VoidType, methodDeclaredInBaseOnly);
+                    Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                        SubjectClassWithNonPublicMethods>(VoidType, @public), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
                 {
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
-                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, virtualMethodDecoratedInDerivedClass);
-                    Assert.Equal(virtualMethodDecoratedInDerivedClass.PrefixName<SubjectClassWithNonPublicMethods>(), d.Prefix);
+                    d.Method.Verify<SubjectClass, SubjectClass>(VoidType, virtualMethodDecoratedInDerivedClass);
+                    Assert.Equal(virtualMethodDecoratedInDerivedClass.BuildMethodSignature<
+                        SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
@@ -246,9 +254,9 @@ namespace MeasureIt.Discovery
                     d.VerifyPublishingOptions(false, false, true)
                         .VerifySamplingOptions(0.25d, false);
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
-                    d.Method.Verify<SubjectClass, SubjectClass>(voidType, virtualMethodDecorationOvershadowed);
-                    Assert.Equal(virtualMethodDecorationOvershadowed
-                        .PrefixName<SubjectClassWithNonPublicMethods>(), d.Prefix);
+                    d.Method.Verify<SubjectClass, SubjectClass>(VoidType, virtualMethodDecorationOvershadowed);
+                    Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                        SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 , d =>
@@ -256,9 +264,9 @@ namespace MeasureIt.Discovery
                     d.VerifyPublishingOptions().VerifySamplingOptions();
                     d.RootType.Confirm<SubjectClassWithNonPublicMethods>();
                     d.Method.Verify<SubjectClassWithNonPublicMethods
-                        , SubjectClassWithNonPublicMethods>(voidType, methodDeclaredInDerivedOnly);
-                    Assert.Equal(methodDeclaredInDerivedOnly
-                        .PrefixName<SubjectClassWithNonPublicMethods>(), d.Prefix);
+                        , SubjectClassWithNonPublicMethods>(VoidType, methodDeclaredInDerivedOnly);
+                    Assert.Equal(methodDeclaredInDerivedOnly.BuildMethodSignature<
+                        SubjectClassWithNonPublicMethods>(VoidType, @public), d.MemberSignature);
                     d.VerifyCounterCategoryAdapter<DefaultPerformanceCounterCategoryAdapter>();
                 }
                 );
