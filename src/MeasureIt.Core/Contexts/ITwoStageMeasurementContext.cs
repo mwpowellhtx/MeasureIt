@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 
 namespace MeasureIt.Contexts
 {
@@ -10,7 +11,8 @@ namespace MeasureIt.Contexts
         /// <summary>
         /// Starts a new Measurement.
         /// </summary>
-        void Start();
+        /// <param name="response"></param>
+        void Start(HttpResponseMessage response);
 
         /// <summary>
         /// Stops the Measurement Context from running.

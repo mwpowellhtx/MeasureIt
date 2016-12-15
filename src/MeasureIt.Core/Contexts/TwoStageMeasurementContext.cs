@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 
 namespace MeasureIt.Contexts
 {
@@ -26,9 +27,10 @@ namespace MeasureIt.Contexts
 
         private Gauge _gauge;
 
-        public virtual void Start()
+        public virtual void Start(HttpResponseMessage response)
         {
             _gauge = new Gauge(Contexts);
+            // TODO: TBD: signal via the response that we are Starting to Gauge the Measurement Context.
             _gauge.Start();
         }
 
