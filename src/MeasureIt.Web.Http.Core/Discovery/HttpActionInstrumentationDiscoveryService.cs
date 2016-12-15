@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using MeasureIt.Contexts;
 
 namespace MeasureIt.Discovery
 {
@@ -12,7 +13,7 @@ namespace MeasureIt.Discovery
     /// <summary>
     /// 
     /// </summary>
-    public class HttpActionInstrumentationDiscoveryService : InstrumentationDiscoveryServiceBase
+    public class HttpActionInstrumentationDiscoveryService : RuntimeInstrumentationDiscoveryService
         , IHttpActionInstrumentationDiscoveryService
     {
         private readonly Lazy<IMeasurementFilterDiscoveryAgent> _lazyMeasurementFilterDiscoveryAgent;
@@ -57,6 +58,15 @@ namespace MeasureIt.Discovery
             base.OnDiscover();
 
             OnDiscoverMeasurementFilterPerformanceDescriptors();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IInstallerContext GetInstallerContext()
+        {
+            return new InstallerContext(Options, this);
         }
     }
 }

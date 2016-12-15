@@ -58,7 +58,7 @@
     <Compile Include="Discovery\Agents\IMeasurementFilterDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\MeasurementFilterDiscoveryAgent.cs" />
     <Compile Include="Discovery\IHttpActionInstrumentationDiscoveryService.cs" />
-    <Compile Include="Discovery\MeasurementFilterDiscoveryAgent.cs" />
+    <Compile Include="Discovery\HttpActionInstrumentationDiscoveryService.cs" />
     <Compile Include="Extensions\WebExtensionMethods.cs" />
     <Compile Include="Web\Http\Filters\PerformanceMeasurementFilterAttribute.cs" />
     <Compile Include="Web\Http\Filters\MeasurementFilterAttributeBase.cs" />
