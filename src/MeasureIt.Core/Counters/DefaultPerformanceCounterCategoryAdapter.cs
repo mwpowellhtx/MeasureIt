@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace MeasureIt
+﻿namespace MeasureIt
 {
     /// <summary>
     /// 
