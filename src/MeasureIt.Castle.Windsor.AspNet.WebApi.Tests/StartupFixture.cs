@@ -5,9 +5,9 @@ namespace MeasureIt.Castle.Windsor.AspNet.WebApi
     using Kingdom.Castle.Windsor.Web.Http;
     using Owin;
     using global::Castle.Windsor;
-    using HttpStartup = Startup;
+    using MeasureItStartup = Startup;
 
-    public class StartupFixture : HttpStartup
+    public class StartupFixture : MeasureItStartup
     {
         protected IWindsorContainer Container { get; private set; }
 
