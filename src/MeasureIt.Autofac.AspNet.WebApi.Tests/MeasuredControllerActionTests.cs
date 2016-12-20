@@ -1,9 +1,9 @@
 using System.Web.Http;
 
-namespace MeasureIt.Castle.Windsor.AspNet.WebApi
+namespace MeasureIt.Autofac.AspNet.WebApi
 {
-    using Kingdom.Castle.Windsor.Web.Http.Dependencies;
     using Xunit;
+    using global::Autofac.Integration.WebApi;
 
     public class MeasuredControllerActionTests : MeasuredControllerActionTestFixtureBase<MeasuredStartupFixture>
     {
@@ -14,9 +14,11 @@ namespace MeasureIt.Castle.Windsor.AspNet.WebApi
             // Verify a couple of handshakey things...
             Assert.NotNull(config);
             Assert.NotNull(config.DependencyResolver);
-            Assert.IsType<WindsorDependencyResolver>(config.DependencyResolver);
+            Assert.IsType<AutofacWebApiDependencyResolver>(config.DependencyResolver);
 
-            // TODO: TBD: ditto Autofac WebApi testing...
+            Assert.NotNull(config);
+
+            // TODO: TBD: is there a better generally acceptable way to get at this config? or otherwise build up a server such that we have access to the startup config?
             return config;
         }
     }

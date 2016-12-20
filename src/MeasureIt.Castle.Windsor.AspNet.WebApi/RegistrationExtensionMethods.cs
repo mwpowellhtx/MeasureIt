@@ -12,10 +12,6 @@ namespace MeasureIt.Castle.Windsor
     using global::Castle.MicroKernel.Registration;
     using global::Castle.Windsor;
 
-    public class t : ApiController
-    {
-    }
-
     /// <summary>
     /// 
     /// </summary>
@@ -39,6 +35,7 @@ namespace MeasureIt.Castle.Windsor
                 );
         }
 
+        // TODO: TBD: requiring IHttpActionInstrumentationDiscoveryService means that we will need to reference that as a package as well...
         /// <summary>
         /// Enables runtime interception using <typeparamref name="TService"/> via
         /// <paramref name="container"/>.

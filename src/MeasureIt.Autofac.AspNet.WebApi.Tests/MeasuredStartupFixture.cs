@@ -1,15 +1,20 @@
 ﻿using System.Web.Http;
 
-namespace MeasureIt.Castle.Windsor.AspNet.WebApi
+namespace MeasureIt.Autofac.AspNet.WebApi
 {
     using Controllers;
     using Discovery;
     using Owin;
     using Web.Http.Interception;
+    using global::Autofac;
+    using global::Autofac.Integration.WebApi;
+    using MeasureItStartup = Startup;
 
-    public class MeasuredStartupFixture : StartupFixture
+    public class MeasuredStartupFixture : MeasureItStartup
     {
         internal static HttpConfiguration InternalConfig { get; private set; }
+
+        protected IContainer Container { get; private set; }
 
         private void Install<TDiscoveryService>()
             where TDiscoveryService : class, IInstallerInstrumentationDiscoveryService
@@ -23,24 +28,24 @@ namespace MeasureIt.Castle.Windsor.AspNet.WebApi
             }
         }
 
+
         protected override void OnConfiguration(IAppBuilder app, HttpConfiguration config)
         {
-            /* TODO: TBD: got this pretty far today: now we have a situation where the counter naming convention reveals a conflict over method names/resolutions...
-             * Should be easy to resolve with a better strategy, or one that is sensitive to the full signature... */
-
-            // We need to configure basic startup features as well.
             base.OnConfiguration(app, config);
 
             InternalConfig = config;
 
-            // Followed by enabling Api measurements via Container.
-            Container.EnableApiMeasurements<
+            var builder = new ContainerBuilder();
+
+            builder.RegisterApiControllers(typeof(MeasuredController).Assembly);
+
+            builder.EnableApiMeasurements<
                 IHttpActionInstrumentationDiscoveryService
                 , HttpActionInstrumentationDiscoveryService
                 , HttpActionMeasurementProvider>(o =>
                 {
-                    // TODO: TBD: not expecting installer to fail, per se
-                    // TODO: TBD: there are doubts whether we need to flag this after all...
+                    //// TODO: TBD: not expecting installer to fail, per se
+                    //// TODO: TBD: there are doubts whether we need to flag this after all...
                     o.ThrowOnInstallerFailure = false;
 
                     o.Assemblies = new[]
@@ -50,10 +55,18 @@ namespace MeasureIt.Castle.Windsor.AspNet.WebApi
                     };
                 });
 
+            var container = Container = builder.Build();
+
             Install<IInstallerInstrumentationDiscoveryService>();
             Install<IHttpActionInstrumentationDiscoveryService>();
-        }
 
-        // TODO: TBD: OnDispose?
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+            config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                "DefaultApi", "api/{controller}/{action}/{value}",
+                new {action = "get", value = RouteParameter.Optional});
+        }
     }
 }

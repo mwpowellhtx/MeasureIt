@@ -1,4 +1,4 @@
-namespace MeasureIt.Castle.Windsor.AspNet.WebApi
+namespace MeasureIt.Autofac.AspNet.WebApi
 {
     public class UnmeasuredControllerActionTests : UnmeasuredControllerActionTestFixtureBase<StartupFixture>
     {

@@ -1,4 +1,4 @@
-﻿namespace MeasureIt.Castle.Windsor.AspNet.WebApi.Counters
+﻿namespace MeasureIt.Counters
 {
     public class WebApiPerformanceCounterCategoryAdapter : PerformanceCounterCategoryAdapterBase
     {
