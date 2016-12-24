@@ -19,14 +19,40 @@ namespace MeasureIt
     public static class RegistrationExtensionMethods
     {
         /// <summary>
-        /// 
+        /// Enables Measurements given the configuration represented by
+        /// <typeparamref name="TInterface"/> and <typeparamref name="TService"/>.
+        /// <see cref="MeasurementInterceptor"/> is assumed to be the
+        /// <see cref="IMeasurementInterceptor"/> implementation.
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
-        /// <typeparam name="TInterceptor"></typeparam>
         /// <param name="builder"></param>
         /// <param name="optsCreated"></param>
         /// <returns></returns>
+        /// <see cref="EnableMeasurements{TInterface,TService,TInterceptor}"/>
+        public static ContainerBuilder EnableMeasurements<TInterface, TService>(
+            this ContainerBuilder builder
+            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            where TInterface : class, IRuntimeInstrumentationDiscoveryService
+            where TService : class, TInterface
+        {
+            builder.EnableMeasurements<TInterface, TService, MeasurementInterceptor>(optsCreated);
+            return builder;
+        }
+
+        /// <summary>
+        /// Enables Measurements given the configuration represented by
+        /// <typeparamref name="TInterface"/>, <typeparamref name="TService"/>,
+        /// and <typeparamref name="TInterceptor"/>.
+        /// </summary>
+        /// <typeparam name="TInterface">This is the interface implemented by <typeparamref name="TService"/>.</typeparam>
+        /// <typeparam name="TService">Service represents a concrete implementation of <typeparamref name="TInterface"/>.</typeparam>
+        /// <typeparam name="TInterceptor">This is the concrete implementation of <see cref="IMeasurementInterceptor"/>.
+        /// This is usually <see cref="MeasurementInterceptor"/>, but can be your own implementation.</typeparam>
+        /// <param name="builder"></param>
+        /// <param name="optsCreated"></param>
+        /// <returns></returns>
+        /// <see cref="EnableMeasurements{TInterface,TService}"/>
         public static ContainerBuilder EnableMeasurements<TInterface, TService, TInterceptor>(
             this ContainerBuilder builder
             , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
@@ -34,7 +60,7 @@ namespace MeasureIt
             where TService : class, TInterface
             where TInterceptor : class, IMeasurementInterceptor
         {
-            optsCreated = optsCreated ?? (delegate { });
+            optsCreated = optsCreated ?? delegate { };
 
             {
                 builder.RegisterType<InstrumentationDiscoveryOptions>()
@@ -83,6 +109,7 @@ namespace MeasureIt
         /// <param name="builder"></param>
         /// <param name="optsProxyGeneration"></param>
         /// <returns></returns>
+        /// <exception cref="InvalidOperationException">Thrown when options are insufficient to proceed.</exception>
         public static ContainerBuilder EnableMeasurementInterception<TImplementer, TService, TInterceptor>(
             this ContainerBuilder builder, Action<AutofacProxyGenerationOptions> optsProxyGeneration = null)
             where TImplementer : class
