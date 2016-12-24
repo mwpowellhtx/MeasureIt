@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.13.0.*")]
 [assembly: AssemblyFileVersion("1.13.0.0")]
 
+// bogus placeholder
 [assembly: InternalsVisibleTo("MeasureIt.Castle.Interception")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Core")]
 [assembly: InternalsVisibleTo("MeasureIt.Core.Tests")]
