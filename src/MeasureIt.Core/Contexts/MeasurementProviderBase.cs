@@ -24,6 +24,13 @@ namespace MeasureIt.Contexts
             Options = options;
         }
 
+        /// <summary>
+        /// Returns the <typeparamref name="TContext"/> corresponding with the Provider,
+        /// <paramref name="targetType"/> and <paramref name="method"/>.
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         public abstract TContext GetMeasurementContext(Type targetType, MethodInfo method);
     }
 }

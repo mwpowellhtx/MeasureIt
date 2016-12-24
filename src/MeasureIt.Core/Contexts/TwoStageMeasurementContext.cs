@@ -27,6 +27,12 @@ namespace MeasureIt.Contexts
 
         private Gauge _gauge;
 
+        // TODO: TBD: is having a reference to HttpResponseMessage a good thing here? may want to be careful of that, especially with .NET Core work going on...
+   
+        /// <summary>
+        /// Starts the Context begin evaluated given a <paramref name="response"/>.
+        /// </summary>
+        /// <param name="response"></param>
         public virtual void Start(HttpResponseMessage response)
         {
             _gauge = new Gauge(Contexts);
@@ -34,17 +40,29 @@ namespace MeasureIt.Contexts
             _gauge.Start();
         }
 
+        /// <summary>
+        /// Stops the Context from being evaluated.
+        /// </summary>
+        /// <returns></returns>
         public virtual ITwoStageMeasurementContext Stop()
         {
             _gauge.Stop();
             return this;
         }
 
+        /// <summary>
+        /// Sets the Error to the <paramref name="ex"/>.
+        /// </summary>
+        /// <param name="ex"></param>
         public virtual void SetError(Exception ex)
         {
             Descriptor.SetError(ex);
         }
 
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (!IsDisposed && disposing)

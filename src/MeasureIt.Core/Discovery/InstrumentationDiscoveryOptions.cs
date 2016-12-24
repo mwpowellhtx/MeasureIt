@@ -9,16 +9,34 @@ namespace MeasureIt.Discovery
     /// </summary>
     public class InstrumentationDiscoveryOptions: IInstrumentationDiscoveryOptions
     {
+        /// <summary>
+        /// Gets or sets the RandomSeed.
+        /// </summary>
         public int? RandomSeed { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether to ThrowOnInstallerFailure.
+        /// </summary>
         public bool ThrowOnInstallerFailure { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether ot IncludeInherited.
+        /// </summary>
         public bool IncludeInherited { get; set; }
 
+        /// <summary>
+        /// Gets or sets the ConstructorBindingAttr.
+        /// </summary>
         public BindingFlags ConstructorBindingAttr { get; set; }
 
+        /// <summary>
+        /// Gets or sets the MethodBindingAttr.
+        /// </summary>
         public BindingFlags MethodBindingAttr { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Assemblies.
+        /// </summary>
         public IEnumerable<Assembly> Assemblies { get; set; }
 
         /// <summary>

@@ -83,6 +83,10 @@ namespace MeasureIt.Contexts
                 _stopwatch.Stop();
             }
 
+            /// <summary>
+            /// Disposes the object.
+            /// </summary>
+            /// <param name="disposing"></param>
             protected override void Dispose(bool disposing)
             {
                 if (!IsDisposed && disposing)
@@ -100,6 +104,10 @@ namespace MeasureIt.Contexts
             }
         }
 
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (!IsDisposed && disposing)

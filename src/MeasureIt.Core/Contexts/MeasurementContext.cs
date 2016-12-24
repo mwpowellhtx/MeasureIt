@@ -18,6 +18,10 @@ namespace MeasureIt.Contexts
         {
         }
 
+        /// <summary>
+        /// Measures the <paramref name="aspect"/>.
+        /// </summary>
+        /// <param name="aspect"></param>
         public void Measure(Action aspect)
         {
             // Reset the Error condition prior to any timed gauges.
@@ -43,6 +47,11 @@ namespace MeasureIt.Contexts
             }
         }
 
+        /// <summary>
+        /// Measures the aspect retrieved by the <paramref name="aspectGetter"/> asynchronously.
+        /// </summary>
+        /// <param name="aspectGetter"></param>
+        /// <returns></returns>
         public Task MeasureAsync(Func<Task> aspectGetter)
         {
             return Task.Run(() =>

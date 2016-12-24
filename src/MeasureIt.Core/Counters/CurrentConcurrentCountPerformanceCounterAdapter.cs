@@ -22,11 +22,20 @@ namespace MeasureIt
             get { return Counters.SingleOrDefault(x => x.CounterType == CountType); }
         }
 
+        /// <summary>
+        /// Begins the Measururement.
+        /// </summary>
+        /// <param name="descriptor"></param>
         public override void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)
         {
             CountCounter.Increment();
         }
 
+        /// <summary>
+        /// Ends the Measurement.
+        /// </summary>
+        /// <param name="elapsed"></param>
+        /// <param name="descriptor"></param>
         public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
             CountCounter.Decrement();

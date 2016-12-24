@@ -93,6 +93,12 @@ namespace MeasureIt.Discovery.Agents
                 yield return d;
         }
 
+        /// <summary>
+        /// Discovers the descriptors providing <paramref name="options"/> and <paramref name="exportedTypes"/>.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="exportedTypes"></param>
+        /// <returns></returns>
         protected override IEnumerable<IPerformanceMeasurementDescriptor> DiscoverValues(
             IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {

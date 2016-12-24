@@ -7,21 +7,40 @@ namespace MeasureIt.Castle.Interception
     using global::Castle.DynamicProxy;
     using Measurement;
 
+    /// <summary>
+    /// Provides Interceptor services for Measurement purposes.
+    /// </summary>
     public class MeasurementInterceptor : MeasurementInterceptorBase<IInterceptionMeasurementProvider>
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="measurementProvider"></param>
         public MeasurementInterceptor(IInterceptionMeasurementProvider measurementProvider)
             : base(measurementProvider)
         {
         }
 
+        /// <summary>
+        /// Measuring event handler.
+        /// </summary>
+        /// <param name="invocation"></param>
         protected virtual void OnMeasuring(IInvocation invocation)
         {
         }
 
+        /// <summary>
+        /// Measured event handler.
+        /// </summary>
+        /// <param name="invocation"></param>
         protected virtual void OnMeasured(IInvocation invocation)
         {
         }
 
+        /// <summary>
+        /// Intercept event handler.
+        /// </summary>
+        /// <param name="invocation"></param>
         public override void Intercept(IInvocation invocation)
         {
             var i = invocation;

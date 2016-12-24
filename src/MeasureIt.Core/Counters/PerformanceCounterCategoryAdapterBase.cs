@@ -14,18 +14,30 @@ namespace MeasureIt
     {
         private string _name;
 
+        /// <summary>
+        /// Nets or sets the adapter Name.
+        /// </summary>
         public string Name
         {
             get { return _name ?? GetType().FullName; }
             set { _name = string.IsNullOrEmpty(value) ? null : value; }
         }
 
+        /// <summary>
+        /// Gets the Help.
+        /// </summary>
         public string Help { get; private set; }
 
+        /// <summary>
+        /// Gets the CategoryType.
+        /// </summary>
         public PerformanceCounterCategoryType CategoryType { get; private set; }
 
         private IList<IPerformanceMeasurementDescriptor> _measurements;
 
+        /// <summary>
+        /// Gets or sets the Measurements.
+        /// </summary>
         public virtual IList<IPerformanceMeasurementDescriptor> Measurements
         {
             get { return _measurements; }
@@ -40,6 +52,9 @@ namespace MeasureIt
             }
         }
 
+        /// <summary>
+        /// Gets the <see cref="Measurements"/> for internal use.
+        /// </summary>
         public virtual IList<IPerformanceMeasurementDescriptor> InternalMeasurements
         {
             get
@@ -83,6 +98,9 @@ namespace MeasureIt
             Measurements = null;
         }
 
+        /// <summary>
+        /// Gets the CreationData corresponding with the Adapter.
+        /// </summary>
         public IReadOnlyCollection<ICounterCreationDataDescriptor> CreationData
         {
             get

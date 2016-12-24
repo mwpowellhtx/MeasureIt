@@ -34,11 +34,20 @@ namespace MeasureIt
 
         // TODO: TBD: begin/end may not be a good pattern here; we may simple want to "take sample" ...
 
+        /// <summary>
+        /// Begins the Measurement.
+        /// </summary>
+        /// <param name="descriptor"></param>
         public override void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)
         {
             // Nothing to do in this instance.
         }
 
+        /// <summary>
+        /// Ends the Measurement.
+        /// </summary>
+        /// <param name="elapsed"></param>
+        /// <param name="descriptor"></param>
         public override void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)
         {
             TimerCounter.IncrementBy(elapsed.Ticks);

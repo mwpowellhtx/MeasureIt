@@ -9,7 +9,7 @@ namespace MeasureIt.Adapters
     using CategoryTuple = Tuple<IPerformanceCounterCategoryAdapter, PerformanceCounterCategory>;
 
     /// <summary>
-    /// 
+    /// Context adapter for Performance Counter category creation.
     /// </summary>
     public class PerformanceCounterCategoryInstallerContextAdapter
         : InstallerContextAdapter
@@ -17,6 +17,11 @@ namespace MeasureIt.Adapters
     {
         private readonly Lazy<IEnumerable<CategoryTuple>> _lazyCategories;
 
+        /// <summary>
+        /// Returns the installed <see cref="CategoryTuple"/> items.
+        /// </summary>
+        /// <returns></returns>
+        /// <see cref="PerformanceCounterCategory.Create(string,string,PerformanceCounterCategoryType,CounterCreationDataCollection)"/>
         public virtual IEnumerable<CategoryTuple> GetInstalledCategories()
         {
             return _lazyCategories.Value;
