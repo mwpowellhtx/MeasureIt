@@ -6,6 +6,7 @@
         <title>$title$</title>
         <authors>Michael W. Powell</authors>
         <owners>$author$</owners>
+        <projectUrl>http://www.github.com/mwpowellhtx/MeasureIt</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the core resources required for MeasureIt functionality.</description>
         <copyright>Copyright © 2016</copyright>

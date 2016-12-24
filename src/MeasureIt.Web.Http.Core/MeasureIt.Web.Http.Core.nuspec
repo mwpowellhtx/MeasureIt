@@ -6,6 +6,7 @@
         <title>$title$</title>
         <authors>$author$</authors>
         <owners>Michael W. Powell</owners>
+        <projectUrl>http://www.github.com/mwpowellhtx/MeasureIt</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Enables performance counter measurement for use within web applications.</description>
         <copyright>Copyright © 2016</copyright>
