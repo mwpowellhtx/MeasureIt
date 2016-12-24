@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using MeasureIt.Contexts;
 
 namespace MeasureIt.Discovery
 {
     using Agents;
-    using DataAttribute = CounterCreationDataAttribute;
+    using Contexts;
 
     // TODO: TBD: copy (or inherit) from this one extending into WebApi (and later, Mvc)...
     /// <summary>
-    /// 
+    /// Instrumentation discovery service for web purposes.
     /// </summary>
     public class HttpActionInstrumentationDiscoveryService : RuntimeInstrumentationDiscoveryService
         , IHttpActionInstrumentationDiscoveryService
@@ -35,10 +34,10 @@ namespace MeasureIt.Discovery
 
         private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
 
-        public override IEnumerable<IPerformanceMeasurementDescriptor> Measurements
-        {
-            get { return _measurements; }
-        }
+        /// <summary>
+        /// Gets the Measurements discovered by the service.
+        /// </summary>
+        public override IEnumerable<IPerformanceMeasurementDescriptor> Measurements => _measurements;
 
         private IEnumerable<IPerformanceMeasurementDescriptor> PrivateMeasurements
         {

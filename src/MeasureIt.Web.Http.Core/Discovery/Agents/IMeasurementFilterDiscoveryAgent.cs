@@ -1,10 +1,11 @@
 ﻿using System;
-using MeasureIt.Web.Http.Filters;
 
 namespace MeasureIt.Discovery.Agents
 {
+    using Web.Http.Filters;
+
     /// <summary>
-    /// 
+    /// Measurement filter discovery agent.
     /// </summary>
     /// <typeparamref name="TAttribute"/>
     public interface IMeasurementFilterDiscoveryAgent<TAttribute>
@@ -13,6 +14,9 @@ namespace MeasureIt.Discovery.Agents
     {
     }
 
+    /// <summary>
+    /// Measurement filter discovery agent.
+    /// </summary>
     public interface IMeasurementFilterDiscoveryAgent
         : IMeasurementFilterDiscoveryAgent<
             PerformanceMeasurementFilterAttribute>

@@ -3,7 +3,7 @@
     using Web.Http.Filters;
 
     /// <summary>
-    /// 
+    /// Measurement filter discovery agent.
     /// </summary>
     public class MeasurementFilterDiscoveryAgent
         : PerformanceMeasurementDescriptorDiscoveryAgentBase<

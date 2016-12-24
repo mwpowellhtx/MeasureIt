@@ -4,10 +4,16 @@ using System.Web.Http.Filters;
 
 namespace MeasureIt.Web.Http.Filters
 {
+    /// <summary>
+    /// Measurement filter base class.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public abstract class MeasurementFilterAttributeBase : ActionFilterAttribute, IMeasurePerformanceAttribute
     {
-        public virtual IPerformanceMeasurementDescriptor Descriptor { get; private set; }
+        /// <summary>
+        /// Gets the Descriptor.
+        /// </summary>
+        public virtual IPerformanceMeasurementDescriptor Descriptor { get; }
 
         /// <summary>
         /// Gets or sets whether <see cref="PerformanceCounter.ReadOnly"/>. Leaving unspecified
@@ -58,10 +64,7 @@ namespace MeasureIt.Web.Http.Filters
         /// <summary>
         /// Gets whether MayProceedUnabated.
         /// </summary>
-        public bool MayProceedUnabated
-        {
-            get { return Descriptor.ThrowPublishErrors; }
-        }
+        public bool MayProceedUnabated => Descriptor.ThrowPublishErrors;
 
         /// <summary>
         /// Gets or sets the SampleRate.
@@ -72,6 +75,12 @@ namespace MeasureIt.Web.Http.Filters
             set { Descriptor.SampleRate = value; }
         }
 
+        /// <summary>
+        /// Protected Constructor
+        /// </summary>
+        /// <param name="categoryType"></param>
+        /// <param name="adapterType"></param>
+        /// <param name="otherAdapterTypes"></param>
         protected MeasurementFilterAttributeBase(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
             Descriptor = new PerformanceMeasurementDescriptor(categoryType, adapterType, otherAdapterTypes);

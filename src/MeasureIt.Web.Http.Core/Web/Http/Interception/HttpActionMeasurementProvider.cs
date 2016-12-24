@@ -8,6 +8,9 @@ namespace MeasureIt.Web.Http.Interception
     using Contexts;
     using Discovery;
 
+    /// <summary>
+    /// Measurement Provider for web purposes.
+    /// </summary>
     public class HttpActionMeasurementProvider : MeasurementProviderBase<
         ITwoStageMeasurementContext>, ITwoStageMeasurementProvider
     {
@@ -16,11 +19,13 @@ namespace MeasureIt.Web.Http.Interception
         /// <summary>
         /// Gets the DiscoveryService.
         /// </summary>
-        protected IHttpActionInstrumentationDiscoveryService DiscoveryService
-        {
-            get { return _lazyDiscoveryService.Value; }
-        }
+        protected IHttpActionInstrumentationDiscoveryService DiscoveryService => _lazyDiscoveryService.Value;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="discoveryService"></param>
         public HttpActionMeasurementProvider(IInstrumentationDiscoveryOptions options
             , IHttpActionInstrumentationDiscoveryService discoveryService)
             : base(options)
@@ -35,6 +40,13 @@ namespace MeasureIt.Web.Http.Interception
                 }, execAndPubThreadSafety);
         }
 
+        /// <summary>
+        /// Returns the Measurement Context given <paramref name="targetType"/> and
+        /// <paramref name="method"/>.
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         public override ITwoStageMeasurementContext GetMeasurementContext(Type targetType, MethodInfo method)
         {
             var descriptors = DiscoveryService.Measurements

@@ -16,8 +16,12 @@ namespace MeasureIt.Web.Http.Filters
     /// </summary>
     public class PerformanceMeasurementFilterAttribute : MeasurementFilterAttributeBase
     {
-        //public IHttpActionMeasurementProvider
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="categoryType"></param>
+        /// <param name="adapterType"></param>
+        /// <param name="otherAdapterTypes"></param>
         public PerformanceMeasurementFilterAttribute(Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
             : base(categoryType, adapterType, otherAdapterTypes)
         {
@@ -123,6 +127,10 @@ namespace MeasureIt.Web.Http.Filters
             }
         }
 
+        /// <summary>
+        /// Action executed event handler.
+        /// </summary>
+        /// <param name="actionContext"></param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             base.OnActionExecuting(actionContext);
@@ -130,6 +138,12 @@ namespace MeasureIt.Web.Http.Filters
             BeginMeasurementContext(actionContext, provider);
         }
 
+        /// <summary>
+        /// Asynchronously handles the Action executing event.
+        /// </summary>
+        /// <param name="actionContext"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public override Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
             // TODO: TBD: ditto, except async...
@@ -141,12 +155,22 @@ namespace MeasureIt.Web.Http.Filters
                 }, cancellationToken);
         }
 
+        /// <summary>
+        /// Action executed event handler.
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
             base.OnActionExecuted(actionExecutedContext);
             EndMeasurementContext(actionExecutedContext);
         }
 
+        /// <summary>
+        /// Asynchronously handles the Action executed event.
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public override Task OnActionExecutedAsync(HttpActionExecutedContext actionExecutedContext, CancellationToken cancellationToken)
         {
             // TODO: TBD: the only danger I can foresee here is that the tasks might not be awaited until a later time than expected...
