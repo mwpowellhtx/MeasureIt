@@ -1,16 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace MeasureIt.Discovery.Agents
+﻿namespace MeasureIt.Discovery.Agents
 {
     /// <summary>
-    /// 
+    /// Agent for purposes of discovering Performance Counter Adapters.
     /// </summary>
     public interface IPerformanceCounterAdapterDiscoveryAgent
         : IDiscoveryAgent<IPerformanceCounterAdapter>
     {
-        /// <summary>
-        /// Gets the Adapters.
-        /// </summary>
-        IEnumerable<IPerformanceCounterAdapter> Adapters { get; }
     }
 }

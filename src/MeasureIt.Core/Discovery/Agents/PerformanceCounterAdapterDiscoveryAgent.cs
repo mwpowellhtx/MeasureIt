@@ -10,14 +10,6 @@ namespace MeasureIt.Discovery.Agents
     public class PerformanceCounterAdapterDiscoveryAgent : DiscoveryAgentBase<
         IPerformanceCounterAdapter>, IPerformanceCounterAdapterDiscoveryAgent
     {
-        private IEnumerable<IPerformanceCounterAdapter> _adapters;
-
-        public virtual IEnumerable<IPerformanceCounterAdapter> Adapters
-        {
-            get { return _adapters; }
-            private set { _adapters = (value ?? new List<IPerformanceCounterAdapter>()).ToArray(); }
-        }
-
         internal PerformanceCounterAdapterDiscoveryAgent(
             IInstrumentationDiscoveryOptions options,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
@@ -25,6 +17,12 @@ namespace MeasureIt.Discovery.Agents
         {
         }
 
+        /// <summary>
+        /// Discovers the values given <paramref name="options"/> and <paramref name="exportedTypes"/>.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="exportedTypes"></param>
+        /// <returns></returns>
         protected override IEnumerable<IPerformanceCounterAdapter> DiscoverValues(
             IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
         {
