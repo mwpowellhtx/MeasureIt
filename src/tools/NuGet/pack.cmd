@@ -15,6 +15,7 @@ echo Packing NuGet projects...
 call :pack MeasureIt.Core
 call :pack MeasureIt.Castle.Interception
 call :pack MeasureIt.Autofac
+call :pack MeasureIt.Web.Http.Core
 :: TODO: TBD: add additional projects here...
 
 REM for /R %%f in (MeasureIt.Castle.Windsor.AspNet.WebApi\%nuspec_files%) do (
