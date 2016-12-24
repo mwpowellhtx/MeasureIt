@@ -7,10 +7,12 @@
         <authors>$author$</authors>
         <owners>Michael W. Powell</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Enables performance counter measurement for use within web applications.</description>
         <copyright>Copyright © 2016</copyright>
         <tags>MeasureIt web http discovery service agent</tags>
         <dependencies>
             <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
+            <dependency id="MeasureIt.Core" version="1.13.0" />
         </dependencies>
     </metadata>
     <files>
