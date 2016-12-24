@@ -16,17 +16,20 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// Gets the Assemblies from which to Discover any Instrumentation.
         /// </summary>
-        protected IEnumerable<Assembly> Assemblies
-        {
-            get { return Options.Assemblies; }
-        }
+        protected IEnumerable<Assembly> Assemblies => Options.Assemblies;
 
         private readonly Lazy<IPerformanceCounterAdapterDiscoveryAgent> _lazyCounterAdapterDiscoveryAgent;
 
+        /// <summary>
+        /// Exported types delegate.
+        /// </summary>
         protected readonly DiscoveryServiceExportedTypesGetterDelegate GetExportedTypes;
 
         private IEnumerable<IPerformanceCounterAdapter> _counterAdapters;
 
+        /// <summary>
+        /// Gets the Measurements corresponding with the Discovery Service.
+        /// </summary>
         public abstract IEnumerable<IPerformanceMeasurementDescriptor> Measurements { get; }
 
         /// <summary>

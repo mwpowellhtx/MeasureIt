@@ -35,20 +35,30 @@ namespace MeasureIt
             return type.Name.Substring(0, type.Name.Length - performanceCounterAdapterSuffix.Length);
         }
 
+        /// <summary>
+        /// Gets the Name.
+        /// </summary>
         public virtual string Name
         {
+            // ReSharper disable once ConvertPropertyToExpressionBody
             get { return CalculateAdapterName(); }
         }
 
+        /// <summary>
+        /// Gets or sets the Measurement corresponding with the Adapter.
+        /// </summary>
         public virtual IPerformanceMeasurementDescriptor Measurement { get; set; }
 
         private readonly IList<ICounterCreationDataDescriptor> _creationData;
 
-        public virtual IEnumerable<ICounterCreationDataDescriptor> CreationData
-        {
-            get { return _creationData; }
-        }
+        /// <summary>
+        /// Gets the CreationData descriptors corresponding with the Adapter.
+        /// </summary>
+        public virtual IEnumerable<ICounterCreationDataDescriptor> CreationData => _creationData;
 
+        /// <summary>
+        /// Gets the <see cref="CreationData"/> for private use.
+        /// </summary>
         private IList<ICounterCreationDataDescriptor> PrivateCreationData
         {
             get
@@ -63,7 +73,7 @@ namespace MeasureIt
         /// <summary>
         /// Gets the internal Parts of the Counter.
         /// </summary>
-        protected internal ExpandoObject Parts { get; private set; }
+        protected internal ExpandoObject Parts { get; }
 
         /// <summary>
         /// Returns whether <paramref name="dictionary"/> HasAny
@@ -148,7 +158,7 @@ namespace MeasureIt
 
         // TODO: TBD: whereas initializing Counters is an "individual" MEASUREPERFORMANCE concern...
         /// <summary>
-        /// 
+        /// Initializes the Performance Counters.
         /// </summary>
         protected virtual void InitializePerformanceCounters(ExpandoObject parts)
         {
@@ -173,7 +183,7 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Gets the Counters corresponding with the Adapter.
         /// </summary>
         public IEnumerable<PerformanceCounter> Counters
         {
@@ -185,18 +195,22 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Begins the Measurement.
         /// </summary>
         /// <param name="descriptor"></param>
         public abstract void BeginMeasurement(IPerformanceMeasurementDescriptor descriptor);
 
         /// <summary>
-        /// 
+        /// Ends the Measurement.
         /// </summary>
         /// <param name="elapsed"></param>
         /// <param name="descriptor"></param>
         public abstract void EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor);
 
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             // TODO: TBD: what to do about disposal here?

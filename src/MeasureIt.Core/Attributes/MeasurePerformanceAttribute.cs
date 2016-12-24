@@ -11,12 +11,10 @@ namespace MeasureIt
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class MeasurePerformanceAttribute : Attribute, IMeasurePerformanceAttribute
     {
-        private readonly IPerformanceMeasurementDescriptor _descriptor;
-
-        public IPerformanceMeasurementDescriptor Descriptor
-        {
-            get { return _descriptor; }
-        }
+        /// <summary>
+        /// Gets the Descriptor corresponding with the Attribute.
+        /// </summary>
+        public IPerformanceMeasurementDescriptor Descriptor { get; }
 
         /// <summary>
         /// Gets or sets whether <see cref="PerformanceCounter.ReadOnly"/>. Leaving unspecified
@@ -101,7 +99,8 @@ namespace MeasureIt
         /// <param name="otherAdapterTypes"></param>
         public MeasurePerformanceAttribute(string counterName, Type categoryType, Type adapterType, params Type[] otherAdapterTypes)
         {
-            _descriptor = new PerformanceMeasurementDescriptor(counterName, categoryType, adapterType, otherAdapterTypes);
+            // Ditto C# 6.0 settable propertis in ctors.
+            Descriptor = new PerformanceMeasurementDescriptor(counterName, categoryType, adapterType, otherAdapterTypes);
         }
     }
 }

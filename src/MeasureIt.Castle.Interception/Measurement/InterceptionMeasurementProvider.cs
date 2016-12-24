@@ -8,6 +8,9 @@ namespace MeasureIt.Castle.Interception.Measurement
     using Contexts;
     using Discovery;
 
+    /// <summary>
+    /// Measurement provider for Interception purposes.
+    /// </summary>
     public class InterceptionMeasurementProvider
         : MeasurementProviderBase<IInterceptionMeasurementContext>
             , IInterceptionMeasurementProvider
@@ -17,11 +20,13 @@ namespace MeasureIt.Castle.Interception.Measurement
         /// <summary>
         /// Gets the DiscoveryService.
         /// </summary>
-        protected IRuntimeInstrumentationDiscoveryService DiscoveryService
-        {
-            get { return _lazyDiscoveryService.Value; }
-        }
+        protected IRuntimeInstrumentationDiscoveryService DiscoveryService => _lazyDiscoveryService.Value;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="discoveryService"></param>
         public InterceptionMeasurementProvider(IInstrumentationDiscoveryOptions options
             , IRuntimeInstrumentationDiscoveryService discoveryService)
             : base(options)
@@ -36,6 +41,12 @@ namespace MeasureIt.Castle.Interception.Measurement
                 }, execAndPubThreadSafety);
         }
 
+        /// <summary>
+        /// Returns a Context corresponding with the Provider.
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         public override IInterceptionMeasurementContext GetMeasurementContext(Type targetType, MethodInfo method)
         {
             var descriptors = DiscoveryService.Measurements

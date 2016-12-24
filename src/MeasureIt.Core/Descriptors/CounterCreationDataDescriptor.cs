@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace MeasureIt
 {
@@ -8,6 +7,9 @@ namespace MeasureIt
     /// </summary>
     public class CounterCreationDataDescriptor : DescriptorBase, ICounterCreationDataDescriptor
     {
+        /// <summary>
+        /// Gets or sets the Adapter corresponding with the Descriptor.
+        /// </summary>
         public IPerformanceCounterAdapter Adapter { get; set; }
 
         private string CalculateDescriptorName(IPerformanceCounterAdapter adapter,
@@ -26,13 +28,8 @@ namespace MeasureIt
             if (adapter != null)
             {
                 // Start from the Adapter Measurement first.
-                descriptorName = adapter.Measurement != null
-                    ? adapter.Measurement.MemberSignature
-                    : Id.ToString("N");
-
-                counterDecoration = string.Format(@"{0}({1})"
-                    , adapter.Name
-                    , counterType.IsBaseCounterType() ? "Base" : string.Empty);
+                descriptorName = adapter.Measurement != null ? adapter.Measurement.MemberSignature : Id.ToString("N");
+                counterDecoration = $@"{adapter.Name}({(counterType.IsBaseCounterType() ? "Base" : string.Empty)})";
             }
             else
             {
@@ -42,16 +39,22 @@ namespace MeasureIt
             /* We always want to decorate a signature/name with the counter type. The only
              * question is whether it is the base counter type or the proper counter type. */
 
-            return string.Format(@"[{0}] {1}", counterDecoration, descriptorName);
+            return $@"[{counterDecoration}] {descriptorName}";
         }
 
-        public string Name
-        {
-            get { return CalculateDescriptorName(Adapter, CounterType); }
-        }
+        /// <summary>
+        /// Gets the Descriptor Name.
+        /// </summary>
+        public string Name => CalculateDescriptorName(Adapter, CounterType);
 
+        /// <summary>
+        /// Gets or sets the Descriptor Help.
+        /// </summary>
         public string Help { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Descriptor CounterType.
+        /// </summary>
         public PerformanceCounterType CounterType { get; set; }
 
         /// <summary>
@@ -76,11 +79,19 @@ namespace MeasureIt
             Adapter = other.Adapter;
         }
 
+        /// <summary>
+        /// Returns the creation data corresponding to the Descriptor.
+        /// </summary>
+        /// <returns></returns>
         public CounterCreationData GetCounterCreationData()
         {
             return new CounterCreationData(Name, Help, CounterType);
         }
 
+        /// <summary>
+        /// Returns a Clone of the object.
+        /// </summary>
+        /// <returns></returns>
         public override object Clone()
         {
             return new CounterCreationDataDescriptor(this);

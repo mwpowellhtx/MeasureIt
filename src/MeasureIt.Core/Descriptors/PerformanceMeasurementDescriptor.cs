@@ -19,6 +19,9 @@ namespace MeasureIt
     {
         private string _prefix;
 
+        /// <summary>
+        /// Gets or sets the Prefix.
+        /// </summary>
         public string Prefix
         {
             get { return _prefix; }
@@ -37,6 +40,9 @@ namespace MeasureIt
                     : method.GetMethodSignature(rootType, prefix)));
         }
 
+        /// <summary>
+        /// Gets or sets the MemberSignature.
+        /// </summary>
         public string MemberSignature
         {
             get { return CalculateMemberSignature(ref _prefix, RootType, Method); }
@@ -58,6 +64,9 @@ namespace MeasureIt
             return string.IsNullOrEmpty(message);
         }
 
+        /// <summary>
+        /// Gets or sets the CategoryType.
+        /// </summary>
         public Type CategoryType
         {
             get { return _categoryType; }
@@ -111,6 +120,9 @@ namespace MeasureIt
 
         private IList<IPerformanceCounterAdapter> _adapters;
 
+        /// <summary>
+        /// Gets the adapters.
+        /// </summary>
         public IEnumerable<IPerformanceCounterAdapter> Adapters
         {
             get { return _adapters; }
@@ -128,14 +140,29 @@ namespace MeasureIt
             }
         }
 
+        /// <summary>
+        /// Gets or sets whether ReadOnly.
+        /// </summary>
         public bool? ReadOnly { get; set; }
 
+        /// <summary>
+        /// Gets or sets the InstanceLifetime.
+        /// </summary>
         public PerformanceCounterInstanceLifetime InstanceLifetime { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether to PublishCounters.
+        /// </summary>
         public bool PublishCounters { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether to ThrowPublishErrors.
+        /// </summary>
         public bool ThrowPublishErrors { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether to PublishEvent.
+        /// </summary>
         public bool PublishEvent { get; set; }
 
         /// <summary>
@@ -143,13 +170,13 @@ namespace MeasureIt
         /// </summary>
         /// <see cref="PublishCounters"/>
         /// <see cref="PublishEvent"/>
-        public bool MayProceedUnabated
-        {
-            get { return !(PublishCounters || PublishEvent); }
-        }
+        public bool MayProceedUnabated => !(PublishCounters || PublishEvent);
 
         private double _sampleRate;
 
+        /// <summary>
+        /// Gets the SampleRate for the Descriptor.
+        /// </summary>
         public double SampleRate
         {
             get { return _sampleRate; }
@@ -161,10 +188,16 @@ namespace MeasureIt
             }
         }
 
+        /// <summary>
+        /// Gets or sets the RootType.
+        /// </summary>
         public Type RootType { get; set; }
 
         private MethodInfo _method;
 
+        /// <summary>
+        /// Gets or sets the Method.
+        /// </summary>
         public MethodInfo Method
         {
             get { return _method; }
@@ -267,43 +300,33 @@ namespace MeasureIt
             }
         }
 
+        /// <summary>
+        /// Gets the Exception.
+        /// </summary>
         public virtual Exception Exception { get; private set; }
 
-        public virtual bool HasError
-        {
-            get { return Exception != null; }
-        }
+        /// <summary>
+        /// Gets whether HasError.
+        /// </summary>
+        public virtual bool HasError => Exception != null;
 
+        /// <summary>
+        /// Sets the Error to the <paramref name="ex"/>.
+        /// </summary>
+        /// <param name="ex"></param>
         public virtual void SetError(Exception ex)
         {
             Exception = ex;
         }
 
+        /// <summary>
+        /// Creates a Context corresponding with the Descriptor.
+        /// </summary>
+        /// <returns></returns>
         public virtual IPerformanceMeasurementContext CreateContext()
         {
             return new PerformanceMeasurementContext(this, Adapters.ToArray());
         }
-
-        //private IEnumerable<CounterCreationData> GetCounterCreationData()
-        //{
-        //    var prefix = Name;
-
-        //    // It does not matter which order the Adapters themselves are turned in.
-        //    foreach (var datum in Adapters.SelectMany(a => a.CreationData))
-        //    {
-        //        /* However, the CounterCreationData SHOULD be ordered properly. This is especially critical for
-        //         * composite counters, which their Bases should appear IMMEDIATELY following their dependents. */
-
-        //        var counterName = string.Join(".", prefix, datum.Name);
-        //        yield return new CounterCreationData(counterName, datum.Help, datum.CounterType);
-        //    }
-        //}
-
-        //// TODO: TBD: we want counter creation data for these? or as a wrapper/facade during installer context? that might make better sense...
-        //public virtual IEnumerable<CounterCreationData> Data
-        //{
-        //    get { return GetCounterCreationData(); }
-        //}
 
         /// <summary>
         /// Returns whether <paramref name="x"/> Equals <paramref name="y"/>.
@@ -350,16 +373,30 @@ namespace MeasureIt
             }
         }
 
+        /// <summary>
+        /// Returns whether this instance Equals the <paramref name="other"/> one.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(IPerformanceMeasurementDescriptor other)
         {
             return Equals(this, other);
         }
 
+        /// <summary>
+        /// Returns whether this instance Equals the <paramref name="other"/> one.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(PerformanceMeasurementDescriptor other)
         {
             return Equals(this, other);
         }
 
+        /// <summary>
+        /// Returns a Clone of the object.
+        /// </summary>
+        /// <returns></returns>
         public override object Clone()
         {
             return new PerformanceMeasurementDescriptor(this);
@@ -398,9 +435,9 @@ namespace MeasureIt
                 if (parameter.DefaultValue == null)
                     defaultValue = @"null";
                 else if (parameter.DefaultValue is string)
-                    defaultValue = string.Format(@"""{0}""", parameter.DefaultValue);
+                    defaultValue = $@"""{parameter.DefaultValue}""";
                 else
-                    defaultValue = string.Format(@"{0}", parameter.DefaultValue);
+                    defaultValue = $@"{parameter.DefaultValue}";
 
                 if (!string.IsNullOrEmpty(defaultValue))
                     defaultValue = @" = " + defaultValue;

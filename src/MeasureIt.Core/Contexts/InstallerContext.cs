@@ -44,6 +44,11 @@ namespace MeasureIt.Contexts
             }, execAndPubThreadSafety);
         }
 
+        /// <summary>
+        /// Installs the set of Performance Counter Categories.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when an error occurs installing
+        /// a Performance Counter Category.</exception>
         public virtual void Install()
         {
             // TODO: TBD: may not need this context quite as much as "simply" the extension methods...
@@ -57,19 +62,28 @@ namespace MeasureIt.Contexts
                 {
                     if (tuple.Item2 != null || throwOnInstallerFailure) continue;
 
-                    var message = string.Format("Unable to install the {0} '{1}' definition.",
-                        typeof(PerformanceCounterCategory), tuple.Item1.Name);
+                    // Leverages C# 6.0 language features.
+                    var message = $"Unable to install the {typeof(PerformanceCounterCategory)} '{tuple.Item1.Name}' definition.";
 
                     throw new InvalidOperationException(message);
                 }
             }
         }
 
+        /// <summary>
+        /// <see cref="Install"/> the categories asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">Thrown when an error occurs uninstalling
+        /// a Performance Counter Category.</exception>
         public Task InstallAsync()
         {
             return Task.Run(() => Install());
         }
 
+        /// <summary>
+        /// Uninstalls the Performance Counter Categories.
+        /// </summary>
         public virtual void Uninstall()
         {
             var throwOnInstallerFailure = Options.ThrowOnInstallerFailure;
@@ -77,7 +91,6 @@ namespace MeasureIt.Contexts
             // TODO: TBD: ditto Install re: extension methods...
             using (var adapter = new PerformanceCounterCategoryUninstallerContextAdapter(Service.CategoryAdapters.Values))
             {
-
                 IEnumerable<string> categoryNames;
 
                 var results = adapter.TryUninstallCategories(out categoryNames);
@@ -88,13 +101,17 @@ namespace MeasureIt.Contexts
 
                 if (!unable.Any() || !throwOnInstallerFailure) return;
 
-                var message = string.Format("Unable to uninstall the {0} '{1}' definitions.",
-                    typeof(PerformanceCounterCategory), string.Join(", ", unable.Select(x => x.Name)));
+                // Ditto C# 6.0 language features.
+                var message = $"Unable to uninstall the {typeof(PerformanceCounterCategory)} '{string.Join(", ", unable.Select(x => x.Name))}' definitions.";
 
                 throw new InvalidOperationException(message);
             }
         }
 
+        /// <summary>
+        /// <see cref="Uninstall"/> the categories asynchronously.
+        /// </summary>
+        /// <returns></returns>
         public Task UninstallAsync()
         {
             return Task.Run(() => Uninstall());

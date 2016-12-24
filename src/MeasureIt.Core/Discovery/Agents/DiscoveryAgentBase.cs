@@ -58,12 +58,16 @@ namespace MeasureIt.Discovery.Agents
             if (!exportedTypes.Any())
             {
                 const string message = "Proper discovery requires one or more exported types.";
-                throw new ArgumentException(message, "exportedTypes");
+                throw new ArgumentException(message, nameof(exportedTypes));
             }
 
             yield break;
         }
 
+        /// <summary>
+        /// Returns the enumerator for the Discovery agent.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             return DiscoverValues(_options, _getExportedTypes()).GetEnumerator();

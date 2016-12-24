@@ -11,12 +11,10 @@ namespace MeasureIt
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class CounterCreationDataAttribute : Attribute, ICounterCreationDataAttribute
     {
-        private readonly ICounterCreationDataDescriptor _descriptor;
-
-        public ICounterCreationDataDescriptor Descriptor
-        {
-            get { return _descriptor; }
-        }
+        /// <summary>
+        /// Gets the Descriptor corresponding with the Attribute.
+        /// </summary>
+        public ICounterCreationDataDescriptor Descriptor { get; }
 
         /// <summary>
         /// Gets or sets the Help.
@@ -41,7 +39,8 @@ namespace MeasureIt
         /// </summary>
         public CounterCreationDataAttribute()
         {
-            _descriptor = new CounterCreationDataDescriptor();
+            // Leverages C# 6.0 features. Properties are settable in ctors.
+            Descriptor = new CounterCreationDataDescriptor();
         }
     }
 }
