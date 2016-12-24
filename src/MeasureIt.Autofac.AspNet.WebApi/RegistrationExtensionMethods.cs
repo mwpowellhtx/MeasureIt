@@ -22,7 +22,7 @@ namespace MeasureIt.Autofac
     public static class RegistrationExtensionMethods
     {
         /// <summary>
-        /// Registers the <typeparamref name="TService"/> As a kind of
+        /// Registers the <typeparamref name="TService"/> as a kind of
         /// <typeparamref name="TInterface"/>.
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>

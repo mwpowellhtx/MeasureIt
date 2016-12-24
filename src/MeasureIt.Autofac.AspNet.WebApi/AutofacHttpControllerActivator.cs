@@ -9,8 +9,9 @@ namespace MeasureIt.Autofac
     using global::Autofac;
 
     /// <summary>
-    /// 
+    /// Autofact Http controller activator.
     /// </summary>
+    [Obsolete] // TODO: TBD: ditto interface; not sure it is necessary after all...
     public class AutofacHttpControllerActivator : IAutofacHttpControllerActivator
     {
         private class ControllerReleaseResource : IDisposable
@@ -24,8 +25,7 @@ namespace MeasureIt.Autofac
 
             public void Dispose()
             {
-                if (_disposable == null) return;
-                _disposable.Dispose();
+                _disposable?.Dispose();
             }
         }
 
@@ -41,6 +41,14 @@ namespace MeasureIt.Autofac
             return new AutofacHttpControllerActivator(scope);
         }
 
+        /// <summary>
+        /// Returns a Created <see cref="IHttpController"/> corresponding with the
+        /// <paramref name="request"/> and <paramref name="ctrlType"/>.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ctrlDescriptor"></param>
+        /// <param name="ctrlType"></param>
+        /// <returns></returns>
         public virtual IHttpController Create(HttpRequestMessage request,
             HttpControllerDescriptor ctrlDescriptor, Type ctrlType)
         {
