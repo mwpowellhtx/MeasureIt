@@ -5,4 +5,9 @@ packages/
 _ReSharper.Caches/
 
 *.suo
+*.user
 *.DotSettings
+
+*.nupkg
+
+NuGet/publish.cmd
