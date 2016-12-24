@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>$title$</title>
+        <authors>$author$</authors>
+        <owners>Michael W. Powell</owners>
+        <projectUrl>http://www.github.com/mwpowellhtx/MeasureIt</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Provides MeasureIt performance measurement capability for Web API projects.</description>
+        <copyright>Copyright © 2016</copyright>
+        <tags>MeasureIt Autofac performance counter counters measurement web API</tags>
+        <dependencies>
+            <dependency id="MeasureIt.Web.Http.Core" version="1.1.2" />
+            <dependency id="Autofac.WebApi2" version="4.0.1" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\$id$.dll" target="lib\net40" />
+        <file src="bin\Release\$id$.xml" target="lib\net40" />
+    </files>
+</package>
