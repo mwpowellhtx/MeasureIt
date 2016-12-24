@@ -7,7 +7,7 @@ namespace MeasureIt.Discovery
     using Contexts;
 
     /// <summary>
-    /// 
+    /// Discovery service for purposes of supporting Runtime Instrumentation.
     /// </summary>
     public interface IRuntimeInstrumentationDiscoveryService : IInstrumentationDiscoveryService
     {
@@ -15,17 +15,5 @@ namespace MeasureIt.Discovery
         /// Gets the CategoryAdapters associated with the Installer.
         /// </summary>
         IDictionary<Type, IPerformanceCounterCategoryAdapter> CategoryAdapters { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo methodInfo);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        IMeasurementContext GetMeasurementContext();
     }
 }

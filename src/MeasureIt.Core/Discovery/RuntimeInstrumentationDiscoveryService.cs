@@ -9,11 +9,10 @@ namespace MeasureIt.Discovery
 {
     using Agents;
     using Contexts;
-    using DataAttribute = CounterCreationDataAttribute;
 
     // TODO: TBD: copy (or inherit) from this one extending into WebApi (and later, Mvc)...
     /// <summary>
-    /// 
+    /// Discovery service for purposes of supporting Runtime Instrumentation.
     /// </summary>
     public class RuntimeInstrumentationDiscoveryService : InstrumentationDiscoveryServiceBase
         , IRuntimeInstrumentationDiscoveryService
@@ -22,23 +21,21 @@ namespace MeasureIt.Discovery
 
         private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
 
-        public override IEnumerable<IPerformanceMeasurementDescriptor> Measurements
-        {
-            get { return _measurements; }
-        }
+        /// <summary>
+        /// Gets the Measurements corresponding with the Discovery service.
+        /// </summary>
+        public override IEnumerable<IPerformanceMeasurementDescriptor> Measurements => _measurements;
 
         private IEnumerable<IPerformanceMeasurementDescriptor> PrivateMeasurements
         {
             set { _measurements = (value ?? new List<IPerformanceMeasurementDescriptor>()).ToArray(); }
         }
 
-        private readonly IDictionary<Type, IPerformanceCounterCategoryAdapter> _categoryAdapters
+        /// <summary>
+        /// Gets the CategoryAdapters corresponding with the DiscoveryService.
+        /// </summary>
+        public IDictionary<Type, IPerformanceCounterCategoryAdapter> CategoryAdapters { get; }
             = new ConcurrentDictionary<Type, IPerformanceCounterCategoryAdapter>();
-
-        public IDictionary<Type, IPerformanceCounterCategoryAdapter> CategoryAdapters
-        {
-            get { return _categoryAdapters; }
-        }
 
         private void RegisterCategoryAdapters(
             IDictionary<Type, IPerformanceCounterCategoryAdapter> adapters
@@ -81,6 +78,9 @@ namespace MeasureIt.Discovery
             PrivateMeasurements = _lazyMeasurementDiscoveryAgent.Value.ToArray();
         }
 
+        /// <summary>
+        /// Discoverey handler.
+        /// </summary>
         protected override void OnDiscovered()
         {
             base.OnDiscovered();
@@ -88,20 +88,6 @@ namespace MeasureIt.Discovery
             OnDiscoverMeasurePerformanceDescriptors();
 
             RegisterCategoryAdapters(CategoryAdapters, Measurements);
-        }
-
-        /* TODO: TBD: we may need/want different discovery services for different purposes:
-         * i.e. does a runtime discovery service really require the category descriptors?
-         * that's just for install/uninstall purposes methinks... */
-
-        public IMeasurementContext GetMeasurementContext()
-        {
-            return null;
-        }
-
-        public IMeasurementContext GetMeasurementContext(Type targetType, MethodInfo methodInfo)
-        {
-            return new MeasurementContext(null, null);
         }
     }
 }
