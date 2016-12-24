@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>$title$</title>
+        <authors>$author$</authors>
+        <owners>Michael W. Powell</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Autofac extension methods facilitating MeasureIt functionality.</description>
+        <copyright>Copyright © 2016</copyright>
+        <tags>MeasureIt Autofac registration enable measurement options</tags>
+        <dependencies>
+            <dependency id="Autofac.Extras.DynamicProxy" version="4.0.1" />
+            <dependency id="MeasureIt.Castle.Interception" version="1.5.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\$id$.dll" target="lib\net40" />
+        <file src="bin\Release\$id$.xml" target="lib\net40" />
+    </files>
+</package>
