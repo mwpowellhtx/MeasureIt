@@ -30,3 +30,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.1.2.*")]
 [assembly: AssemblyFileVersion("1.1.2.0")]
+
+// NuGet NuSpec Token Replacement should work, but is not: $version$
+// TODO: TBD: https://github.com/NuGet/Home/issues/4149

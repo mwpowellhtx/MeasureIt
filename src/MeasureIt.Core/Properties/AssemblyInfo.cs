@@ -31,7 +31,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.13.0.*")]
 [assembly: AssemblyFileVersion("1.13.0.0")]
 
-// bogus placeholder
+// NuGet NuSpec Token Replacement should work, but is not: $version$
+// TODO: TBD: https://github.com/NuGet/Home/issues/4149
+
 [assembly: InternalsVisibleTo("MeasureIt.Castle.Interception")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Core")]
 [assembly: InternalsVisibleTo("MeasureIt.Core.Tests")]

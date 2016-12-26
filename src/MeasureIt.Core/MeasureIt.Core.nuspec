@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>$id$</id>
-        <version>$version$</version>
+        <version>1.13.0</version>
         <title>$title$</title>
         <authors>Michael W. Powell</authors>
         <owners>$author$</owners>
@@ -10,7 +10,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides the core resources required for MeasureIt functionality.</description>
         <copyright>Copyright © 2016</copyright>
-        <tags>MeasureIt Interception Measurement Performance Counter Counters</tags>
+        <tags>MeasureIt interception measurement performance counter counters core</tags>
     </metadata>
     <files>
         <file src="bin\Release\$id$.dll" target="lib\net40" />

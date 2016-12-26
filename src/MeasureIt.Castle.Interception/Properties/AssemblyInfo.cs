@@ -31,4 +31,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.5.0.*")]
 [assembly: AssemblyFileVersion("1.5.0.0")]
 
-// bogus placeholder
+// NuGet NuSpec Token Replacement should work, but is not: $version$
+// TODO: TBD: https://github.com/NuGet/Home/issues/4149
