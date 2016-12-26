@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>$id$</id>
+        <version>1.5.0</version>
+        <title>$title$</title>
+        <authors>Michael W. Powell</authors>
+        <owners>$author$</owners>
+        <projectUrl>http://www.github.com/mwpowellhtx/MeasureIt</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Performance Counter measurements facilitated by Castle Interceptors.</description>
+        <copyright>Copyright © 2016</copyright>
+        <tags>MeasureIt Interception Measurement Performance Counter Counters Castle Interceptor Interceptors</tags>
+        <dependencies>
+            <dependency id="MeaureIt.Core" version="1.13.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\$id$.dll" target="lib\net40" />
+        <file src="bin\Release\$id$.xml" target="lib\net40" />
+    </files>
+</package>
