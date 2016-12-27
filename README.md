@@ -98,7 +98,7 @@ Otherwise the patterns are very much the same, notwithstanding choice of contain
 
 ### Web API Instrumentation
 
-
+(I will work on this part next; but want to do it where I am fresh in the morning. Suffice to say, many of the same concepts apply, but a little differently in how they are connected to API actions.)
 
 ### NuGet Distrubition
 
