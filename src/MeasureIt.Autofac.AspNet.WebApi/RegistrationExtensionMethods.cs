@@ -9,6 +9,7 @@ namespace MeasureIt.Autofac
 {
     using Contexts;
     using Discovery;
+    using Web.Http.Interception;
     using global::Autofac;
     using global::Autofac.Builder;
 
@@ -73,6 +74,26 @@ namespace MeasureIt.Autofac
                 .InstancePerLifetimeScope();
 
             return builder;
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <see cref="HttpActionMeasurementProvider"/> by
+        /// default.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="optsCreated"></param>
+        /// <returns></returns>
+        /// <see cref="EnableApiMeasurements{TInterface,TService,TProvider}"/>
+        public static ContainerBuilder EnableApiMeasurements<TInterface, TService>(
+            this ContainerBuilder builder
+            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            where TInterface : class, IHttpActionInstrumentationDiscoveryService
+            where TService : class, TInterface
+        {
+            return builder.EnableApiMeasurements<TInterface, TService, HttpActionMeasurementProvider>(
+                optsCreated);
         }
 
         // TODO: TBD: requiring IHttpActionInstrumentationDiscoveryService means that we will need to reference that as a package as well...
