@@ -98,7 +98,39 @@ Otherwise the patterns are very much the same, notwithstanding choice of contain
 
 ### Web API Instrumentation
 
-(I will work on this part next; but want to do it where I am fresh in the morning. Suffice to say, many of the same concepts apply, but a little differently in how they are connected to API actions.)
+The concepts with Web API instrumentation are very similar to Interception where *Counter Adapters*, *Category Adapters*, *Discovery Agents*, and *Discovery Services* are concerned. The only differences are in the enablement of measurement services and decoration of API actions.
+
+As with *Interception*, initially I am supporting *Autofac* and *Castle Windsor* out of the box. I will enumerate the *Autofac* features, with the *Castle Windsor* features being very similar in nature.
+
+#### Autofac Measurement Service Enablement
+
+Method Name|Generic Parameters|Method Parameters|Description|Assumptions
+---|---|---|---|---
+``Autofac.ContainerBuilder.EnableApiMeasurements``|``TInterface : class, IHttpActionInstrumentationDiscoveryService; TService : class, TInterface; TProvider : class, ITwoStageMeasurementProvider``|``Action<IInstrumentationDiscoveryOptions> optsCreated = null``|Enables API measurements via the specified Discovery Service, defaults to ``MeasureIt.Castle.Interceptor.MeasurementInterceptor``|
+``Autofac.ContainerBuilder.RegisterApiService``|``TInterface : class; TService : class, TInterface``|*(none)*|Registers a service for API
+``System.Web.Http.HttpConfiguration.ReplaceService``|``TInterface : class; TService: class, TInterface``|``IContainer container``|Replaces the service in the ``System.Web.Http.HttpConfiguration.Services`` collection|That the service interface has been registered
+``Autofac.ContainerBuilder.RegisterApiServices``|*(none)*|*(none)*|Registers a common set of services for API|At present I am replacing the ``AutofacHttpControllerActivator`` implementation for ``IHttpControllerActivator``, but this may change in the future
+
+Examples:
+
+```C#
+builder.EnableApiMeasurements<
+    IHttpActionInstrumentationDiscoveryService,
+    HttpActionInstrumentationDiscoveryService,
+    HttpActionMeasurementProvider>(o =>
+    {
+        o.Assemblies = new[]
+        {
+            // Assuming I have a MyApiController in my solution.
+            typeof(MyController).Assembly,
+            typeof(AverageTimePerformanceCounterAdapter).Assembly
+        };
+    });
+```
+
+Usage of these services should be able to coexist seamlessly with the ``Interception`` measurements.
+
+#### API Action Decoration
 
 ### NuGet Distrubition
 
