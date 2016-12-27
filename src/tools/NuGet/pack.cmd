@@ -17,11 +17,8 @@ call :pack MeasureIt.Castle.Interception
 call :pack MeasureIt.Autofac
 call :pack MeasureIt.Web.Http.Core
 call :pack MeasureIt.Autofac.AspNet.WebApi
+call :pack MeasureIt.Castle.Windsor.AspNet.WebApi
 :: TODO: TBD: add additional projects here...
-
-REM for /R %%f in (MeasureIt.Castle.Windsor.AspNet.WebApi\%nuspec_files%) do (
-    REM "%nuget_exe%" pack "%%f" -symbols
-REM )
 
 :end
 
@@ -37,5 +34,5 @@ exit /b 0
 :: Leave the function scope alone upon script exit.
 :pack
 echo Packing %* ...
-%nuget_exe% pack %*\%*.csproj -symbols
+%nuget_exe% pack %*\%*.csproj -symbols -properties Configuration=Release
 exit /b 0
