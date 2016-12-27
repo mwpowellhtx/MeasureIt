@@ -1,22 +1,24 @@
-# Overview
+# MeasureIt
+
+## Overview
 
 Welcome to **MeasureIt**, a .NET library that enables performance measurement of your web and service oriented architectures. **MeasureIt** exposes ``Performance Counters`` organized into ``Performance Counter Categories``, which may be viewed by *Windows Performance Monitor*.
 
 **MeasureIt** requires that you have access to the code you want to instrument. At minimum, you need to be able to derive ``.NET`` type information in the form of *subclasses* and *overridden virtual methods*. This is due to the fact that ``.NET`` ``Attributes`` are used in order to .
 
-## Performance Counter Adapters
+### Performance Counter Adapters
 
 A half dozen or so counter adapters are available out of the box for your convenience. Contributions are welcome, or feel free to adapt counters of your own.
 
-### Begin/End Measurement Boundaries
+#### Begin/End Measurement Boundaries
 
 Adaptation involves a measurement being bounded by ``BeginMeasurement(IPerformanceMeasurementDescriptor descriptor)`` and ``EndMeasurement(TimeSpan elapsed, IPerformanceMeasurementDescriptor descriptor)``. ``BeginMeasurement`` is called prior to the method invocation, and ``EndMeasurement`` is called afterward, along with a provided ``elapsed``.
 
-## Performance Counter Category Adapters
+### Performance Counter Category Adapters
 
 Out of the box, a ``DefaultPerformanceCounterCategoryAdapter`` is provided for convenience; but for most uses, you should derive from ``PerformanceCounterCategoryAdapterBase``.  This exposes key elements of your ``Performance Counter Category`` (or ``Categories``) necessary to support the measurement framework.
 
-## Service Instrumentation
+### Service Instrumentation
 
 You have a choice of <em>[Dependency Injection](http://en.wikipedia.org/wiki/Dependency_injection)</em> containers when deciding to instrument your services: ``MeasureIt.Autofac``, or ``MeasureIt.Castle.Windsor``, via NuGet packages.
 
@@ -24,7 +26,7 @@ In either case, service instrumentation depends upon ``Castle.DynamicProxy.IInte
 
 You must also register ``MeasureIt.Castle.Interception.IInterceptionMeasurementProvider`` and ``MeasureIt.Castle.Interception.InterceptionMeasurementProvider`` with your container.
 
-### Autofac Service Instrumentation
+#### Autofac Service Instrumentation
 
 The following extension methods are provided to facilitate interception enablement and measurement. The same sorts of patterns apply when instrumenting for Web API, and, eventually, into MVC as well, so we will spend a little more time discussing the patterns in depth for service oriented instrumentation.
 
@@ -82,7 +84,7 @@ Option|Type|Default|Description
 ``ThrowPublishErrors``|``System.Boolean``|``false``|Indicates whether to throw ``System.Exception`` encountered at any time during the target invocation or measurement context.
 ``SampleRate``|``System.Double``|``1.0``|Provides a means to throttle the diagnostic measurement rate.
 
-### Castle Windsor Service Instrumentation
+#### Castle Windsor Service Instrumentation
 
 The patterns for *Castle Windsor* are fairly similar to *Autofac*, so we will not repeat ourselves here. There are some subtle differences, such as whether ``Autofac.ContainerBuilder`` or ``Castle.Windsor.IWindsorContainer`` is used, but other than that, the concepts are very similar, if not the same.
 
@@ -94,15 +96,15 @@ Method Name|Generic Parameters|Method Parameters|Description|Assumptions
 
 Otherwise the patterns are very much the same, notwithstanding choice of container.
 
-## Web API Instrumentation
+### Web API Instrumentation
 
 
 
-## NuGet Distrubition
+### NuGet Distrubition
 
 There are half a dozen or so *MeasureIt* packages that build upon the core or more basic either *MeasureIt* or third-party packages. You will typically operate through the ``MeasureIt.Autofac`` or ``MeasureIt.Castle.Windsor`` packages for service oriented measurement, and ``MeasureIt.Autofac.AspNet.WebApi`` or ``MeasureIt.Castle.Windsor.AspNet.WebApi`` packages for Web API measurement. All requisite dependencies should be resolved following that.
 
-## Future Goals
+### Future Goals
 
 * There is enough detail here that I may consider decomposing this into more of a Wiki presentation than a README.
 
