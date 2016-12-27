@@ -10,13 +10,13 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Performance Counter measurements facilitated by Castle Interceptors.</description>
         <copyright>Copyright © 2016</copyright>
-        <tags>MeasureIt Interception Measurement Performance Counter Counters Castle Interceptor Interceptors</tags>
+        <tags>MeasureIt interception measurement performance counter counters Castle Interceptor IInterceptor</tags>
         <dependencies>
             <dependency id="MeaureIt.Core" version="1.13.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\Release\$id$.dll" target="lib\net40" />
-        <file src="bin\Release\$id$.xml" target="lib\net40" />
+        <file src="bin\$configuration$\$id$.dll" target="lib\net40" />
+        <file src="bin\$configuration$\$id$.xml" target="lib\net40" />
     </files>
 </package>

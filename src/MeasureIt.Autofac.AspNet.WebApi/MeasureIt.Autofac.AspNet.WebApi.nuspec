@@ -2,22 +2,23 @@
 <package >
     <metadata>
         <id>$id$</id>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <title>$title$</title>
         <authors>$author$</authors>
         <owners>Michael W. Powell</owners>
         <projectUrl>http://www.github.com/mwpowellhtx/MeasureIt</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Provides MeasureIt performance measurement capability for Web API projects.</description>
+        <description>Autofac bootstrap for use with Microsoft ASP.NET Web API.</description>
         <copyright>Copyright © 2016</copyright>
-        <tags>MeasureIt Autofac performance counter counters measurement web API</tags>
+        <tags>MeasureIt Autofac ASP.NET Web API performance counters bootstrap measurement filter</tags>
         <dependencies>
             <dependency id="MeasureIt.Web.Http.Core" version="1.1.2" />
             <dependency id="Autofac.WebApi2" version="4.0.1" />
+            <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\Release\$id$.dll" target="lib\net40" />
-        <file src="bin\Release\$id$.xml" target="lib\net40" />
+        <file src="bin\$configuration$\$id$.dll" target="lib\net40" />
+        <file src="bin\$configuration$\$id$.xml" target="lib\net40" />
     </files>
 </package>
