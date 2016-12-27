@@ -65,7 +65,7 @@ Example:
     , PublishCounters = true // default = true
     , InstanceLifetime = PerformanceCounterInstanceLifetime.Process // default = PerformanceCounterInstanceLifetime.Process
     , ThrowPublishErrors = true // default = false
-    , SampleRate = 1d // default 1.0d
+    , SampleRate = 0.5d // default 1.0d
     )]
 public void InstrumentedMember()
 {
@@ -131,6 +131,29 @@ builder.EnableApiMeasurements<
 Usage of these services should be able to coexist seamlessly with the ``Interception`` measurements.
 
 #### API Action Decoration
+
+Now for the next difference from *Interception* performance measurement, which is really more of a similarity than a difference, on the surface.
+
+```C#
+[PerformanceMeasurementFilter(
+    typeof(WebApiPerformanceCounterCategoryAdapter)
+    , typeof(CurrentConcurrentCountPerformanceCounterAdapter)
+    , typeof(TotalMemberAccessesPerformanceCounterAdapter)
+    , PublishEvent = true // default = true
+    , PublishCounters = true // default = true
+    , InstanceLifetime = PerformanceCounterInstanceLifetime.Process // default = PerformanceCounterInstanceLifetime.Process
+    , ThrowPublishErrors = true // default = false
+    , SampleRate = 0.5d // default 1.0d
+    )]
+public IEnumerable<int> Get()
+{
+    yield return 1;
+    yield return 2;
+    yield return 3;
+}
+```
+
+Under the hood, the similarities end. Whereas with *Interception* receives an *Castle.DynamicProxy.IInvocation*, for API measurement, ``PerformanceMeasurementFilterAttribute`` derives from ``ActionFilterAttribute``, which comprehends a beginning and ending boundary around the action invocation. We do not have to actually invoke the action, but are given the boundaries, which is fairly well seamless with the *Counter Adapter* architecture.
 
 ### NuGet Distrubition
 
