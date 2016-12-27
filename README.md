@@ -106,7 +106,7 @@ As with *Interception*, initially I am supporting *Autofac* and *Castle Windsor*
 
 Method Name|Generic Parameters|Method Parameters|Description|Assumptions
 ---|---|---|---|---
-``Autofac.ContainerBuilder.EnableApiMeasurements``|``TInterface : class, IHttpActionInstrumentationDiscoveryService; TService : class, TInterface; TProvider : class, ITwoStageMeasurementProvider``|``Action<IInstrumentationDiscoveryOptions> optsCreated = null``|Enables API measurements via the specified Discovery Service, defaults to ``MeasureIt.Castle.Interceptor.MeasurementInterceptor``|
+``Autofac.ContainerBuilder.EnableApiMeasurements``|``TInterface : class, IHttpActionInstrumentationDiscoveryService; TService : class, TInterface; TProvider : class, ITwoStageMeasurementProvider``|``Action<IInstrumentationDiscoveryOptions> optsCreated = null``|Enables API measurements via the specified Discovery Service, defaults to ``MeasureIt.Web.Http.Interception.HttpActionMeasurementProvider``|
 ``Autofac.ContainerBuilder.RegisterApiService``|``TInterface : class; TService : class, TInterface``|*(none)*|Registers a service for API
 ``System.Web.Http.HttpConfiguration.ReplaceService``|``TInterface : class; TService: class, TInterface``|``IContainer container``|Replaces the service in the ``System.Web.Http.HttpConfiguration.Services`` collection|That the service interface has been registered
 ``Autofac.ContainerBuilder.RegisterApiServices``|*(none)*|*(none)*|Registers a common set of services for API|At present I am replacing the ``AutofacHttpControllerActivator`` implementation for ``IHttpControllerActivator``, but this may change in the future
