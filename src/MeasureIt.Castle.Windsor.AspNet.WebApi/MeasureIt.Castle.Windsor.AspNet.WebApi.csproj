@@ -78,10 +78,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MeasureIt.Castle.Interception\MeasureIt.Castle.Interception.csproj">
-      <Project>{C3A1A8BB-8160-482F-B66B-60F256836C4B}</Project>
-      <Name>MeasureIt.Castle.Interception</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Core\MeasureIt.Core.csproj">
       <Project>{8B6F3A40-A8C8-407B-914A-3692454FC110}</Project>
       <Name>MeasureIt.Core</Name>
