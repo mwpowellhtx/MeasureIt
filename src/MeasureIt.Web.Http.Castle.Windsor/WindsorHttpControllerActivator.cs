@@ -2,10 +2,13 @@
 using System.Net.Http;
 using System.Web.Http.Controllers;
 
-namespace MeasureIt.Castle.Windsor
+namespace MeasureIt.Web.Http.Castle.Windsor
 {
     using global::Castle.Windsor;
 
+    /// <summary>
+    /// Controller activator for use with Castle Windsor.
+    /// </summary>
     public class WindsorHttpControllerActivator : IWindsorHttpControllerActivator
     {
         private class ControllerReleaseResource : IDisposable
@@ -26,19 +29,23 @@ namespace MeasureIt.Castle.Windsor
             }
         }
 
-        private readonly IWindsorContainer _container;
+        private IWindsorContainer Container { get; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="container"></param>
         public WindsorHttpControllerActivator(IWindsorContainer container)
         {
-            _container = container;
+            Container = container;
         }
 
         public virtual IHttpController Create(HttpRequestMessage request,
             HttpControllerDescriptor ctrlDescriptor, Type ctrlType)
         {
-            var ctrl = (IHttpController) _container.Resolve(ctrlType);
+            var ctrl = (IHttpController) Container.Resolve(ctrlType);
 
-            request.RegisterForDispose(new ControllerReleaseResource(_container, ctrl));
+            request.RegisterForDispose(new ControllerReleaseResource(Container, ctrl));
 
             return ctrl;
         }

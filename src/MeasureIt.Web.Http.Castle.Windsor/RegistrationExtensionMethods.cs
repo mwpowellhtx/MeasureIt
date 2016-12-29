@@ -5,7 +5,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
 
-namespace MeasureIt.Castle.Windsor
+namespace MeasureIt.Web.Http.Castle.Windsor
 {
     using Contexts;
     using Discovery;
@@ -17,6 +17,14 @@ namespace MeasureIt.Castle.Windsor
     /// </summary>
     public static class RegistrationExtensionMethods
     {
+        /// <summary>
+        /// Registers the Api Controllers with the <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="config"></param>
+        /// <param name="assy"></param>
+        /// <param name="otherAssies"></param>
+        /// <returns></returns>
         public static IWindsorContainer RegisterApiControllers(this IWindsorContainer container,
             HttpConfiguration config, Assembly assy, params Assembly[] otherAssies)
         {

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace MeasureIt.Castle.Windsor.AspNet.WebApi
+namespace MeasureIt.Web.Http.Castle.Windsor
 {
     using Xunit;
 

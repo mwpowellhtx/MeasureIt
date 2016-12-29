@@ -1,4 +1,4 @@
-namespace MeasureIt.Castle.Windsor.AspNet.WebApi.Controllers
+namespace MeasureIt.Web.Http.Castle.Windsor.Controllers
 {
     using MeasureIt.Controllers;
 

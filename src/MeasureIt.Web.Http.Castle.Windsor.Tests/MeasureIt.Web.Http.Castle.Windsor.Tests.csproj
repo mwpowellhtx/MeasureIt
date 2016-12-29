@@ -8,8 +8,8 @@
     <ProjectGuid>{5EDB1BB1-F74E-42D2-9AB3-E097CF23C03E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeasureIt.Castle.Windsor.AspNet.WebApi</RootNamespace>
-    <AssemblyName>MeasureIt.Castle.Windsor.AspNet.WebApi.Tests</AssemblyName>
+    <RootNamespace>MeasureIt.Web.Http.Castle.Windsor</RootNamespace>
+    <AssemblyName>MeasureIt.Web.Http.Castle.Windsor.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>5b8c9752</NuGetPackageImportStamp>
@@ -129,7 +129,7 @@
       <Project>{EBA21D7A-9995-4999-B37E-9EBD97957293}</Project>
       <Name>MeasureIt.AspNet.WebApi.Tests.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MeasureIt.Castle.Windsor.AspNet.WebApi\MeasureIt.Castle.Windsor.AspNet.WebApi.csproj">
+    <ProjectReference Include="..\MeasureIt.Web.Http.Castle.Windsor\MeasureIt.Web.Http.Castle.Windsor.csproj">
       <Project>{6AD4E9CF-A038-443D-94C2-230A45A68B30}</Project>
       <Name>MeasureIt.Castle.Windsor.AspNet.WebApi</Name>
     </ProjectReference>

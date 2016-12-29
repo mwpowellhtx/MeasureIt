@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace MeasureIt.Castle.Windsor.AspNet.WebApi
+namespace MeasureIt.Web.Http.Castle.Windsor
 {
     using Kingdom.Web.Http;
     using Owin;
