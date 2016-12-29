@@ -1,5 +1,4 @@
 using System;
-using System.Net.Http;
 
 namespace MeasureIt.Contexts
 {
@@ -28,15 +27,16 @@ namespace MeasureIt.Contexts
         private Gauge _gauge;
 
         // TODO: TBD: is having a reference to HttpResponseMessage a good thing here? may want to be careful of that, especially with .NET Core work going on...
-   
+
         /// <summary>
-        /// Starts the Context begin evaluated given a <paramref name="response"/>.
+        /// Starts a new Measurement with optional <paramref name="startingCallback"/>.
         /// </summary>
-        /// <param name="response"></param>
-        public virtual void Start(HttpResponseMessage response)
+        /// <param name="startingCallback">Callback invoked just prior to actually starting to gauge the measurement.</param>
+        public virtual void Start(Action startingCallback = null)
         {
+            startingCallback = startingCallback ?? delegate { };
             _gauge = new Gauge(Contexts);
-            // TODO: TBD: signal via the response that we are Starting to Gauge the Measurement Context.
+            startingCallback();
             _gauge.Start();
         }
 

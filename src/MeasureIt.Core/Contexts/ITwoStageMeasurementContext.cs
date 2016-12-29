@@ -1,5 +1,4 @@
 using System;
-using System.Net.Http;
 
 namespace MeasureIt.Contexts
 {
@@ -9,10 +8,10 @@ namespace MeasureIt.Contexts
     public interface ITwoStageMeasurementContext : IMeasurementContext
     {
         /// <summary>
-        /// Starts a new Measurement.
+        /// Starts a new Measurement with optional <paramref name="startingCallback"/>.
         /// </summary>
-        /// <param name="response"></param>
-        void Start(HttpResponseMessage response);
+        /// <param name="startingCallback"></param>
+        void Start(Action startingCallback = null);
 
         /// <summary>
         /// Stops the Measurement Context from running.

@@ -35,5 +35,6 @@ using System.Runtime.InteropServices;
 // TODO: TBD: https://github.com/NuGet/Home/issues/4149
 
 [assembly: InternalsVisibleTo("MeasureIt.Castle.Interception")]
+[assembly: InternalsVisibleTo("MeasureIt.Web.Mvc")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Core")]
 [assembly: InternalsVisibleTo("MeasureIt.Core.Tests")]

@@ -31,14 +31,14 @@ namespace MeasureIt.Web.Http.Filters
          * does not yet take into account flags or sample rates and so forth */
 
         /// <summary>
-        /// "measurement-provider"
+        /// "api-measurement-provider"
         /// </summary>
-        private const string MeasurementProviderKey = "measurement-provider";
+        private const string MeasurementProviderKey = "api-measurement-provider";
 
         /// <summary>
-        /// "measurement-context"
+        /// "api-measurement-context"
         /// </summary>
-        private const string MeasurementContextKey = "measurement-context";
+        private const string MeasurementContextKey = "api-measurement-context";
 
         private static ITwoStageMeasurementProvider GetMeasurementProvider(HttpActionContext actionContext)
         {
@@ -79,8 +79,10 @@ namespace MeasureIt.Web.Http.Filters
 
                 if (measurementContext.MayReturn()) return;
 
+                // TODO: TBD: signal that the measurement started? i.e. via stateful storage...
+
                 // Start the Measurement ONLY. Leave Disposal for the End.
-                measurementContext.Start(actionContext.Response);
+                measurementContext.Start(() => { });
             }
             catch (Exception ex)
             {
