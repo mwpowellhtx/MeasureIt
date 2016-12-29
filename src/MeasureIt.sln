@@ -48,9 +48,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.AspNet.WebApi.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Castle.Windsor.Tests", "MeasureIt.Web.Http.Castle.Windsor.Tests\MeasureIt.Web.Http.Castle.Windsor.Tests.csproj", "{5EDB1BB1-F74E-42D2-9AB3-E097CF23C03E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Autofac.AspNet.WebApi", "MeasureIt.Autofac.AspNet.WebApi\MeasureIt.Autofac.AspNet.WebApi.csproj", "{188FA461-CEE4-4DC3-8A75-51C756AD9F06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Autofac", "MeasureIt.Web.Http.Autofac\MeasureIt.Web.Http.Autofac.csproj", "{188FA461-CEE4-4DC3-8A75-51C756AD9F06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Autofac.AspNet.WebApi.Tests", "MeasureIt.Autofac.AspNet.WebApi.Tests\MeasureIt.Autofac.AspNet.WebApi.Tests.csproj", "{7357CCEF-BFD3-4B68-8B27-410FA0DF6131}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Autofac.Tests", "MeasureIt.Web.Http.Autofac.Tests\MeasureIt.Web.Http.Autofac.Tests.csproj", "{7357CCEF-BFD3-4B68-8B27-410FA0DF6131}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Mvc.Castle.Windsor", "MeasureIt.Web.Mvc.Castle.Windsor\MeasureIt.Web.Mvc.Castle.Windsor.csproj", "{7D829131-556C-49A8-A744-28F5F08D5AB3}"
 EndProject

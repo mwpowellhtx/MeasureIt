@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MeasureIt.Autofac.AspNet.WebApi.Tests")]
+[assembly: AssemblyTitle("MeasureIt.AspNet.WebApi.Autofac")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("MeasureIt.Autofac.AspNet.WebApi")]
+[assembly: AssemblyProduct("MeasureIt.AspNet.WebApi.Autofac")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("244cd601-ab6c-4bd0-b23b-040370b67382")]
+[assembly: Guid("d759a8c9-9e17-469e-82ef-d03f52d22e12")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -28,5 +28,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.*")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.*")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
+
+// NuGet NuSpec Token Replacement should work, but is not: $version$
+// TODO: TBD: https://github.com/NuGet/Home/issues/4149

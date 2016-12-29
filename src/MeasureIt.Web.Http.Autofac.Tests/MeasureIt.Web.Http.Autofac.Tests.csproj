@@ -8,8 +8,8 @@
     <ProjectGuid>{7357CCEF-BFD3-4B68-8B27-410FA0DF6131}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeasureIt.Autofac.AspNet.WebApi</RootNamespace>
-    <AssemblyName>MeasureIt.Autofac.AspNet.WebApi.Tests</AssemblyName>
+    <RootNamespace>MeasureIt.Web.Http.Autofac</RootNamespace>
+    <AssemblyName>MeasureIt.Web.Http.Autofac.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>20ea8450</NuGetPackageImportStamp>
@@ -123,9 +123,9 @@
       <Project>{eba21d7a-9995-4999-b37e-9ebd97957293}</Project>
       <Name>MeasureIt.AspNet.WebApi.Tests.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MeasureIt.Autofac.AspNet.WebApi\MeasureIt.Autofac.AspNet.WebApi.csproj">
+    <ProjectReference Include="..\MeasureIt.Web.Http.Autofac\MeasureIt.Web.Http.Autofac.csproj">
       <Project>{188fa461-cee4-4dc3-8a75-51c756ad9f06}</Project>
-      <Name>MeasureIt.Autofac.AspNet.WebApi</Name>
+      <Name>MeasureIt.Web.Http.Autofac</Name>
     </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Core\MeasureIt.Core.csproj">
       <Project>{8b6f3a40-a8c8-407b-914a-3692454fc110}</Project>
