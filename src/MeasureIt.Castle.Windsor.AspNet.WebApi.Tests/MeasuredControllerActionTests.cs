@@ -2,7 +2,7 @@ using System.Web.Http;
 
 namespace MeasureIt.Castle.Windsor.AspNet.WebApi
 {
-    using Kingdom.Castle.Windsor.Web.Http.Dependencies;
+    using Kingdom.Web.Http.Dependencies;
     using Xunit;
 
     public class MeasuredControllerActionTests : MeasuredControllerActionTestFixtureBase<MeasuredStartupFixture>

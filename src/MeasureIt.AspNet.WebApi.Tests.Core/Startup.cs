@@ -13,22 +13,15 @@ namespace MeasureIt
     public partial class Startup
     {
         // TODO: TBD: may need/want to replace the Config downstream from here...
-        private readonly HttpConfiguration _config;
+        protected HttpConfiguration Config { get; }
 
         /// <summary>
         /// Default Constructor
         /// </summary>
         public Startup()
         {
-            _config = new HttpConfiguration();
-        }
-
-        /// <summary>
-        /// Gets the <see cref="HttpConfiguration"/> associated with this Startup.
-        /// </summary>
-        protected HttpConfiguration Config
-        {
-            get { return _config; }
+            // Make sure that we have an HttpConfiguration ready and waiting for us.
+            Config = new HttpConfiguration();
         }
 
         protected virtual void OnConfiguration(IAppBuilder app, HttpConfiguration config)
@@ -41,11 +34,9 @@ namespace MeasureIt
         /// <param name="app"></param>
         public virtual void Configuration(IAppBuilder app)
         {
-            var config = Config;
+            OnConfiguration(app, Config);
 
-            OnConfiguration(app, config);
-
-            app.UseWebApi(config);
+            app.UseWebApi(Config);
         }
     }
 }
