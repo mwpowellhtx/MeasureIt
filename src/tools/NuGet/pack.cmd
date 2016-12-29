@@ -15,9 +15,10 @@ echo Packing NuGet projects...
 call :pack MeasureIt.Core
 call :pack MeasureIt.Castle.Interception
 call :pack MeasureIt.Autofac
+call :pack MeasureIt.Castle.Windsor
 call :pack MeasureIt.Web.Http.Core
-call :pack MeasureIt.Autofac.AspNet.WebApi
-call :pack MeasureIt.Castle.Windsor.AspNet.WebApi
+call :pack MeasureIt.Web.Http.Autofac
+call :pack MeasureIt.Web.Http.Castle.Windsor
 :: TODO: TBD: add additional projects here...
 
 :end
