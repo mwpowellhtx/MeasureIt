@@ -5,11 +5,11 @@ using System.Web.Http.Dispatcher;
 
 // ReSharper disable once CheckNamespace
 
-namespace MeasureIt.Autofac
+namespace MeasureIt.Web.Http.Autofac
 {
     using Contexts;
     using Discovery;
-    using Web.Http.Interception;
+    using Interception;
     using global::Autofac;
     using global::Autofac.Builder;
 

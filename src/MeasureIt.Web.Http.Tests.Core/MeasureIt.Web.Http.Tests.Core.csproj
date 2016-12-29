@@ -8,8 +8,8 @@
     <ProjectGuid>{EBA21D7A-9995-4999-B37E-9EBD97957293}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeasureIt</RootNamespace>
-    <AssemblyName>MeasureIt.AspNet.WebApi.Tests.Core</AssemblyName>
+    <RootNamespace>MeasureIt.Web.Http</RootNamespace>
+    <AssemblyName>MeasureIt.Web.Http.Tests.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>9030ce7b</NuGetPackageImportStamp>

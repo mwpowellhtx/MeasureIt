@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 
-namespace MeasureIt.Controllers
+namespace MeasureIt.Web.Http.Controllers
 {
     public abstract class UnmeasuredControllerBase : ApiController
     {

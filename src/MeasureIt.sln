@@ -44,7 +44,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Core", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Castle.Windsor", "MeasureIt.Web.Http.Castle.Windsor\MeasureIt.Web.Http.Castle.Windsor.csproj", "{6AD4E9CF-A038-443D-94C2-230A45A68B30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.AspNet.WebApi.Tests.Core", "MeasureIt.AspNet.WebApi.Tests.Core\MeasureIt.AspNet.WebApi.Tests.Core.csproj", "{EBA21D7A-9995-4999-B37E-9EBD97957293}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Tests.Core", "MeasureIt.Web.Http.Tests.Core\MeasureIt.Web.Http.Tests.Core.csproj", "{EBA21D7A-9995-4999-B37E-9EBD97957293}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Castle.Windsor.Tests", "MeasureIt.Web.Http.Castle.Windsor.Tests\MeasureIt.Web.Http.Castle.Windsor.Tests.csproj", "{5EDB1BB1-F74E-42D2-9AB3-E097CF23C03E}"
 EndProject

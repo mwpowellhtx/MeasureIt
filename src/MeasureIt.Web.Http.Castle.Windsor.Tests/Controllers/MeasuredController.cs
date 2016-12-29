@@ -1,6 +1,6 @@
 namespace MeasureIt.Web.Http.Castle.Windsor.Controllers
 {
-    using MeasureIt.Controllers;
+    using Http.Controllers;
 
     public class MeasuredController : MeasuredControllerBase
     {

@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Web.Http;
 
-namespace MeasureIt.Controllers
+namespace MeasureIt.Web.Http.Controllers
 {
     using Counters;
-    using Web.Http.Filters;
+    using Filters;
 
     public abstract class MeasuredControllerBase : ApiController
     {

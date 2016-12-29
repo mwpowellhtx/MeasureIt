@@ -119,9 +119,9 @@
     <Compile Include="UnmeasuredControllerActionTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MeasureIt.AspNet.WebApi.Tests.Core\MeasureIt.AspNet.WebApi.Tests.Core.csproj">
+    <ProjectReference Include="..\MeasureIt.Web.Http.Tests.Core\MeasureIt.Web.Http.Tests.Core.csproj">
       <Project>{eba21d7a-9995-4999-b37e-9ebd97957293}</Project>
-      <Name>MeasureIt.AspNet.WebApi.Tests.Core</Name>
+      <Name>MeasureIt.Web.Http.Tests.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Web.Http.Autofac\MeasureIt.Web.Http.Autofac.csproj">
       <Project>{188fa461-cee4-4dc3-8a75-51c756ad9f06}</Project>

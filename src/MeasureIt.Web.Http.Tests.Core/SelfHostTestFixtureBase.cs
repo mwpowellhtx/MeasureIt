@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace MeasureIt
+namespace MeasureIt.Web.Http
 {
     using Microsoft.Owin.Hosting;
     using Xunit;

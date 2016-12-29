@@ -4,7 +4,7 @@ using System.Web.Http.Controllers;
 
 // ReSharper disable once CheckNamespace
 
-namespace MeasureIt.Autofac
+namespace MeasureIt.Web.Http.Autofac
 {
     using global::Autofac;
 

@@ -1,6 +1,6 @@
-namespace MeasureIt.Autofac.AspNet.WebApi.Controllers
+namespace MeasureIt.Web.Http.Autofac.Controllers
 {
-    using MeasureIt.Controllers;
+    using Http.Controllers;
 
     public class UnmeasuredController : UnmeasuredControllerBase
     {

@@ -125,7 +125,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MeasureIt.AspNet.WebApi.Tests.Core\MeasureIt.AspNet.WebApi.Tests.Core.csproj">
+    <ProjectReference Include="..\MeasureIt.Web.Http.Tests.Core\MeasureIt.Web.Http.Tests.Core.csproj">
       <Project>{EBA21D7A-9995-4999-B37E-9EBD97957293}</Project>
       <Name>MeasureIt.AspNet.WebApi.Tests.Core</Name>
     </ProjectReference>

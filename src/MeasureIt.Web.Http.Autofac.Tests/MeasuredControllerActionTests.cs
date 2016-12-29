@@ -1,6 +1,6 @@
 using System.Web.Http;
 
-namespace MeasureIt.Autofac.AspNet.WebApi
+namespace MeasureIt.Web.Http.Autofac
 {
     using Xunit;
     using global::Autofac.Integration.WebApi;

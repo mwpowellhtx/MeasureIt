@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 
-namespace MeasureIt
+namespace MeasureIt.Web.Http
 {
     using Controllers;
     using Discovery;

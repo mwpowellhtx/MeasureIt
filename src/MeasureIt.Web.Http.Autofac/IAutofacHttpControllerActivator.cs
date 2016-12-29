@@ -3,7 +3,7 @@ using System.Web.Http.Dispatcher;
 
 // ReSharper disable once CheckNamespace
 
-namespace MeasureIt.Autofac
+namespace MeasureIt.Web.Http.Autofac
 {
     /// <summary>
     /// Autofac Http controller activator.

@@ -1,11 +1,11 @@
 ﻿using System.Web.Http;
 
-namespace MeasureIt.Autofac.AspNet.WebApi
+namespace MeasureIt.Web.Http.Autofac
 {
     using Controllers;
     using Discovery;
+    using Interception;
     using Owin;
-    using Web.Http.Interception;
     using global::Autofac;
     using global::Autofac.Integration.WebApi;
     using MeasureItStartup = Startup;

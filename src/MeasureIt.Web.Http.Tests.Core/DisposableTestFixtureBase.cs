@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MeasureIt
+namespace MeasureIt.Web.Http
 {
     public abstract class DisposableTestFixtureBase : IDisposable
     {

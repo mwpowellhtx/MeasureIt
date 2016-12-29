@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace MeasureIt
+namespace MeasureIt.Web.Http
 {
     using Owin;
 
