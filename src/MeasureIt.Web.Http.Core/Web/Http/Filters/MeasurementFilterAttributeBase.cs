@@ -62,11 +62,6 @@ namespace MeasureIt.Web.Http.Filters
         }
 
         /// <summary>
-        /// Gets whether MayProceedUnabated.
-        /// </summary>
-        public bool MayProceedUnabated => Descriptor.ThrowPublishErrors;
-
-        /// <summary>
         /// Gets or sets the SampleRate.
         /// </summary>
         public double SampleRate
