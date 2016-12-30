@@ -13,7 +13,7 @@
         <tags>ASP.NET MVC performance counters measurement filter discovery service agent agents</tags>
         <dependencies>
             <dependency id="Microsoft.AspNet.Mvc" version="[5.2.3,6.0.0)" />
-            <dependency id="MeasureIt.Core" version="1.13.0" />
+            <dependency id="MeasureIt.Core" version="1.13.2" />
         </dependencies>
     </metadata>
     <files>
