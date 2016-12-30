@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MeasureIt.Web.Http.Castle.Windsor")]
+[assembly: AssemblyTitle("MeasureIt.AspNet.WebApi.Castle.Windsor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("MeasureIt.Web.Http.Castle.Windsor")]
+[assembly: AssemblyProduct("MeasureIt.AspNet.WebApi.Castle.Windsor")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

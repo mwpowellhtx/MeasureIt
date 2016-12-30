@@ -89,7 +89,7 @@
       <Project>{8b6f3a40-a8c8-407b-914a-3692454fc110}</Project>
       <Name>MeasureIt.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MeasureIt.Web.Mvc\MeasureIt.Web.Mvc.csproj">
+    <ProjectReference Include="..\MeasureIt.Web.Mvc.Core\MeasureIt.Web.Mvc.Core.csproj">
       <Project>{568df7be-ed1f-47c8-a234-25d7f89743c2}</Project>
       <Name>MeasureIt.Web.Mvc</Name>
     </ProjectReference>
