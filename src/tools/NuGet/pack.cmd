@@ -19,6 +19,7 @@ call :pack MeasureIt.Castle.Windsor
 call :pack MeasureIt.Web.Http.Core
 call :pack MeasureIt.Web.Http.Autofac
 call :pack MeasureIt.Web.Http.Castle.Windsor
+:: call :pack MeasureIt.Web.Mvc.Core
 :: TODO: TBD: add additional projects here...
 
 :end

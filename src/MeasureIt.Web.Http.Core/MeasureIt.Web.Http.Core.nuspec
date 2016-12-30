@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
     <metadata>
-        <id>$id$</id>
+        <id>$title$</id>
         <version>1.1.4</version>
         <title>$title$</title>
         <authors>$author$</authors>
@@ -13,7 +13,7 @@
         <tags>MeasureIt web http discovery service agent</tags>
         <dependencies>
             <dependency id="Microsoft.AspNet.WebApi.Core" version="[5.2.3,6.0.0)" />
-            <dependency id="MeasureIt.Core" version="1.13.1" />
+            <dependency id="MeasureIt.Core" version="1.13.2" />
         </dependencies>
     </metadata>
     <files>

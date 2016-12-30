@@ -54,7 +54,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Http.Autofac.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Mvc.Castle.Windsor", "MeasureIt.Web.Mvc.Castle.Windsor\MeasureIt.Web.Mvc.Castle.Windsor.csproj", "{7D829131-556C-49A8-A744-28F5F08D5AB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Mvc", "MeasureIt.Web.Mvc\MeasureIt.Web.Mvc.csproj", "{568DF7BE-ED1F-47C8-A234-25D7F89743C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Mvc.Core", "MeasureIt.Web.Mvc.Core\MeasureIt.Web.Mvc.Core.csproj", "{568DF7BE-ED1F-47C8-A234-25D7F89743C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.AspNet.Mvc.Castle.Windsor.Tests.Website", "MeasureIt.AspNet.Mvc.Castle.Windsor.Tests.Website\MeasureIt.AspNet.Mvc.Castle.Windsor.Tests.Website.csproj", "{CEE873BD-C25E-4C97-8DD0-0959234BCBA2}"
 EndProject
