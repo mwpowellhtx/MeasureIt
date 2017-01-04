@@ -24,7 +24,7 @@ namespace MeasureIt.Web.Http.Castle.Windsor
         {
             base.OnConfiguration(app, config);
 
-            Container.ConfigureApi<StartupFixture>(config);
+            Container.InstallApiServices<StartupFixture>(config);
 
             config.UseWindsorDependencyResolver(Container)
                 .MapHttpAttributeRoutes();
