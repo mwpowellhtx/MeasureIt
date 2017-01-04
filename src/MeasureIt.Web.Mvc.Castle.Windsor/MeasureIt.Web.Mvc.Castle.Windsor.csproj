@@ -91,7 +91,7 @@
     </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Web.Mvc.Core\MeasureIt.Web.Mvc.Core.csproj">
       <Project>{568df7be-ed1f-47c8-a234-25d7f89743c2}</Project>
-      <Name>MeasureIt.Web.Mvc</Name>
+      <Name>MeasureIt.Web.Mvc.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
