@@ -34,7 +34,12 @@ using System.Runtime.InteropServices;
 // NuGet NuSpec Token Replacement should work, but is not: $version$
 // TODO: TBD: https://github.com/NuGet/Home/issues/4149
 
+[assembly: InternalsVisibleTo("MeasureIt.Autofac")]
 [assembly: InternalsVisibleTo("MeasureIt.Castle.Interception")]
-[assembly: InternalsVisibleTo("MeasureIt.Web.Mvc.Core")]
+[assembly: InternalsVisibleTo("MeasureIt.Castle.Windsor")]
+[assembly: InternalsVisibleTo("MeasureIt.Web.Http.Autofac")]
+[assembly: InternalsVisibleTo("MeasureIt.Web.Http.Castle.Windsor")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Core")]
+[assembly: InternalsVisibleTo("MeasureIt.Web.Mvc.Castle.Windsor")]
+[assembly: InternalsVisibleTo("MeasureIt.Web.Mvc.Core")]
 [assembly: InternalsVisibleTo("MeasureIt.Core.Tests")]
