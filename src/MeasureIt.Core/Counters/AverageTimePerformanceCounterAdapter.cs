@@ -7,8 +7,8 @@ namespace MeasureIt
     /// <summary>
     /// 
     /// </summary>
-    [CounterCreationData(CounterType = TimerType)]
-    [CounterCreationData(CounterType = BaseType)]
+    [CounterCreationData(CounterType = TimerType, Help = "Average time.")]
+    [CounterCreationData(CounterType = BaseType, Help = "Average time (base).")]
     public class AverageTimePerformanceCounterAdapter : PerformanceCounterAdapterBase<
         AverageTimePerformanceCounterAdapter>
     {
