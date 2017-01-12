@@ -17,7 +17,10 @@ namespace MeasureIt.Web.Mvc.Collections
 
         private static IEnumerable<string> GetKeys(IDictionary items)
         {
-            return items.Keys.Cast<string>();
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            // Apparently Keys can contain non-strings.
+            foreach (var key in items.Keys.OfType<string>())
+                yield return key;
         }
 
         private void StatefulAction(Action<IDictionary> action)
