@@ -8,6 +8,7 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
     using MeasureIt.Discovery;
     using global::Castle.MicroKernel.Registration;
     using global::Castle.Windsor;
+    using static MeasureIt.Discovery.InstrumentationDiscoveryOptions;
 
     /// <summary>
     /// Registration extension methods.
@@ -21,17 +22,20 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
         /// <param name="container"></param>
-        /// <param name="optsCreated"></param>
+        /// <param name="createOptions"></param>
         /// <returns></returns>
-        public static IWindsorContainer EnableMvcMeasurements<TInterface, TService>(
+        /// <see cref="EnableMvcMeasurements{TInterface,TService,TOptions,TProvider}"/>
+        public static IWindsorContainer EnableMvcMeasurements<TInterface, TService, TOptions>(
             this IWindsorContainer container
-            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            , Func<TOptions> createOptions = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
         {
-            return container.EnableMvcMeasurements<TInterface, TService, MvcActionMeasurementProvider>(
-                optsCreated);
+            return container.EnableMvcMeasurements<TInterface, TService, TOptions
+                , MvcActionMeasurementProvider>(createOptions);
         }
 
         /// <summary>
@@ -40,24 +44,26 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
         /// <typeparam name="TProvider"></typeparam>
         /// <param name="container"></param>
-        /// <param name="optsCreated"></param>
+        /// <param name="createOptions"></param>
         /// <returns></returns>
-        public static IWindsorContainer EnableMvcMeasurements<TInterface, TService, TProvider>(
+        public static IWindsorContainer EnableMvcMeasurements<TInterface, TService, TOptions, TProvider>(
             this IWindsorContainer container
-            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            , Func<TOptions> createOptions = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
             where TProvider : class, ITwoStageMeasurementProvider
         {
-            optsCreated = optsCreated ?? delegate { };
+            createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
 
             container.Register(
 
-                Component.For<IInstrumentationDiscoveryOptions>()
-                    .ImplementedBy<InstrumentationDiscoveryOptions>()
-                    .LifestyleTransient().OnCreate(optsCreated)
+                Component.For(typeof(TOptions).GetInterfaces())
+                    .UsingFactoryMethod(createOptions)
+                    .LifestyleTransient()
 
                 // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
                 , Component.For<ITwoStageMeasurementProvider>()

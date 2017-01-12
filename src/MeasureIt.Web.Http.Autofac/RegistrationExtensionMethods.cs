@@ -2,6 +2,7 @@
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
+using InstrumentationDiscoveryOptions = MeasureIt.Discovery.InstrumentationDiscoveryOptions;
 
 // ReSharper disable once CheckNamespace
 
@@ -12,6 +13,7 @@ namespace MeasureIt.Web.Http.Autofac
     using Interception;
     using global::Autofac;
     using global::Autofac.Builder;
+    using static InstrumentationDiscoveryOptions;
 
     /// <summary>
     /// Most of the registration with <see cref="ContainerBuilder"/> is done via the open source
@@ -52,7 +54,7 @@ namespace MeasureIt.Web.Http.Autofac
         public static HttpConfiguration ReplaceService<TInterface, TService>(this HttpConfiguration config,
             IContainer container)
             where TInterface : class
-            where TService: class, TInterface
+            where TService : class, TInterface
         {
             // TODO: TBD: may need/want to work with a BeginLifetimeScope/ILifetimeScope instead...
             config.Services.Replace(typeof(TInterface), container.Resolve<TService>());
@@ -68,7 +70,7 @@ namespace MeasureIt.Web.Http.Autofac
         public static ContainerBuilder RegisterApiServices(this ContainerBuilder builder)
         {
             builder.Register(
-                ctx => AutofacHttpControllerActivator.Create(ctx.Resolve<ILifetimeScope>())
+                    ctx => AutofacHttpControllerActivator.Create(ctx.Resolve<ILifetimeScope>())
                 )
                 .As<IHttpControllerActivator>()
                 .InstancePerLifetimeScope();
@@ -82,18 +84,20 @@ namespace MeasureIt.Web.Http.Autofac
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="optsCreated"></param>
+        /// <param name="createOptions"></param>
         /// <returns></returns>
-        /// <see cref="EnableApiMeasurements{TInterface,TService,TProvider}"/>
-        public static ContainerBuilder EnableApiMeasurements<TInterface, TService>(
+        /// <see cref="EnableApiMeasurements{TInterface,TService,TOptions,TProvider}"/>
+        public static ContainerBuilder EnableApiMeasurements<TInterface, TService, TOptions>(
             this ContainerBuilder builder
-            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            , Func<TOptions> createOptions = null)
             where TInterface : class, IHttpActionInstrumentationDiscoveryService
             where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
         {
-            return builder.EnableApiMeasurements<TInterface, TService, HttpActionMeasurementProvider>(
-                optsCreated);
+            return builder.EnableApiMeasurements<TInterface, TService, TOptions
+                , HttpActionMeasurementProvider>(createOptions);
         }
 
         // TODO: TBD: requiring IHttpActionInstrumentationDiscoveryService means that we will need to reference that as a package as well...
@@ -103,23 +107,24 @@ namespace MeasureIt.Web.Http.Autofac
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
         /// <typeparam name="TProvider"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="optsCreated"></param>
+        /// <param name="createOptions"></param>
         /// <returns></returns>
-        public static ContainerBuilder EnableApiMeasurements<TInterface, TService, TProvider>(
+        public static ContainerBuilder EnableApiMeasurements<TInterface, TService, TOptions, TProvider>(
             this ContainerBuilder builder
-            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            , Func<TOptions> createOptions = null)
             where TInterface : class, IHttpActionInstrumentationDiscoveryService
             where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
             where TProvider : class, ITwoStageMeasurementProvider
         {
-            optsCreated = optsCreated ?? delegate { };
+            createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
 
-            builder.RegisterType<InstrumentationDiscoveryOptions>()
-                .As<IInstrumentationDiscoveryOptions>()
-                .OnActivated(args => optsCreated(args.Instance))
-                .InstancePerLifetimeScope();
+            builder.Register(context => createOptions)
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
             // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
             builder.RegisterType<TProvider>()

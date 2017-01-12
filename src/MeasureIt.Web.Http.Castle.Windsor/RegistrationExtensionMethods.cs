@@ -11,6 +11,7 @@ namespace MeasureIt.Web.Http.Castle.Windsor
     using Discovery;
     using global::Castle.MicroKernel.Registration;
     using global::Castle.Windsor;
+    using static Discovery.InstrumentationDiscoveryOptions;
 
     /// <summary>
     /// 
@@ -50,24 +51,25 @@ namespace MeasureIt.Web.Http.Castle.Windsor
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
         /// <typeparam name="TProvider"></typeparam>
         /// <param name="container"></param>
-        /// <param name="optsCreated"></param>
+        /// <param name="createOptions"></param>
         /// <returns></returns>
-        public static IWindsorContainer EnableApiMeasurements<TInterface, TService, TProvider>(
+        public static IWindsorContainer EnableApiMeasurements<TInterface, TService, TOptions, TProvider>(
             this IWindsorContainer container
-            , Action<IInstrumentationDiscoveryOptions> optsCreated = null)
+            , Func<TOptions> createOptions = null)
             where TInterface : class, IHttpActionInstrumentationDiscoveryService
             where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
             where TProvider : class, ITwoStageMeasurementProvider
         {
-            optsCreated = optsCreated ?? delegate { };
+            createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
 
             container.Register(
 
                 Component.For<IInstrumentationDiscoveryOptions>()
-                    .ImplementedBy<InstrumentationDiscoveryOptions>()
-                    .LifestyleTransient().OnCreate(optsCreated)
+                    .UsingFactoryMethod(createOptions).LifestyleTransient()
 
                 // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
                 , Component.For<ITwoStageMeasurementProvider>()
