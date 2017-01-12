@@ -65,10 +65,7 @@ namespace MeasureIt
         /// <summary>
         /// Gets whether MayproceedUnabated.
         /// </summary>
-        public bool MayProceedUnabated
-        {
-            get { return Descriptor.ThrowPublishErrors; }
-        }
+        public bool MayProceedUnabated => Descriptor.MayProceedUnabated;
 
         /// <summary>
         /// Gets or sets the SampleRate.
