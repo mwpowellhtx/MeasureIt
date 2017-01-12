@@ -6,6 +6,8 @@ using System.Web.Mvc.Async;
 namespace MeasureIt.Web.Mvc.Filters
 {
     using Contexts;
+    using Kingdom.Web.Mvc;
+    using IMvcDependencyResolver = IDependencyResolver;
     using static StatefulStorageMode;
 
     /// <summary>
@@ -22,7 +24,8 @@ namespace MeasureIt.Web.Mvc.Filters
         /// makes use of StructureMap, but a similar thing should work for both Castle Windsor
         /// as well as for Autofac.</remarks>
         /// <see cref="!:http://lostechies.com/jimmybogard/2010/05/03/dependency-injection-in-asp-net-mvc-filters/" />
-        internal IDependencyResolver DependencyResolver { get; set; }
+        [Inject]
+        public IMvcDependencyResolver DependencyResolver { get; set; }
 
         private IStatefulStorage _storage;
 
@@ -56,6 +59,8 @@ namespace MeasureIt.Web.Mvc.Filters
 
         private ITwoStageMeasurementProvider GetMeasurementProvider()
         {
+            Debug.Assert(DependencyResolver != null);
+
             return _storage.GetOrAdd(MeasurementProviderKey
                 , () => DependencyResolver.GetService<ITwoStageMeasurementProvider>()
                 );
