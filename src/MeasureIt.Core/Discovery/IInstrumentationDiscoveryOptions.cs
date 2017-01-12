@@ -19,10 +19,20 @@ namespace MeasureIt.Discovery
         bool ThrowOnInstallerFailure { get; set; }
 
         /// <summary>
+        /// Gets or sets whether to ThrowOnUninstallerFailure.
+        /// </summary>
+        bool ThrowOnUninstallerFailure { get; set; }
+
+        /// <summary>
         /// Gets or sets whether to IncludeInherited among the Reflected upon Classes, Types,
         /// Methods and Attributes.
         /// </summary>
         bool IncludeInherited { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to PrepareCategoryName.
+        /// </summary>
+        bool PrepareCategoryName { get; set; }
 
         /// <summary>
         /// Gets or sets the Constructor <see cref="BindingFlags"/>.

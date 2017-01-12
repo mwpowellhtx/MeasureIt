@@ -7,7 +7,7 @@ namespace MeasureIt.Discovery
     /// <summary>
     /// InstrumentationDiscoveryOptions class.
     /// </summary>
-    public class InstrumentationDiscoveryOptions: IInstrumentationDiscoveryOptions
+    public class InstrumentationDiscoveryOptions : IInstrumentationDiscoveryOptions
     {
         /// <summary>
         /// Gets or sets the RandomSeed.
@@ -20,9 +20,19 @@ namespace MeasureIt.Discovery
         public bool ThrowOnInstallerFailure { get; set; }
 
         /// <summary>
+        /// Gets or sets whether to ThrowOnUninstallerFailure.
+        /// </summary>
+        public bool ThrowOnUninstallerFailure { get; set; }
+
+        /// <summary>
         /// Gets or sets whether ot IncludeInherited.
         /// </summary>
         public bool IncludeInherited { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to PrepareCategoryName.
+        /// </summary>
+        public bool PrepareCategoryName { get; set; }
 
         /// <summary>
         /// Gets or sets the ConstructorBindingAttr.
@@ -53,10 +63,18 @@ namespace MeasureIt.Discovery
         public InstrumentationDiscoveryOptions(IEnumerable<Assembly> assemblies)
         {
             ThrowOnInstallerFailure = true;
+            ThrowOnUninstallerFailure = true;
             IncludeInherited = true;
+            PrepareCategoryName = true;
             MethodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
             ConstructorBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             Assemblies = (assemblies ?? new Assembly[0]).ToArray();
+        }
+
+        internal static TOptions CreateDefaultDiscoveryOptions<TOptions>()
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
+        {
+            return new TOptions();
         }
     }
 }
