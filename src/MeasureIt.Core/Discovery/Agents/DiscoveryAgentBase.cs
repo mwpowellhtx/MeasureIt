@@ -13,15 +13,10 @@ namespace MeasureIt.Discovery.Agents
     {
         static DiscoveryAgentBase()
         {
-            var type = typeof(T);
-
-            if (type.IsInterface) return;
-
-            var message = string.Format("{0} type must be an interface.", type);
-            throw new InvalidOperationException(message) {Data = {{"type", type}}};
+            typeof(T).VerifyIsInterface();
         }
 
-        private readonly IInstrumentationDiscoveryOptions _options;
+        private readonly IInstrumentationDiscoveryOptions _discoveryOptions;
 
         private readonly DiscoveryServiceExportedTypesGetterDelegate _getExportedTypes;
 
@@ -33,12 +28,12 @@ namespace MeasureIt.Discovery.Agents
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="discoveryOptions"></param>
         /// <param name="getExportedTypes"></param>
-        protected DiscoveryAgentBase(IInstrumentationDiscoveryOptions options,
+        protected DiscoveryAgentBase(IInstrumentationDiscoveryOptions discoveryOptions,
             DiscoveryServiceExportedTypesGetterDelegate getExportedTypes)
         {
-            _options = options;
+            _discoveryOptions = discoveryOptions;
             _getExportedTypes = getExportedTypes ?? DefaultGetExportedTypes;
         }
 
@@ -70,7 +65,7 @@ namespace MeasureIt.Discovery.Agents
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return DiscoverValues(_options, _getExportedTypes()).GetEnumerator();
+            return DiscoverValues(_discoveryOptions, _getExportedTypes()).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

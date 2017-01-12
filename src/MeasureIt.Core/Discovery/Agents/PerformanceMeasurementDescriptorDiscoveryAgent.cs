@@ -8,10 +8,10 @@
             MeasurePerformanceAttribute>
     {
         internal PerformanceMeasurementDescriptorDiscoveryAgent(
-            IInstrumentationDiscoveryOptions options
+            IInstrumentationDiscoveryOptions discoveryOptions
             , DiscoveryServiceExportedTypesGetterDelegate getExportedTypes
             )
-            : base(options, getExportedTypes)
+            : base(discoveryOptions, getExportedTypes)
         {
         }
     }

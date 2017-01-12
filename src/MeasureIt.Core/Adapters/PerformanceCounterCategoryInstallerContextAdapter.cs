@@ -6,6 +6,7 @@ using System.Threading;
 
 namespace MeasureIt.Adapters
 {
+    using Discovery;
     using CategoryTuple = Tuple<IPerformanceCounterCategoryAdapter, PerformanceCounterCategory>;
 
     /// <summary>
@@ -30,13 +31,17 @@ namespace MeasureIt.Adapters
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="discoveryOptions"></param>
         /// <param name="categoryAdapters"></param>
         internal PerformanceCounterCategoryInstallerContextAdapter(
-            IEnumerable<IPerformanceCounterCategoryAdapter> categoryAdapters
+            IInstrumentationDiscoveryOptions discoveryOptions
+            , IEnumerable<IPerformanceCounterCategoryAdapter> categoryAdapters
             )
             : base(categoryAdapters)
         {
             const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
+
+            var o = discoveryOtions;
 
             _lazyCategories = new Lazy<IEnumerable<CategoryTuple>>(
                 () => CategoryAdapters.Select(a =>
@@ -45,9 +50,11 @@ namespace MeasureIt.Adapters
                     var items = a.CreationData.Select(x => new CounterCreationData(x.Name, x.Help, x.CounterType)).ToArray();
                     var data = new CounterCreationDataCollection(items);
 
-                    return Tuple.Create(a, PerformanceCounterCategory.Exists(a.Name)
+                    var name = a.Name.PrepareCategoryName(o);
+
+                    return Tuple.Create(a, PerformanceCounterCategory.Exists(name)
                         ? null
-                        : PerformanceCounterCategory.Create(a.Name, a.Help, a.CategoryType, data));
+                        : PerformanceCounterCategory.Create(name, a.Help, a.CategoryType, data));
                 }), execAndPubThreadSafety);
         }
     }

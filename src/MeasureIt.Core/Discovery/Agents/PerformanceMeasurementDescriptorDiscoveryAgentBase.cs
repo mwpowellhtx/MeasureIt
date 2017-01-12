@@ -15,13 +15,13 @@ namespace MeasureIt.Discovery.Agents
         /// <summary>
         /// Protected Constructor
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="discoveryOptions"></param>
         /// <param name="getExportedTypes"></param>
         protected PerformanceMeasurementDescriptorDiscoveryAgentBase(
-            IInstrumentationDiscoveryOptions options
+            IInstrumentationDiscoveryOptions discoveryOptions
             , DiscoveryServiceExportedTypesGetterDelegate getExportedTypes
             )
-            : base(options, getExportedTypes)
+            : base(discoveryOptions, getExportedTypes)
         {
             _filter = new PerformanceMeasurementDescriptorFilter();
         }
@@ -59,11 +59,11 @@ namespace MeasureIt.Discovery.Agents
          * (and later, Mvc). */
 
         private IEnumerable<IPerformanceMeasurementDescriptor> DiscoverValues(
-            IInstrumentationDiscoveryOptions options, Type rootType, Type currentType)
+            IInstrumentationDiscoveryOptions discoveryOptions, Type rootType, Type currentType)
         {
             const bool inherited = false;
 
-            var o = options;
+            var o = discoveryOptions;
 
             var bases = (currentType.BaseType != null
                 ? DiscoverValues(o, rootType, currentType.BaseType)
@@ -94,20 +94,21 @@ namespace MeasureIt.Discovery.Agents
         }
 
         /// <summary>
-        /// Discovers the descriptors providing <paramref name="options"/> and <paramref name="exportedTypes"/>.
+        /// Discovers the descriptors providing <paramref name="discoveryOptions"/> and
+        /// <paramref name="exportedTypes"/>.
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="discoveryOptions"></param>
         /// <param name="exportedTypes"></param>
         /// <returns></returns>
         protected override IEnumerable<IPerformanceMeasurementDescriptor> DiscoverValues(
-            IInstrumentationDiscoveryOptions options, IEnumerable<Type> exportedTypes)
+            IInstrumentationDiscoveryOptions discoveryOptions, IEnumerable<Type> exportedTypes)
         {
-            var o = options;
+            var o = discoveryOptions;
 
             // There is nothing we use from the base class except to vet the parameters themselves.
 
             // ReSharper disable once IteratorMethodResultIsIgnored, PossibleMultipleEnumeration
-            base.DiscoverValues(options, exportedTypes);
+            base.DiscoverValues(o, exportedTypes);
 
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var d in exportedTypes.Where(t => t.IsClass && !t.IsAbstract)
