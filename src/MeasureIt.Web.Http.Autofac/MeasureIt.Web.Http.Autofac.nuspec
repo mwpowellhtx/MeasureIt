@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>$title$</id>
-        <version>1.1.2</version>
+        <version>1.2.0</version>
         <title>$title$</title>
         <authors>Michael W. Powell</authors>
         <owners>$author$</owners>
@@ -12,7 +12,7 @@
         <copyright>Copyright © 2016</copyright>
         <tags>MeasureIt Autofac ASP.NET Web API performance counters bootstrap measurement filter</tags>
         <dependencies>
-            <dependency id="MeasureIt.AspNet.WebApi.Core" version="1.1.4" />
+            <dependency id="MeasureIt.AspNet.WebApi.Core" version="1.2.0" />
             <dependency id="Autofac.WebApi2" version="4.0.1" />
             <dependency id="Microsoft.AspNet.WebApi.Core" version="[5.2.3,6.0.0)" />
         </dependencies>
