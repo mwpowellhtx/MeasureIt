@@ -8,6 +8,7 @@ namespace MeasureIt.Web.Mvc.Discovery
     using Agents;
     using Contexts;
     using MeasureIt.Discovery;
+    using static LazyThreadSafetyMode;
 
     /// <summary>
     /// Instrumentation discovery service for web purposes.
@@ -20,16 +21,15 @@ namespace MeasureIt.Web.Mvc.Discovery
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="options"></param>
-        public MvcActionInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
-            : base(options)
+        /// <param name="discoveryOptions"></param>
+        public MvcActionInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions discoveryOptions)
+            : base(discoveryOptions)
         {
             PrivateMeasurements = null;
 
-            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
-
             _lazyMeasurementFilterDiscoveryAgent = new Lazy<IMeasurementFilterDiscoveryAgent>(
-                () => new MeasurementFilterDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
+                () => new MeasurementFilterDiscoveryAgent(DiscoveryOptions, GetExportedTypes)
+                , ExecutionAndPublication);
         }
 
         private IEnumerable<IPerformanceMeasurementDescriptor> _measurements;
@@ -65,7 +65,7 @@ namespace MeasureIt.Web.Mvc.Discovery
         /// <returns></returns>
         public IInstallerContext GetInstallerContext()
         {
-            return new InstallerContext(Options, this);
+            return new InstallerContext(DiscoveryOptions, this);
         }
     }
 }

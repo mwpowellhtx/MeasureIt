@@ -11,9 +11,9 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="options"></param>
-        public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
-            : base(options)
+        /// <param name="discoveryOptions"></param>
+        public InstallerInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions discoveryOptions)
+            : base(discoveryOptions)
         {
         }
 
@@ -24,7 +24,7 @@
         // TODO: TBD: I'm not sure we need this method quite as much as simple leveraging the Install/TryUninstall extension methods...
         public IInstallerContext GetInstallerContext()
         {
-            return new InstallerContext(Options, this);
+            return new InstallerContext(DiscoveryOptions, this);
         }
     }
 }

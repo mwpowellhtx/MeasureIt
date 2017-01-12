@@ -16,7 +16,7 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// Gets the Assemblies from which to Discover any Instrumentation.
         /// </summary>
-        protected IEnumerable<Assembly> Assemblies => Options.Assemblies;
+        protected IEnumerable<Assembly> Assemblies => DiscoveryOptions.Assemblies;
 
         private readonly Lazy<IPerformanceCounterAdapterDiscoveryAgent> _lazyCounterAdapterDiscoveryAgent;
 
@@ -43,25 +43,26 @@ namespace MeasureIt.Discovery
         }
 
         /// <summary>
-        /// Gets the Options.
+        /// Gets the DiscoveryOptions.
         /// </summary>
-        protected IInstrumentationDiscoveryOptions Options { get; private set; }
+        protected IInstrumentationDiscoveryOptions DiscoveryOptions { get; }
 
         /// <summary>
         /// Protected Constructor
         /// </summary>
-        /// <param name="options"></param>
-        protected InstrumentationDiscoveryServiceBase(IInstrumentationDiscoveryOptions options)
+        /// <param name="discoveryOptions"></param>
+        protected InstrumentationDiscoveryServiceBase(IInstrumentationDiscoveryOptions discoveryOptions)
         {
             IsPending = true;
-            Options = options;
+            DiscoveryOptions = discoveryOptions;
 
             GetExportedTypes = () => Assemblies.SelectMany(a => a.GetExportedTypes());
 
             const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
 
             _lazyCounterAdapterDiscoveryAgent = new Lazy<IPerformanceCounterAdapterDiscoveryAgent>(
-                () => new PerformanceCounterAdapterDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
+                () => new PerformanceCounterAdapterDiscoveryAgent(DiscoveryOptions, GetExportedTypes)
+                , execAndPubThreadSafety);
         }
 
         /// <summary>
@@ -92,8 +93,7 @@ namespace MeasureIt.Discovery
         /// </summary>
         protected virtual void OnDiscovered()
         {
-            if (Discovered == null) return;
-            Discovered(this, EventArgs.Empty);
+            Discovered?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

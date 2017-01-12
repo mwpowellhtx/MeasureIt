@@ -2,13 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 
 namespace MeasureIt.Discovery
 {
     using Agents;
-    using Contexts;
+    using static LazyThreadSafetyMode;
 
     // TODO: TBD: copy (or inherit) from this one extending into WebApi (and later, Mvc)...
     /// <summary>
@@ -43,7 +42,7 @@ namespace MeasureIt.Discovery
         {
             adapters.Clear();
 
-            var bindingAttr = Options.ConstructorBindingAttr;
+            var bindingAttr = DiscoveryOptions.ConstructorBindingAttr;
 
             // We want to consolidate the Counter Descriptors under single instances of each Category Adapter Type.
             foreach (var m in measurements)
@@ -61,16 +60,15 @@ namespace MeasureIt.Discovery
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="options"></param>
-        public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions options)
-            : base(options)
+        /// <param name="discoveryOptions"></param>
+        public RuntimeInstrumentationDiscoveryService(IInstrumentationDiscoveryOptions discoveryOptions)
+            : base(discoveryOptions)
         {
             PrivateMeasurements = null;
 
-            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
-
             _lazyMeasurementDiscoveryAgent = new Lazy<IPerformanceMeasurementDescriptorDiscoveryAgent>(
-                () => new PerformanceMeasurementDescriptorDiscoveryAgent(options, GetExportedTypes), execAndPubThreadSafety);
+                () => new PerformanceMeasurementDescriptorDiscoveryAgent(discoveryOptions, GetExportedTypes)
+                , ExecutionAndPublication);
         }
 
         private void OnDiscoverMeasurePerformanceDescriptors()
