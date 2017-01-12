@@ -13,7 +13,7 @@ namespace MeasureIt.Web.Http
         {
             // TODO: TBD: completely arbitrary port number(s)...
             var port = new Random().Next(9000, 10000 - 1);
-            return string.Format("http://localhost:{0}/", port);
+            return $"http://localhost:{port}/";
         }
 
         private readonly IDisposable _webApp;
