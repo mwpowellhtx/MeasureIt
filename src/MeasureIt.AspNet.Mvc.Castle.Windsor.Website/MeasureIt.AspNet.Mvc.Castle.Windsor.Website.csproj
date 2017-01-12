@@ -52,8 +52,8 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.1.0.31583, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.1.0\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
+    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.1.4.35246, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.1.4\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -198,6 +198,10 @@
     <ProjectReference Include="..\MeasureIt.Core\MeasureIt.Core.csproj">
       <Project>{8B6F3A40-A8C8-407B-914A-3692454FC110}</Project>
       <Name>MeasureIt.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MeasureIt.Web.Mvc.Castle.Windsor\MeasureIt.Web.Mvc.Castle.Windsor.csproj">
+      <Project>{7d829131-556c-49a8-a744-28f5f08d5ab3}</Project>
+      <Name>MeasureIt.Web.Mvc.Castle.Windsor</Name>
     </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Web.Mvc.Core\MeasureIt.Web.Mvc.Core.csproj">
       <Project>{568DF7BE-ED1F-47C8-A234-25D7F89743C2}</Project>
