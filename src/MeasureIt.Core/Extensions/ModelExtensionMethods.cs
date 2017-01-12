@@ -93,9 +93,10 @@ namespace MeasureIt
         internal static string BuildMethodSignature<TReturn, TRoot>(this string methodName
             , Accessibility accessibility = Accessibility.None
             , Virtuality virtuality = Virtuality.None
-            , PerformanceCounterType? counterType = null, params ParameterDescriptor[] args)
+            , PerformanceCounterType? counterType = null, string counterTypeName = null
+            , params ParameterDescriptor[] args)
         {
-            return methodName.BuildMethodSignature<TRoot>(typeof(TReturn), accessibility, virtuality, counterType, args);
+            return methodName.BuildMethodSignature<TRoot>(typeof(TReturn), accessibility, virtuality, counterType, counterTypeName, args);
         }
 
         private static string BuildParameterSignature(this ParameterDescriptor arg)
@@ -111,23 +112,22 @@ namespace MeasureIt
         internal static string BuildMethodSignature<TRoot>(this string methodName, Type returnType
             , Accessibility accessibility = Accessibility.None
             , Virtuality virtuality = Virtuality.None
-            , PerformanceCounterType? counterType = null, params ParameterDescriptor[] args)
+            , PerformanceCounterType? counterType = null, string counterTypeName = null, params ParameterDescriptor[] args)
         {
             var decoration = !counterType.HasValue
                 ? null
-                : string.Format("{0}({1})", counterType.Value.GetCounterTypeDecoration(),
-                    counterType.Value.IsBaseCounterType() ? "Base" : string.Empty);
+                : $"{counterType.Value.GetCounterTypeDecoration(counterTypeName)}({(counterType.Value.IsBaseCounterType() ? "Base" : string.Empty)})";
 
-            var signature = string.Format(@"{0} {1}.{2} ({3})",
-                returnType.FullName, typeof(TRoot).FullName, methodName,
-                string.Join(", ", args.Select(a => a.BuildParameterSignature()))).Trim();
+            var signature =
+                $@"{returnType.FullName} {typeof(TRoot).FullName}.{methodName} ({string.Join(", ",
+                    args.Select(a => a.BuildParameterSignature()))})".Trim();
 
             signature = accessibility.GetStringRepresentation()
                 .Append(virtuality.GetStringRepresentation()).Append(signature);
 
             return string.IsNullOrEmpty(decoration)
                 ? signature
-                : string.Format(@"[{0}] {1}", decoration, signature);
+                : $@"[{decoration}] {signature}";
         }
 
         [Obsolete]
@@ -145,10 +145,11 @@ namespace MeasureIt
 
         private static readonly IDictionary<PerformanceCounterType, string> CounterTypeSuffixes;
 
-        internal static string GetCounterTypeDecoration(this PerformanceCounterType value)
+        internal static string GetCounterTypeDecoration(this PerformanceCounterType value
+            , string counterTypeName = null)
         {
             var suffixes = CounterTypeSuffixes;
-            return suffixes.ContainsKey(value) ? suffixes[value] : null;
+            return counterTypeName ?? (suffixes.ContainsKey(value) ? suffixes[value] : null);
         }
 
         internal static bool IsBaseCounterType(this PerformanceCounterType value)
@@ -206,7 +207,7 @@ namespace MeasureIt
                 const string multiTimerHundredNanoseconds = "MultiTimer100Ns";
                 const string inverseMultiTimer = "InverseMultiTimer";
                 const string inverseMultiTimerHundredNanoseconds = "InverseMultiTimer100Ns";
-                const string averageTimer = "AverageTimer";
+                const string averageTime = "AverageTime";
                 const string elapsedTime = "ElapsedTime";
                 const string average = "Average";
                 //const string sampleBase = "Sample.Base";
@@ -259,7 +260,7 @@ namespace MeasureIt
                     // inverse multi-timer (100 nanoseconds)
                     {PerformanceCounterType.CounterMultiTimer100NsInverse, inverseMultiTimerHundredNanoseconds},
                     // average timer (32-bit)
-                    {PerformanceCounterType.AverageTimer32, averageTimer},
+                    {PerformanceCounterType.AverageTimer32, averageTime},
                     // elapsed time
                     {PerformanceCounterType.ElapsedTime, elapsedTime},
                     // average (64-bit)
