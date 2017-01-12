@@ -9,10 +9,21 @@ namespace MeasureIt.Castle
     using Discovery;
     using Interception.Measurement;
     using Xunit;
+    using static LazyThreadSafetyMode;
 
-    public abstract class DependencyInjectionTestFixtureBase<TInterface, TContainer> : Disposable
+    /// <summary>
+    /// Establishes a base dependency injection test fixture representing
+    /// <typeparamref name="TInterface"/>, <typeparamref name="TContainer"/>, and
+    /// <typeparamref name="TOptions"/> concerns.
+    /// </summary>
+    /// <typeparam name="TInterface"></typeparam>
+    /// <typeparam name="TContainer"></typeparam>
+    /// <typeparam name="TOptions">We expose options in this manner because we may build upon the
+    /// options for some projects.</typeparam>
+    public abstract class DependencyInjectionTestFixtureBase<TInterface, TContainer, TOptions> : Disposable
         where TInterface : class, IInstallerInstrumentationDiscoveryService
         where TContainer : class
+        where TOptions : class, IInstrumentationDiscoveryOptions, new()
     {
         // TODO: TBD: "observables" is likely what we really want here, but this should work...
         protected class InvocationInterceptedContext : Disposable
@@ -56,10 +67,7 @@ namespace MeasureIt.Castle
 
         private readonly Lazy<TContainer> _lazyContainer;
 
-        protected TContainer Container
-        {
-            get { return _lazyContainer.Value; }
-        }
+        protected TContainer Container => _lazyContainer.Value;
 
         /// <summary>
         /// Performs default <typeparamref name="TContainer"/> initialization.
@@ -71,10 +79,7 @@ namespace MeasureIt.Castle
 
         private readonly Lazy<TInterface> _lazyDiscoveryService;
 
-        protected TInterface DiscoveryService
-        {
-            get { return _lazyDiscoveryService.Value; }
-        }
+        protected TInterface DiscoveryService => _lazyDiscoveryService.Value;
 
         protected virtual IEnumerable<Assembly> GetAssemblies()
         {
@@ -82,10 +87,12 @@ namespace MeasureIt.Castle
             yield return typeof(Support.Root).Assembly;
         }
 
-        protected virtual void InitializeOptions(IInstrumentationDiscoveryOptions options)
+        protected virtual TOptions GetDiscoveryOptions()
         {
-            options.Assemblies = GetAssemblies().ToArray();
+            return new TOptions {Assemblies = GetAssemblies().ToArray()};
         }
+
+        protected TOptions DiscoveryOptions => GetDiscoveryOptions();
 
         protected abstract TContainer GetContainer();
 
@@ -125,9 +132,7 @@ namespace MeasureIt.Castle
 
             _lazyContainer = new Lazy<TContainer>(GetContainer);
 
-            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
-
-            _lazyDiscoveryService = new Lazy<TInterface>(GetInterface, execAndPubThreadSafety);
+            _lazyDiscoveryService = new Lazy<TInterface>(GetInterface, ExecutionAndPublication);
         }
 
         protected virtual void OnIntercepted(object sender, InvocationInterceptedEventArgs e)
