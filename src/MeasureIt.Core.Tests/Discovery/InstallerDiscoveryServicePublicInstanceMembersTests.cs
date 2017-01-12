@@ -17,21 +17,14 @@ namespace MeasureIt.Discovery
             yield return typeof(IDescriptor).Assembly;
         }
 
-        private readonly IInstrumentationDiscoveryOptions _options;
-
-        protected override IInstrumentationDiscoveryOptions Options
+        protected override IInstrumentationDiscoveryOptions GetDiscoveryOptions()
         {
-            get { return _options; }
+            return new InstrumentationDiscoveryOptions {Assemblies = GetAssemblies()}.VerifyOptions();
         }
 
         protected override ServiceFactoryDelegate ServiceFactory
         {
             get { return o => new InstallerInstrumentationDiscoveryService(o); }
-        }
-
-        public InstallerDiscoveryServicePublicInstanceMembersTests()
-        {
-            _options = new InstrumentationDiscoveryOptions {Assemblies = GetAssemblies()}.VerifyOptions();
         }
 
         protected override void VerifyDiscoveredCounterAdapters(
@@ -78,6 +71,11 @@ namespace MeasureIt.Discovery
 
                     const string empty = "";
 
+                    const string averageTimeHelp = "Average time.";
+                    const string averageTimeBaseHelp = "Average time (base).";
+
+                    const string averageTimeCounterTypeName = "AverageTime";
+
 #if DEBUG
                     //var names = orderedData.Select(x => x.Name).OrderBy(x => x).ToArray();
 #endif
@@ -86,101 +84,106 @@ namespace MeasureIt.Discovery
                     Assert.Collection(orderedData
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
+                            Assert.Equal(averageTimeHelp, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
                             Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
-                                SubjectClass>(VoidType, @public, @virtual, d.CounterType), d.Name);
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, d.CounterType), d.Name);
                         }
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(virtualMethodDecoratedInBaseOnly.BuildMethodSignature<
-                                SubjectClass>(VoidType, @public, @virtual, averageTimer), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
-                                SubjectClass>(VoidType, @public, counterType: averageTimer), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageTimer, d.CounterType);
-                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
-                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageTimer), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
+                            Assert.Equal(averageTimeHelp, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
                             Assert.Equal(virtualMethodDecoratedInDerivedClass.BuildMethodSignature<
                                 SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageTimer), d.Name);
                         }
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
+                            Assert.Equal(averageTimeHelp, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
                             Assert.Equal(methodDeclaredInDerivedOnly.BuildMethodSignature<
                                 SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageTimer), d.Name);
                         }
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
+                            Assert.Equal(averageTimeHelp, d.Help);
                             Assert.Equal(averageTimer, d.CounterType);
                             Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
                                 SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageTimer), d.Name);
                         }
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageBase, d.CounterType);
+                            Assert.Equal(averageTimeHelp, d.Help);
+                            Assert.Equal(averageTimer, d.CounterType);
                             Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
-                                SubjectClass>(VoidType, @public, @virtual, averageBase), d.Name);
+                                SubjectClass>(VoidType, @public, @virtual, averageTimer), d.Name);
                         }
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
+                            Assert.Equal(averageTimeHelp, d.Help);
+                            Assert.Equal(averageTimer, d.CounterType);
+                            Assert.Equal(virtualMethodDecoratedInBaseOnly.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, @virtual, averageTimer), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeHelp, d.Help);
+                            Assert.Equal(averageTimer, d.CounterType);
+                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, counterType: averageTimer), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
+                            Assert.Equal(averageBase, d.CounterType);
+                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageBase
+                                , averageTimeCounterTypeName), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
+                            Assert.Equal(averageBase, d.CounterType);
+                            Assert.Equal(virtualMethodDecoratedInDerivedClass.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageBase, averageTimeCounterTypeName), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
+                            Assert.Equal(averageBase, d.CounterType);
+                            Assert.Equal(methodDeclaredInDerivedOnly.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageBase
+                                , counterTypeName: averageTimeCounterTypeName), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
+                            Assert.Equal(averageBase, d.CounterType);
+                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
+                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageBase
+                                , counterTypeName: averageTimeCounterTypeName), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
+                            Assert.Equal(averageBase, d.CounterType);
+                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
+                                SubjectClass>(VoidType, @public, @virtual, averageBase, averageTimeCounterTypeName), d.Name);
+                        }
+                        , d =>
+                        {
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
                             Assert.Equal(virtualMethodDecoratedInBaseOnly.BuildMethodSignature<
-                                SubjectClass>(VoidType, @public, @virtual, averageBase), d.Name);
+                                SubjectClass>(VoidType, @public, @virtual, averageBase
+                                , averageTimeCounterTypeName), d.Name);
                         }
                         , d =>
                         {
-                            Assert.Equal(empty, d.Help);
+                            Assert.Equal(averageTimeBaseHelp, d.Help);
                             Assert.Equal(averageBase, d.CounterType);
                             Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
-                                SubjectClass>(VoidType, @public, counterType: averageBase), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(virtualMethodDecorationOvershadowed.BuildMethodSignature<
-                                SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageBase), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(virtualMethodDecoratedInDerivedClass.BuildMethodSignature
-                                <SubjectClassWithNonPublicMethods>(VoidType, @public, @virtual, averageBase), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(methodDeclaredInDerivedOnly.BuildMethodSignature<
-                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageBase), d.Name);
-                        }
-                        , d =>
-                        {
-                            Assert.Equal(empty, d.Help);
-                            Assert.Equal(averageBase, d.CounterType);
-                            Assert.Equal(methodDeclaredInBaseOnly.BuildMethodSignature<
-                                SubjectClassWithNonPublicMethods>(VoidType, @public, counterType: averageBase), d.Name);
+                                SubjectClass>(VoidType, @public, counterType: averageBase
+                                , counterTypeName: averageTimeCounterTypeName), d.Name);
                         }
                         );
                 }

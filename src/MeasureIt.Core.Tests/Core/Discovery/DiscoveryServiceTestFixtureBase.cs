@@ -5,18 +5,21 @@ using System.Threading;
 namespace MeasureIt.Discovery
 {
     using Xunit;
+    using static LazyThreadSafetyMode;
 
     public abstract class DiscoveryServiceTestFixtureBase<TService> : IntegrationTestFixtureBase
         where TService : class, IInstrumentationDiscoveryService
     {
-        protected abstract IInstrumentationDiscoveryOptions Options { get; }
+        protected abstract IInstrumentationDiscoveryOptions GetDiscoveryOptions();
+
+        protected IInstrumentationDiscoveryOptions DiscoveryOptions => GetDiscoveryOptions();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="discoveryOptions"></param>
         /// <returns></returns>
-        protected delegate TService ServiceFactoryDelegate(IInstrumentationDiscoveryOptions options);
+        protected delegate TService ServiceFactoryDelegate(IInstrumentationDiscoveryOptions discoveryOptions);
 
         protected abstract ServiceFactoryDelegate ServiceFactory { get; }
 
@@ -34,17 +37,13 @@ namespace MeasureIt.Discovery
 
         protected DiscoveryServiceTestFixtureBase()
         {
-            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
             _lazyDiscoveryService = new Lazy<TService>(() =>
-                ServiceFactory(Options).VerifyDiscoveryService(OnBeforeDiscovery)
-                    .VerifyDiscover().VerifyDiscoveryService(OnAfterDiscovery), execAndPubThreadSafety
-                );
+                    ServiceFactory(DiscoveryOptions).VerifyDiscoveryService(OnBeforeDiscovery)
+                        .VerifyDiscover().VerifyDiscoveryService(OnAfterDiscovery)
+                , ExecutionAndPublication);
         }
 
-        protected TService DiscoveryService
-        {
-            get { return _lazyDiscoveryService.Value; }
-        }
+        protected TService DiscoveryService => _lazyDiscoveryService.Value;
 
         [Fact]
         public void CanDiscover()
@@ -53,8 +52,7 @@ namespace MeasureIt.Discovery
             Assert.False(DiscoveryService.IsPending);
         }
 
-        protected abstract void VerifyDiscoveredCounterAdapters(
-            IEnumerable<IPerformanceCounterAdapter> discoveredItems);
+        protected abstract void VerifyDiscoveredCounterAdapters(IEnumerable<IPerformanceCounterAdapter> discoveredItems);
 
         protected virtual void OnVerifyDescriptors(TService service)
         {

@@ -7,25 +7,14 @@ namespace MeasureIt.Discovery
     public class InstallPerformanceCounterCategoriesTests
         : InstallerDiscoveryServicePublicInstanceMembersTests
     {
-        private static IInstrumentationDiscoveryOptions GetOptions()
+        protected override IInstrumentationDiscoveryOptions GetDiscoveryOptions()
         {
             return new InstrumentationDiscoveryOptions
             {
                 Assemblies = GetAssemblies(),
+                ThrowOnUninstallerFailure = false,
                 ThrowOnInstallerFailure = false
             }.VerifyOptions();
-        }
-
-        private readonly IInstrumentationDiscoveryOptions _options;
-
-        protected override IInstrumentationDiscoveryOptions Options
-        {
-            get { return _options; }
-        }
-
-        public InstallPerformanceCounterCategoriesTests()
-        {
-            _options = GetOptions();
         }
 
         protected virtual void OnInstall()

@@ -26,26 +26,17 @@ namespace MeasureIt.Discovery
             return items.ToArray();
         }
 
-        private static IInstrumentationDiscoveryOptions GetOptions()
+        protected override IInstrumentationDiscoveryOptions GetDiscoveryOptions()
         {
-            return new InstrumentationDiscoveryOptions {Assemblies = VerifyCount(GetAssemblies(), 2)}.VerifyOptions();
-        }
-
-        private readonly IInstrumentationDiscoveryOptions _options;
-
-        protected override IInstrumentationDiscoveryOptions Options
-        {
-            get { return _options; }
+            return new InstrumentationDiscoveryOptions
+            {
+                Assemblies = VerifyCount(GetAssemblies(), 2)
+            }.VerifyOptions();
         }
 
         protected override ServiceFactoryDelegate ServiceFactory
         {
             get { return o => new RuntimeInstrumentationDiscoveryService(o); }
-        }
-
-        public RuntimeDiscoveryServicePublicInstanceMembersTests()
-        {
-            _options = GetOptions();
         }
 
         protected override void VerifyDiscoveredCounterAdapters(

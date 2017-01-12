@@ -14,7 +14,8 @@ namespace MeasureIt.Castle.Windsor
     /// </summary>
     // ReSharper disable UnusedParameter.Local
     public class InstallerMeasurementInterceptorTests
-        : InstallerMeasurementInterceptorTestFixtureBase<IWindsorContainer>
+        : InstallerMeasurementInterceptorTestFixtureBase<
+            IWindsorContainer, InstrumentationDiscoveryOptions>
     {
         protected override IWindsorContainer GetContainer()
         {
@@ -22,7 +23,8 @@ namespace MeasureIt.Castle.Windsor
             var container = new WindsorContainer()
                 .EnableMeasurements<IInstallerInstrumentationDiscoveryService
                     , InstallerInstrumentationDiscoveryService
-                    , MeasurementInterceptorFixture>(InitializeOptions);
+                    , InstrumentationDiscoveryOptions
+                    , MeasurementInterceptorFixture>(GetDiscoveryOptions);
 
             Assert.NotNull(container);
 

@@ -28,6 +28,19 @@ namespace MeasureIt.Web.Http.Autofac
             }
         }
 
+        private static InstrumentationDiscoveryOptions CreateDiscoveryOptions()
+        {
+            return new InstrumentationDiscoveryOptions
+            {
+                ThrowOnInstallerFailure = false,
+                ThrowOnUninstallerFailure = false,
+                Assemblies = new[]
+                {
+                    typeof(MeasuredController).Assembly
+                    , typeof(AverageTimePerformanceCounterAdapter).Assembly
+                }
+            };
+        }
 
         protected override void OnConfiguration(IAppBuilder app, HttpConfiguration config)
         {
@@ -42,18 +55,8 @@ namespace MeasureIt.Web.Http.Autofac
             builder.EnableApiMeasurements<
                 IHttpActionInstrumentationDiscoveryService
                 , HttpActionInstrumentationDiscoveryService
-                , HttpActionMeasurementProvider>(o =>
-                {
-                    //// TODO: TBD: not expecting installer to fail, per se
-                    //// TODO: TBD: there are doubts whether we need to flag this after all...
-                    o.ThrowOnInstallerFailure = false;
-
-                    o.Assemblies = new[]
-                    {
-                        typeof(MeasuredController).Assembly
-                        , typeof(AverageTimePerformanceCounterAdapter).Assembly
-                    };
-                });
+                , InstrumentationDiscoveryOptions
+                , HttpActionMeasurementProvider>(CreateDiscoveryOptions);
 
             var container = Container = builder.Build();
 

@@ -4,11 +4,28 @@ namespace MeasureIt.Web.Http.Castle.Windsor
 {
     using Controllers;
     using Discovery;
+    using Interception;
     using Owin;
-    using Web.Http.Interception;
 
-    public class MeasuredStartupFixture : StartupFixture
+    public class MeasuredStartupFixture<TOptions> : StartupFixture
+        where TOptions : class, IInstrumentationDiscoveryOptions, new()
     {
+        protected virtual TOptions GetDiscoveryOptions()
+        {
+            return new TOptions
+            {
+                ThrowOnInstallerFailure = false,
+                ThrowOnUninstallerFailure = false,
+                Assemblies = new[]
+                {
+                    typeof(MeasuredController).Assembly
+                    , typeof(AverageTimePerformanceCounterAdapter).Assembly
+                }
+
+            };
+        }
+
+        // ReSharper disable once StaticMemberInGenericType
         internal static HttpConfiguration InternalConfig { get; private set; }
 
         private void Install<TDiscoveryService>()
@@ -37,18 +54,8 @@ namespace MeasureIt.Web.Http.Castle.Windsor
             Container.EnableApiMeasurements<
                 IHttpActionInstrumentationDiscoveryService
                 , HttpActionInstrumentationDiscoveryService
-                , HttpActionMeasurementProvider>(o =>
-                {
-                    // TODO: TBD: not expecting installer to fail, per se
-                    // TODO: TBD: there are doubts whether we need to flag this after all...
-                    o.ThrowOnInstallerFailure = false;
-
-                    o.Assemblies = new[]
-                    {
-                        typeof(MeasuredController).Assembly
-                        , typeof(AverageTimePerformanceCounterAdapter).Assembly
-                    };
-                });
+                , TOptions
+                , HttpActionMeasurementProvider>(GetDiscoveryOptions);
 
             Install<IInstallerInstrumentationDiscoveryService>();
             Install<IHttpActionInstrumentationDiscoveryService>();

@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
-using MeasureIt.Castle;
-using MeasureIt.Castle.Interception;
-using MeasureIt.Castle.Interception.Measurement;
 
 namespace MeasureIt
 {
     using Autofac;
+    using Castle;
+    using Castle.Interception;
+    using Castle.Interception.Measurement;
     using Discovery;
     using Xunit;
 
@@ -15,7 +15,8 @@ namespace MeasureIt
     /// </summary>
     // ReSharper disable UnusedParameter.Local
     public class InstallerMeasurementInterceptorTests
-        : InstallerMeasurementInterceptorTestFixtureBase<IContainer>
+        : InstallerMeasurementInterceptorTestFixtureBase<
+                IContainer, InstrumentationDiscoveryOptions>
     {
         private ContainerBuilder Builder { get; set; }
 
@@ -28,7 +29,8 @@ namespace MeasureIt
             // Autofact starts with a Container Builder, following which a Container is built.
             builder.EnableMeasurements<IInstallerInstrumentationDiscoveryService
                 , InstallerInstrumentationDiscoveryService
-                , MeasurementInterceptorFixture>(InitializeOptions);
+                , InstrumentationDiscoveryOptions
+                , MeasurementInterceptorFixture>(GetDiscoveryOptions);
         }
 
         protected override IContainer GetContainer()

@@ -25,7 +25,7 @@ namespace MeasureIt.Discovery
             return items.ToArray();
         }
 
-        private static IInstrumentationDiscoveryOptions GetOptions()
+        protected override IInstrumentationDiscoveryOptions GetDiscoveryOptions()
         {
             // These are NOT the default options.
             const BindingFlags expectedBindingAttr
@@ -37,21 +37,9 @@ namespace MeasureIt.Discovery
             }.VerifyOptions(expectedBindingAttr);
         }
 
-        private readonly IInstrumentationDiscoveryOptions _options;
-
-        protected override IInstrumentationDiscoveryOptions Options
-        {
-            get { return _options; }
-        }
-
         protected override ServiceFactoryDelegate ServiceFactory
         {
             get { return o => new RuntimeInstrumentationDiscoveryService(o); }
-        }
-
-        public RuntimeDiscoveryIncludingNonPublicInstanceMembersTests()
-        {
-            _options = GetOptions();
         }
 
         protected override void VerifyDiscoveredCounterAdapters(
