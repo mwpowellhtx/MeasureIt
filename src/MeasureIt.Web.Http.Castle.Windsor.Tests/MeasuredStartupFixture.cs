@@ -21,7 +21,6 @@ namespace MeasureIt.Web.Http.Castle.Windsor
                     typeof(MeasuredController).Assembly
                     , typeof(AverageTimePerformanceCounterAdapter).Assembly
                 }
-
             };
         }
 

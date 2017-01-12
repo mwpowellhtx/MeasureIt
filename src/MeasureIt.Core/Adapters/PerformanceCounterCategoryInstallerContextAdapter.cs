@@ -41,7 +41,7 @@ namespace MeasureIt.Adapters
         {
             const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
 
-            var o = discoveryOtions;
+            var o = discoveryOptions;
 
             _lazyCategories = new Lazy<IEnumerable<CategoryTuple>>(
                 () => CategoryAdapters.Select(a =>
