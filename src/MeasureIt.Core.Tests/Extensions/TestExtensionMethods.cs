@@ -292,19 +292,23 @@ namespace MeasureIt
             adapter.VerifyCreationData<AverageTimePerformanceCounterAdapter>(
                 x =>
                 {
+                    const string @base = "(Base)";
+                    const string averageTimeHelp = "Average time.";
+                    const string averageTimeBaseHelp = "Average time (base).";
+
                     Assert.Collection(x
                         , y =>
                         {
                             Assert.Equal(averageTimer, y.CounterType);
                             Assert.NotNull(y.Help);
-                            Assert.Empty(y.Help);
+                            Assert.Equal(averageTimeHelp, y.Help);
                         }
                         , y =>
                         {
-                            Assert.Contains("(Base)", y.Name);
+                            Assert.Contains(@base, y.Name);
                             Assert.Equal(averageBase, y.CounterType);
                             Assert.NotNull(y.Help);
-                            Assert.Empty(y.Help);
+                            Assert.Equal(averageTimeBaseHelp, y.Help);
                         }
                         );
                 });
