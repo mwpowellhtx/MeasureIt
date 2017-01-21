@@ -146,6 +146,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Instrumentation\MyPerformanceCounterCategoryAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -199,10 +200,6 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MeasureIt.AspNet.Mvc.Core\MeasureIt.AspNet.Mvc.Core.csproj">
-      <Project>{4b81fbb4-b770-48f0-8b2f-cab5a3c35cb9}</Project>
-      <Name>MeasureIt.AspNet.Mvc.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Core\MeasureIt.Core.csproj">
       <Project>{8b6f3a40-a8c8-407b-914a-3692454fc110}</Project>
       <Name>MeasureIt.Core</Name>
