@@ -9,6 +9,7 @@ namespace MeasureIt.Contexts
 {
     using Adapters;
     using Discovery;
+    using static LazyThreadSafetyMode;
 
     /// <summary>
     /// 
@@ -31,14 +32,12 @@ namespace MeasureIt.Contexts
         {
             DiscoveryOptions = discoveryOptions;
 
-            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
-
             _lazyDiscoveryService = new Lazy<IInstallerInstrumentationDiscoveryService>(() =>
             {
                 // Discover if we have not already done so.
                 discoveryService.Discover();
                 return discoveryService;
-            }, execAndPubThreadSafety);
+            }, ExecutionAndPublication);
         }
 
         /// <summary>
@@ -56,11 +55,11 @@ namespace MeasureIt.Contexts
             var throwOnInstallerFailure = o.ThrowOnInstallerFailure;
 
             using (var adapter = new PerformanceCounterCategoryInstallerContextAdapter(
-                o, Service.CategoryAdapters.Values))
+                Service.CategoryAdapters.Values))
             {
                 foreach (var tuple in adapter.GetInstalledCategories())
                 {
-                    if (tuple.Item2 != null || throwOnInstallerFailure) continue;
+                    if (tuple.Item2 != null || !throwOnInstallerFailure) continue;
 
                     // Leverages C# 6.0 language features.
                     var message = $"Unable to install the {typeof(PerformanceCounterCategory)} '{tuple.Item1.Name}' definition.";
@@ -105,7 +104,7 @@ namespace MeasureIt.Contexts
 
             // TODO: TBD: ditto Install re: extension methods...
             using (var adapter = new PerformanceCounterCategoryUninstallerContextAdapter(
-                o, Service.CategoryAdapters.Values))
+                Service.CategoryAdapters.Values))
             {
                 IEnumerable<string> categoryNames;
 

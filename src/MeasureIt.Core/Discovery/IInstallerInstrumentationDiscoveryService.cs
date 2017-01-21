@@ -31,11 +31,9 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <typeparam name="TService"></typeparam>
         /// <param name="service"></param>
-        /// <param name="discoveryOptions"></param>
         /// <param name="respond"></param>
         /// <returns></returns>
         public static TService Install<TService>(this TService service
-            , IInstrumentationDiscoveryOptions discoveryOptions
             , Action<IEnumerable<Tuple<IPerformanceCounterCategoryAdapter
                 , PerformanceCounterCategory>>> respond = null)
             where TService : IInstallerInstrumentationDiscoveryService
@@ -45,7 +43,7 @@ namespace MeasureIt.Discovery
             respond = respond ?? delegate { };
 
             using (var adapter = new PerformanceCounterCategoryInstallerContextAdapter(
-                discoveryOptions, service.CategoryAdapters.Values))
+                service.CategoryAdapters.Values))
             {
                 // We need to make sure that the Categories are resolved through and through.
                 var categories = adapter.GetInstalledCategories().ToArray();
@@ -60,13 +58,12 @@ namespace MeasureIt.Discovery
         /// </summary>
         /// <typeparam name="TService"></typeparam>
         /// <param name="service"></param>
-        /// <param name="discoveryOptions"></param>
         /// <returns></returns>
-        public static bool TryUninstall<TService>(this TService service, IInstrumentationDiscoveryOptions discoveryOptions)
+        public static bool TryUninstall<TService>(this TService service)
             where TService : IInstallerInstrumentationDiscoveryService
         {
             using (var adapter = new PerformanceCounterCategoryUninstallerContextAdapter(
-                discoveryOptions, service.CategoryAdapters.Values))
+                service.CategoryAdapters.Values))
             {
                 IEnumerable<string> categoryNames;
                 return adapter.TryUninstallCategories(out categoryNames).All(tuple => tuple.Item2);

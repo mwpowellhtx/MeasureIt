@@ -30,11 +30,6 @@ namespace MeasureIt.Discovery
         bool IncludeInherited { get; set; }
 
         /// <summary>
-        /// Gets or sets whether to PrepareCategoryName.
-        /// </summary>
-        bool PrepareCategoryName { get; set; }
-
-        /// <summary>
         /// Gets or sets the Constructor <see cref="BindingFlags"/>.
         /// </summary>
         BindingFlags ConstructorBindingAttr { get; set; }

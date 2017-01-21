@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace MeasureIt.Adapters
 {
-    using Discovery;
     using static Math;
 
     /// <summary>
@@ -42,12 +41,18 @@ namespace MeasureIt.Adapters
 
     internal static class ContextExtensionMethods
     {
-        internal static string PrepareCategoryName(this string name, IInstrumentationDiscoveryOptions options)
+        internal static string PrepareCategoryName(this string name, bool prepareName = true)
         {
+            /* Maximum length of a Performance Counter Category name, and perhaps other naming conventions...
+             * http://msdn.microsoft.com/en-us/library/sb32hxtc.aspx (PerformanceCounterCategory.Create)  */
+
+            // We will want to trim it in either case.
+            name = name.Trim();
+
             const int maxLength = 80;
-            return options.PrepareCategoryName
-                ? name.Trim().Substring(0, Min(name.Trim().Length, maxLength))
-                : name;
+
+            // Trim one final time in the event that the substring has a trailing space.
+            return prepareName ? name.Substring(0, Min(name.Length, maxLength)).Trim() : name;
         }
     }
 }

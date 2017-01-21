@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
-using MeasureIt.Collections.Generic;
 
 namespace MeasureIt
 {
+    using Adapters;
+    using Collections.Generic;
+
     using IExpandoObjectDictionary = IDictionary<string, object>;
     using IPerformanceCounterDictionary = IDictionary<Guid, PerformanceCounter>;
     using PerformanceCounterDictionary = Dictionary<Guid, PerformanceCounter>;
@@ -132,7 +134,7 @@ namespace MeasureIt
             IPerformanceMeasurementDescriptor measurement
             , IEnumerable<ICounterCreationDataDescriptor> dataDescriptors)
         {
-            var categoryName = measurement.CategoryAdapter.Name;
+            var categoryName = measurement.CategoryAdapter.Name.PrepareCategoryName();
             var readOnly = measurement.ReadOnly;
 
             foreach (var datum in dataDescriptors)

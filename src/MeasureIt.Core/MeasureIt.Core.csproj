@@ -91,6 +91,7 @@
     <Compile Include="Descriptors\ISamplingOptions.cs" />
     <Compile Include="Discovery\Agents\PerformanceMeasurementDescriptorDiscoveryAgentBase.cs" />
     <Compile Include="Discovery\IInstrumentationDiscoveryOptions.cs" />
+    <Compile Include="Discovery\IPerformanceCounterCategoryOptions.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Counters\IPerformanceCounterCategoryAdapter.cs" />

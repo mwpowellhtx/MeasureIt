@@ -40,6 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Autofac")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Castle.Windsor")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Http.Core")]
+[assembly: InternalsVisibleTo("MeasureIt.Web.Mvc.Autofac")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Mvc.Castle.Windsor")]
 [assembly: InternalsVisibleTo("MeasureIt.Web.Mvc.Core")]
 [assembly: InternalsVisibleTo("MeasureIt.Core.Tests")]

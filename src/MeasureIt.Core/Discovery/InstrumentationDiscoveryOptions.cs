@@ -29,10 +29,10 @@ namespace MeasureIt.Discovery
         /// </summary>
         public bool IncludeInherited { get; set; }
 
-        /// <summary>
-        /// Gets or sets whether to PrepareCategoryName.
-        /// </summary>
-        public bool PrepareCategoryName { get; set; }
+        ///// <summary>
+        ///// Gets or sets whether to PrepareCategoryName.
+        ///// </summary>
+        //public bool PrepareCategoryName { get; set; }
 
         /// <summary>
         /// Gets or sets the ConstructorBindingAttr.
@@ -65,7 +65,7 @@ namespace MeasureIt.Discovery
             ThrowOnInstallerFailure = true;
             ThrowOnUninstallerFailure = true;
             IncludeInherited = true;
-            PrepareCategoryName = true;
+            //PrepareCategoryName = true;
             MethodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
             ConstructorBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             Assemblies = (assemblies ?? new Assembly[0]).ToArray();
