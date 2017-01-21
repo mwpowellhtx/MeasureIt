@@ -129,7 +129,7 @@ namespace MeasureIt.Web.Http.Autofac
             // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
             builder.RegisterType<TProvider>()
                 .As<ITwoStageMeasurementProvider>()
-                .InstancePerLifetimeScope();
+                .InstancePerRequest();
 
             {
                 var interfaceType = typeof(TInterface);
