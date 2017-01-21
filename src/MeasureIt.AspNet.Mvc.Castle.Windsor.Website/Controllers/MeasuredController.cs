@@ -2,8 +2,8 @@
 
 namespace MeasureIt.AspNet.Mvc.Castle.Windsor.Controllers
 {
+    using Instrumentation;
     using Web.Mvc.Filters;
-    using Web.Mvc.Instrumentation;
 
     public class MeasuredController : Controller
     {
