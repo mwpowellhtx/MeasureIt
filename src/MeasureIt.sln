@@ -62,8 +62,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.AspNet.Mvc.Autofa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.Web.Mvc.Autofac", "MeasureIt.Web.Mvc.Autofac\MeasureIt.Web.Mvc.Autofac.csproj", "{1F1F8D6A-6EB6-40C6-894C-7886C7F9621E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureIt.AspNet.Mvc.Core", "MeasureIt.AspNet.Mvc.Core\MeasureIt.AspNet.Mvc.Core.csproj", "{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -318,18 +316,6 @@ Global
 		{1F1F8D6A-6EB6-40C6-894C-7886C7F9621E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1F1F8D6A-6EB6-40C6-894C-7886C7F9621E}.Release|x86.ActiveCfg = Release|Any CPU
 		{1F1F8D6A-6EB6-40C6-894C-7886C7F9621E}.Release|x86.Build.0 = Release|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Debug|x86.Build.0 = Debug|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Release|x86.ActiveCfg = Release|Any CPU
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -359,6 +345,5 @@ Global
 		{CEE873BD-C25E-4C97-8DD0-0959234BCBA2} = {E378E60D-1771-490D-9FDD-8DC3B8F214FD}
 		{85274EE3-4C59-4062-8C99-F3B503D3057B} = {E378E60D-1771-490D-9FDD-8DC3B8F214FD}
 		{1F1F8D6A-6EB6-40C6-894C-7886C7F9621E} = {9A995497-3AB5-474A-A649-8FB012D29ADD}
-		{4B81FBB4-B770-48F0-8B2F-CAB5A3C35CB9} = {E378E60D-1771-490D-9FDD-8DC3B8F214FD}
 	EndGlobalSection
 EndGlobal
