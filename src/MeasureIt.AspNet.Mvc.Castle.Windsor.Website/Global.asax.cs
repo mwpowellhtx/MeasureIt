@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
+#if DEBUG
 using System.Diagnostics;
+#endif
 using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using MeasureIt.AspNet.Mvc.Castle.Windsor.Controllers;
 
 namespace MeasureIt.AspNet.Mvc.Castle.Windsor
 {
-    using Controllers;
+    using Contexts;
     using Discovery;
     using Kingdom.Web.Mvc;
     using Web.Mvc.Castle.Windsor;
-    using Web.Mvc.Discovery;
     using global::Castle.Windsor;
 
     public class MvcApplication : HttpApplication
@@ -30,9 +32,9 @@ namespace MeasureIt.AspNet.Mvc.Castle.Windsor
             yield return typeof(MvcApplication).Assembly;
         }
 
-        private static InstrumentationDiscoveryOptions CreateOptions()
+        private static MvcInstrumentationDiscoveryOptions CreateOptions()
         {
-            return new InstrumentationDiscoveryOptions
+            return new MvcInstrumentationDiscoveryOptions
             {
                 ThrowOnInstallerFailure = false,
                 ThrowOnUninstallerFailure = false,
@@ -49,19 +51,21 @@ namespace MeasureIt.AspNet.Mvc.Castle.Windsor
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Assumes filters, routes, bundles, etc, have all been configured.
-            Container.InstallMvcServices<HomeController>()
+            Container.InstallMvcServices<HomeController>(typeof(MeasurementContext))
                 .UseDependencyResolver()
                 .EnableMvcMeasurements<
                     IMvcActionInstrumentationDiscoveryService
                     , MvcActionInstrumentationDiscoveryService
-                    , InstrumentationDiscoveryOptions>(CreateOptions)
+                    , MvcInstrumentationDiscoveryOptions>(CreateOptions)
                 ;
 
+#if DEBUG
             var kernel = Container.Kernel;
 
             Debug.Assert(kernel.HasComponent(typeof(IDependencyResolver)));
             Debug.Assert(kernel.HasComponent(typeof(IWindsorDependencyResolver)));
             Debug.Assert(kernel.HasComponent(typeof(IActionInvoker)));
+#endif
 
             // TODO: TBD: need to connect with startup? warmup? Initialize the performance counters, install them... but don't forget to also uninstall them?
 

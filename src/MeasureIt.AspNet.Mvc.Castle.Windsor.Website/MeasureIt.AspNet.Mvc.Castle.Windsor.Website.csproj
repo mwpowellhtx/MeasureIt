@@ -52,8 +52,12 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.1.4.35246, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.1.4\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
+    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.2.3.26575, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.2.3\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Kingdom.Web.Mvc.Core, Version=1.1.0.26575, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingdom.AspNet.Mvc.Core.1.1.0\lib\net45\Kingdom.Web.Mvc.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -141,7 +145,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Instrumentation\MyPerformanceCounterCategoryAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +198,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MeasureIt.AspNet.Mvc.Core\MeasureIt.AspNet.Mvc.Core.csproj">
+      <Project>{4b81fbb4-b770-48f0-8b2f-cab5a3c35cb9}</Project>
+      <Name>MeasureIt.AspNet.Mvc.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MeasureIt.Core\MeasureIt.Core.csproj">
       <Project>{8B6F3A40-A8C8-407B-914A-3692454FC110}</Project>
       <Name>MeasureIt.Core</Name>
