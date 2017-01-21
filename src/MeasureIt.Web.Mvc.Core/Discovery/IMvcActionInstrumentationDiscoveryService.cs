@@ -1,4 +1,4 @@
-namespace MeasureIt.Web.Mvc.Discovery
+namespace MeasureIt.Discovery
 {
     using MeasureIt.Discovery;
 

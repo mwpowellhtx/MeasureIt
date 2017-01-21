@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MeasureIt.Web.Mvc.Discovery
+namespace MeasureIt.Discovery
 {
     using Agents;
     using Contexts;
-    using MeasureIt.Discovery;
     using static LazyThreadSafetyMode;
 
     /// <summary>

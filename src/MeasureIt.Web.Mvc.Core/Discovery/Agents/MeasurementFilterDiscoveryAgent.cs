@@ -1,8 +1,6 @@
-﻿namespace MeasureIt.Web.Mvc.Discovery.Agents
+﻿namespace MeasureIt.Discovery.Agents
 {
-    using Filters;
-    using MeasureIt.Discovery;
-    using MeasureIt.Discovery.Agents;
+    using Web.Mvc.Filters;
 
     /// <summary>
     /// Measurement filter discovery agent.

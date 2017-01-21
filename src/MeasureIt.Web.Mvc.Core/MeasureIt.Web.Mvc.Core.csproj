@@ -7,7 +7,7 @@
     <ProjectGuid>{568DF7BE-ED1F-47C8-A234-25D7F89743C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeasureIt.Web.Mvc</RootNamespace>
+    <RootNamespace>MeasureIt</RootNamespace>
     <AssemblyName>MeasureIt.Web.Mvc.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -40,8 +40,12 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.1.4.35246, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.1.4\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
+    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.2.3.26575, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.2.3\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Kingdom.Web.Mvc.Core, Version=1.1.0.26575, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingdom.AspNet.Mvc.Core.1.1.0\lib\net45\Kingdom.Web.Mvc.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -90,6 +94,11 @@
     <Compile Include="Collections\IStatefulStorageDictionary.cs" />
     <Compile Include="Discovery\Agents\IMeasurementFilterDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\MeasurementFilterDiscoveryAgent.cs" />
+    <Compile Include="Discovery\MvcInstrumentationDiscoveryOptions.Statics.cs" />
+    <Compile Include="Discovery\MvcInstrumentationDiscoveryOptions.cs" />
+    <Compile Include="Discovery\MeasurementBoundary.cs" />
+    <Compile Include="Discovery\MeasurementBoundaryPair.cs" />
+    <Compile Include="Discovery\IMvcInstrumentationDiscoveryOptions.cs" />
     <Compile Include="Discovery\MvcActionInstrumentationDiscoveryService.cs" />
     <Compile Include="Discovery\IMvcActionInstrumentationDiscoveryService.cs" />
     <Compile Include="Extensions\MvcExtensionMethods.cs" />
