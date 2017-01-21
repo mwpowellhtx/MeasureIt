@@ -7,7 +7,7 @@ namespace MeasureIt.Web.Mvc.Interception
 {
     using Contexts;
     using Discovery;
-    using MeasureIt.Discovery;
+    using static LazyThreadSafetyMode;
 
     /// <summary>
     /// Measurement Provider for web purposes.
@@ -27,18 +27,16 @@ namespace MeasureIt.Web.Mvc.Interception
         /// </summary>
         /// <param name="options"></param>
         /// <param name="discoveryService"></param>
-        public MvcActionMeasurementProvider(IInstrumentationDiscoveryOptions options
+        public MvcActionMeasurementProvider(IMvcInstrumentationDiscoveryOptions options
             , IMvcActionInstrumentationDiscoveryService discoveryService)
             : base(options)
         {
-            const LazyThreadSafetyMode execAndPubThreadSafety = LazyThreadSafetyMode.ExecutionAndPublication;
-
             _lazyDiscoveryService = new Lazy<IMvcActionInstrumentationDiscoveryService>(
                 () =>
                 {
                     discoveryService.Discover();
                     return discoveryService;
-                }, execAndPubThreadSafety);
+                }, ExecutionAndPublication);
         }
 
         /// <summary>
