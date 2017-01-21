@@ -1,4 +1,4 @@
-namespace MeasureIt.AspNet.Mvc.Castle.Windsor.Instrumentation
+namespace MeasureIt.Web.Mvc.Instrumentation
 {
     public class MyPerformanceCounterCategoryAdapter : PerformanceCounterCategoryAdapterBase
     {
