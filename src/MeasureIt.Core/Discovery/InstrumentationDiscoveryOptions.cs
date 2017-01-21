@@ -4,6 +4,8 @@ using System.Reflection;
 
 namespace MeasureIt.Discovery
 {
+    using static BindingFlags;
+
     /// <summary>
     /// InstrumentationDiscoveryOptions class.
     /// </summary>
@@ -65,9 +67,9 @@ namespace MeasureIt.Discovery
             ThrowOnInstallerFailure = true;
             ThrowOnUninstallerFailure = true;
             IncludeInherited = true;
-            //PrepareCategoryName = true;
-            MethodBindingAttr = BindingFlags.Public | BindingFlags.Instance;
-            ConstructorBindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            // PrepareCategoryName = true;
+            MethodBindingAttr = Public | Instance;
+            ConstructorBindingAttr = Public | NonPublic | Instance;
             Assemblies = (assemblies ?? new Assembly[0]).ToArray();
         }
 
