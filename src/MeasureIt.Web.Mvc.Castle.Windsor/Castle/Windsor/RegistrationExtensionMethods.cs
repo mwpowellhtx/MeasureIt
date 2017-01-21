@@ -5,10 +5,9 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
     using Contexts;
     using Discovery;
     using Interception;
-    using MeasureIt.Discovery;
     using global::Castle.MicroKernel.Registration;
     using global::Castle.Windsor;
-    using static MeasureIt.Discovery.InstrumentationDiscoveryOptions;
+    using static Discovery.InstrumentationDiscoveryOptions;
 
     /// <summary>
     /// Registration extension methods.
@@ -25,17 +24,19 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="container"></param>
         /// <param name="createOptions"></param>
+        /// <param name="optionsCreated"></param>
         /// <returns></returns>
         /// <see cref="EnableMvcMeasurements{TInterface,TService,TOptions,TProvider}"/>
         public static IWindsorContainer EnableMvcMeasurements<TInterface, TService, TOptions>(
             this IWindsorContainer container
-            , Func<TOptions> createOptions = null)
+            , Func<TOptions> createOptions = null
+            , Action<TOptions> optionsCreated = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
-            where TOptions : class, IInstrumentationDiscoveryOptions, new()
+            where TOptions : class, IMvcInstrumentationDiscoveryOptions, new()
         {
             return container.EnableMvcMeasurements<TInterface, TService, TOptions
-                , MvcActionMeasurementProvider>(createOptions);
+                , MvcActionMeasurementProvider>(createOptions, optionsCreated);
         }
 
         /// <summary>
@@ -48,22 +49,26 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
         /// <typeparam name="TProvider"></typeparam>
         /// <param name="container"></param>
         /// <param name="createOptions"></param>
+        /// <param name="optionsCreated"></param>
         /// <returns></returns>
         public static IWindsorContainer EnableMvcMeasurements<TInterface, TService, TOptions, TProvider>(
             this IWindsorContainer container
-            , Func<TOptions> createOptions = null)
+            , Func<TOptions> createOptions = null
+            , Action<TOptions> optionsCreated = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
-            where TOptions : class, IInstrumentationDiscoveryOptions, new()
+            where TOptions : class, IMvcInstrumentationDiscoveryOptions, new()
             where TProvider : class, ITwoStageMeasurementProvider
         {
             createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
+            optionsCreated = optionsCreated ?? delegate { };
 
             container.Register(
 
                 Component.For(typeof(TOptions).GetInterfaces())
                     .UsingFactoryMethod(createOptions)
-                    .LifestyleTransient()
+                    .OnCreate(obj => optionsCreated((TOptions) obj))
+                    .LifestyleSingleton()
 
                 // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
                 , Component.For<ITwoStageMeasurementProvider>()
@@ -72,17 +77,17 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
             );
 
             {
-                var interfaceType = typeof(TInterface);
+                typeof(TInterface).VerifyIsInterface();
 
-                interfaceType.VerifyIsInterface();
-
-                var interfaceReg = Component.For<TInterface>()
+                container.Register(
+                    
+                    // TODO: TBD: just register all of the implemented interfaces?
+                    Component.For<TInterface
+                            , IRuntimeInstrumentationDiscoveryService
+                            , IInstallerInstrumentationDiscoveryService>()
                         .ImplementedBy<TService>().LifestyleTransient()
-                        .Forward<TInterface, IRuntimeInstrumentationDiscoveryService>()
-                        .Forward<TInterface, IInstallerInstrumentationDiscoveryService>()
-                    ;
 
-                container.Register(interfaceReg);
+                );
             }
 
             return container;

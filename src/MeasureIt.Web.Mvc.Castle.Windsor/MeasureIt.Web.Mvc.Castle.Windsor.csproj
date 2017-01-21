@@ -7,7 +7,7 @@
     <ProjectGuid>{7D829131-556C-49A8-A744-28F5F08D5AB3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeasureIt.Web.Mvc.Castle.Windsor</RootNamespace>
+    <RootNamespace>MeasureIt.Web.Mvc</RootNamespace>
     <AssemblyName>MeasureIt.Web.Mvc.Castle.Windsor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -81,7 +81,7 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="RegistrationExtensionMethods.cs" />
+    <Compile Include="Castle\Windsor\RegistrationExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
