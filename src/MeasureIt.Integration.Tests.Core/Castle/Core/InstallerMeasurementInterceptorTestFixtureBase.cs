@@ -27,23 +27,21 @@ namespace MeasureIt.Castle
 
         protected override TOptions GetDiscoveryOptions()
         {
-            var options = base.GetDiscoveryOptions();
+            var o = base.GetDiscoveryOptions();
 
             // TODO: TBD: ???
             // Should throw under normal circumstances, but not here.
-            options.ThrowOnInstallerFailure = true;
+            o.ThrowOnInstallerFailure = true;
 
-            return options;
+            return o;
         }
 
         protected InstallerMeasurementInterceptorTestFixtureBase()
         {
-            var o = DiscoveryOptions;
-
             UseDiscoveryService(ds =>
             {
-                Assert.True(ds.TryUninstall(o));
-                ds.Install(o);
+                Assert.True(ds.TryUninstall());
+                ds.Install();
             });
         }
 
@@ -51,7 +49,7 @@ namespace MeasureIt.Castle
         {
             if (!IsDisposed && disposing)
             {
-                UseDiscoveryService(ds => Assert.True(ds.TryUninstall(DiscoveryOptions)));
+                UseDiscoveryService(ds => Assert.True(ds.TryUninstall()));
             }
 
             base.Dispose(disposing);
