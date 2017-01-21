@@ -74,7 +74,7 @@ namespace MeasureIt.Web.Mvc.Filters
                  * of counters, as well as a writable set, in order to get proper measurement that diagnostics are
                  * indeed taking place... */
 
-                Func<ITwoStageMeasurementContext> getContext = () =>
+                Func<ITwoStageMeasurementContext> createContext = () =>
                 {
                     var ctrlType = filterContext.Controller.GetType();
 
@@ -89,7 +89,7 @@ namespace MeasureIt.Web.Mvc.Filters
                     return provider.GetMeasurementContext(ctrlType, actionDescriptor.MethodInfo);
                 };
 
-                var measurementContext = _storage.GetOrAdd(MeasurementContextKey, getContext);
+                var measurementContext = _storage.GetOrAdd(MeasurementContextKey, createContext);
 
                 if (measurementContext.MayReturn()) return;
 
