@@ -1,10 +1,10 @@
 ﻿using System.Web.Http;
+using System.Web.Http.Dependencies;
 
 namespace MeasureIt.Web.Http.Autofac
 {
     using Controllers;
     using Discovery;
-    using Interception;
     using Owin;
     using global::Autofac;
     using global::Autofac.Integration.WebApi;
@@ -53,17 +53,22 @@ namespace MeasureIt.Web.Http.Autofac
             builder.RegisterApiControllers(typeof(MeasuredController).Assembly);
 
             builder.EnableApiMeasurements<
-                IHttpActionInstrumentationDiscoveryService
-                , HttpActionInstrumentationDiscoveryService
-                , InstrumentationDiscoveryOptions
-                , HttpActionMeasurementProvider>(CreateDiscoveryOptions);
+                    IHttpActionInstrumentationDiscoveryService
+                    , HttpActionInstrumentationDiscoveryService
+                    , InstrumentationDiscoveryOptions>(CreateDiscoveryOptions)
+                .UseAutofacApiDependencyResolver<AutofacWebApiDependencyResolver>()
+                ;
 
             var container = Container = builder.Build();
+
+            /* TODO: TBD: code such as this, Install<?>() perhaps goes better in a dedicated installer,
+             * or at a bare minimum quarantined behind a decidated server side controller. */
 
             Install<IInstallerInstrumentationDiscoveryService>();
             Install<IHttpActionInstrumentationDiscoveryService>();
 
-            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+            // Very nearly last but not least inform the configuration of our Dependency Resolver.
+            config.DependencyResolver = container.Resolve<IDependencyResolver>();
 
             config.MapHttpAttributeRoutes();
 
