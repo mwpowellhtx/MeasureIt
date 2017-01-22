@@ -66,13 +66,16 @@ namespace MeasureIt.Web.Http.Castle.Windsor
         {
             createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
 
+            var optionsType = typeof(TOptions);
+            var providerType = typeof(TProvider);
+
             container.Register(
 
-                Component.For<IInstrumentationDiscoveryOptions>()
+                Component.For(optionsType.GetInterfaces())
                     .UsingFactoryMethod(createOptions).LifestyleTransient()
 
                 // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
-                , Component.For<ITwoStageMeasurementProvider>()
+                , Component.For(providerType.GetInterfaces())
                     .ImplementedBy<TProvider>().LifestyleTransient()
 
                 );
