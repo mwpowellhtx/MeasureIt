@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Dependencies;
 using System.Web.Http.Dispatcher;
 using InstrumentationDiscoveryOptions = MeasureIt.Discovery.InstrumentationDiscoveryOptions;
 
@@ -13,6 +14,7 @@ namespace MeasureIt.Web.Http.Autofac
     using Interception;
     using global::Autofac;
     using global::Autofac.Builder;
+    using global::Autofac.Integration.WebApi;
     using static InstrumentationDiscoveryOptions;
 
     /// <summary>
@@ -24,6 +26,23 @@ namespace MeasureIt.Web.Http.Autofac
     /// </summary>
     public static class RegistrationExtensionMethods
     {
+        /// <summary>
+        /// Indicates to the <paramref name="builder"/> that the <typeparamref name="TResolver"/>
+        /// should be used as the <see cref="IDependencyResolver"/>.
+        /// </summary>
+        /// <typeparam name="TResolver"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ContainerBuilder UseAutofacApiDependencyResolver<TResolver>(this ContainerBuilder builder)
+            where TResolver : AutofacWebApiDependencyResolver
+        {
+            builder.RegisterType<TResolver>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            return builder;
+        }
+
         /// <summary>
         /// Registers the <typeparamref name="TService"/> as a kind of
         /// <typeparamref name="TInterface"/>.
@@ -122,14 +141,14 @@ namespace MeasureIt.Web.Http.Autofac
         {
             createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
 
-            builder.Register(context => createOptions)
+            builder.Register(context => createOptions())
                 .AsImplementedInterfaces()
                 .SingleInstance();
 
             // TODO: TBD: will need to be careful with the lifestyle here... or the capture/usage of it in the attribute...
             builder.RegisterType<TProvider>()
-                .As<ITwoStageMeasurementProvider>()
-                .InstancePerRequest();
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             {
                 var interfaceType = typeof(TInterface);
