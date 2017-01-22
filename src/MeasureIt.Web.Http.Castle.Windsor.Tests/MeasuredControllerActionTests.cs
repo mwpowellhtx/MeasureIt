@@ -6,10 +6,7 @@ namespace MeasureIt.Web.Http.Castle.Windsor
     using Kingdom.Web.Http.Dependencies;
     using Xunit;
 
-    public class MeasuredControllerActionTests
-        : MeasuredControllerActionTestFixtureBase<
-            MeasuredStartupFixture<InstrumentationDiscoveryOptions>
-        >
+    public class MeasuredControllerActionTests : MeasuredControllerActionTestFixtureBase<BasicMeasuredStartupFixture>
     {
         protected override HttpConfiguration GetConfiguration()
         {
@@ -23,5 +20,13 @@ namespace MeasureIt.Web.Http.Castle.Windsor
             // TODO: TBD: ditto Autofac WebApi testing...
             return config;
         }
+    }
+
+    /// <summary>
+    /// Apparently self-hosted OWIN servers must provide a concrete class, no generics involved.
+    /// Although it may derive from a generic base class as we do here.
+    /// </summary>
+    public class BasicMeasuredStartupFixture : MeasuredStartupFixture<InstrumentationDiscoveryOptions>
+    {
     }
 }
