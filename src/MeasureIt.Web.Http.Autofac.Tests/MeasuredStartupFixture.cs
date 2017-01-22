@@ -52,11 +52,11 @@ namespace MeasureIt.Web.Http.Autofac
 
             builder.RegisterApiControllers(typeof(MeasuredController).Assembly);
 
-            builder.EnableApiMeasurements<
+            builder.RegisterApiServices()
+                .EnableApiMeasurements<
                     IHttpActionInstrumentationDiscoveryService
                     , HttpActionInstrumentationDiscoveryService
                     , InstrumentationDiscoveryOptions>(CreateDiscoveryOptions)
-                .UseAutofacApiDependencyResolver<AutofacWebApiDependencyResolver>()
                 ;
 
             var container = Container = builder.Build();

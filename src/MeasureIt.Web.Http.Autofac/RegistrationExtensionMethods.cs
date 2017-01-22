@@ -27,23 +27,6 @@ namespace MeasureIt.Web.Http.Autofac
     public static class RegistrationExtensionMethods
     {
         /// <summary>
-        /// Indicates to the <paramref name="builder"/> that the <typeparamref name="TResolver"/>
-        /// should be used as the <see cref="IDependencyResolver"/>.
-        /// </summary>
-        /// <typeparam name="TResolver"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static ContainerBuilder UseAutofacApiDependencyResolver<TResolver>(this ContainerBuilder builder)
-            where TResolver : AutofacWebApiDependencyResolver
-        {
-            builder.RegisterType<TResolver>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-
-            return builder;
-        }
-
-        /// <summary>
         /// Registers the <typeparamref name="TService"/> as a kind of
         /// <typeparamref name="TInterface"/>.
         /// </summary>
@@ -80,18 +63,46 @@ namespace MeasureIt.Web.Http.Autofac
             return config;
         }
 
+#pragma warning disable 612
+
         /// <summary>
-        /// Registers services with the <paramref name="builder"/>, including
-        /// <see cref="IHttpControllerActivator"/>.
+        /// Registers services with the <paramref name="builder"/> with default
+        /// <see cref="AutofacWebApiDependencyResolver"/> and
+        /// <see cref="AutofacHttpControllerActivator"/> implementations provided.
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
         public static ContainerBuilder RegisterApiServices(this ContainerBuilder builder)
         {
-            builder.Register(
-                    ctx => AutofacHttpControllerActivator.Create(ctx.Resolve<ILifetimeScope>())
-                )
-                .As<IHttpControllerActivator>()
+            return builder.RegisterApiServices<
+                AutofacWebApiDependencyResolver
+                , AutofacHttpControllerActivator>();
+        }
+
+#pragma warning restore 612
+
+        /// <summary>
+        /// Registers services with the <paramref name="builder"/>, including
+        /// <typeparamref name="TResolver"/> and <typeparamref name="TActivator"/>.
+        /// </summary>
+        /// <typeparam name="TResolver"></typeparam>
+        /// <typeparam name="TActivator"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ContainerBuilder RegisterApiServices<TResolver, TActivator>(this ContainerBuilder builder)
+            where TResolver : class, IDependencyResolver
+            where TActivator : class, IHttpControllerActivator
+        {
+            typeof(TResolver).VerifyIsClass();
+            typeof(TActivator).VerifyIsClass();
+
+            // We can register the types, and ILifetimeScope is provided by default.
+            builder.RegisterType<TResolver>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<TActivator>()
+                .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
             return builder;
