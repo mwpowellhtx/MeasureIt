@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>$id$</id>
-        <version>1.5.1</version>
+        <version>1.5.2</version>
         <title>$title$</title>
         <authors>Michael W. Powell</authors>
         <owners>$author$</owners>
@@ -12,7 +12,7 @@
         <copyright>Copyright © 2016</copyright>
         <tags>MeasureIt interception measurement performance counter counters Castle Interceptor IInterceptor</tags>
         <dependencies>
-            <dependency id="MeaureIt.Core" version="1.13.2" />
+            <dependency id="MeaureIt.Core" version="1.15.0" />
         </dependencies>
     </metadata>
     <files>

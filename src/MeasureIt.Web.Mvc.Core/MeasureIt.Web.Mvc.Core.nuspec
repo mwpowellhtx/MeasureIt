@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
         <id>$title$</id>
-        <version>1.1.1</version>
+        <version>1.2.2</version>
         <title>$title$</title>
         <authors>Michael W. Powell</authors>
         <owners>$author$</owners>
@@ -13,7 +13,8 @@
         <tags>ASP.NET MVC performance counters measurement filter discovery service agent agents</tags>
         <dependencies>
             <dependency id="Microsoft.AspNet.Mvc" version="[5.2.3,6.0.0)" />
-            <dependency id="MeasureIt.Core" version="1.14.0" />
+            <dependency id="Kingdom.AspNet.Mvc.Core" version="1.1.0" />
+            <dependency id="MeasureIt.Core" version="1.15.0" />
         </dependencies>
     </metadata>
     <files>
