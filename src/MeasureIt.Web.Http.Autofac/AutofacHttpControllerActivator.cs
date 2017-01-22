@@ -9,7 +9,7 @@ namespace MeasureIt.Web.Http.Autofac
     using global::Autofac;
 
     /// <summary>
-    /// Autofact Http controller activator.
+    /// Autofac Http controller activator.
     /// </summary>
     [Obsolete] // TODO: TBD: ditto interface; not sure it is necessary after all...
     public class AutofacHttpControllerActivator : IAutofacHttpControllerActivator
