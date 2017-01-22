@@ -36,14 +36,6 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Kingdom.Web.Mvc.Castle.Windsor, Version=1.2.3.26575, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kingdom.AspNet.Mvc.Castle.Windsor.1.2.3\lib\net45\Kingdom.Web.Mvc.Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Kingdom.Web.Mvc.Core, Version=1.1.0.26575, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kingdom.AspNet.Mvc.Core.1.1.0\lib\net45\Kingdom.Web.Mvc.Core.dll</HintPath>
       <Private>True</Private>
