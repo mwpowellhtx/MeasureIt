@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
+using MeasureIt.Web.Http.Interception;
 
 namespace MeasureIt.Web.Http.Castle.Windsor
 {
@@ -42,6 +43,47 @@ namespace MeasureIt.Web.Http.Castle.Windsor
                     (g, x) => g.Register(Classes.FromAssembly(x)
                         .BasedOn<IHttpController>().LifestyleTransient())
                 );
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <typeparamref name="TService"/> via
+        /// <paramref name="container"/>.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="createOptions"></param>
+        /// <returns></returns>
+        public static IWindsorContainer EnableApiMeasurements<TInterface, TService>(
+            this IWindsorContainer container
+            , Func<InstrumentationDiscoveryOptions> createOptions = null)
+            where TInterface : class, IHttpActionInstrumentationDiscoveryService
+            where TService : class, TInterface
+        {
+            return container.EnableApiMeasurements<TInterface, TService
+                , InstrumentationDiscoveryOptions
+                , HttpActionMeasurementProvider>(createOptions);
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <typeparamref name="TService"/> via
+        /// <paramref name="container"/>.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="createOptions"></param>
+        /// <returns></returns>
+        public static IWindsorContainer EnableApiMeasurements<TInterface, TService, TOptions>(
+            this IWindsorContainer container
+            , Func<TOptions> createOptions = null)
+            where TInterface : class, IHttpActionInstrumentationDiscoveryService
+            where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
+        {
+            return container.EnableApiMeasurements<TInterface, TService, TOptions
+                , HttpActionMeasurementProvider>(createOptions);
         }
 
         // TODO: TBD: requiring IHttpActionInstrumentationDiscoveryService means that we will need to reference that as a package as well...

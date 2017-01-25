@@ -31,14 +31,13 @@ namespace MeasureIt.Web.Http.Autofac
 
         private readonly ILifetimeScope _scope;
 
-        private AutofacHttpControllerActivator(ILifetimeScope scope)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="scope"></param>
+        public AutofacHttpControllerActivator(ILifetimeScope scope)
         {
             _scope = scope;
-        }
-
-        internal static IAutofacHttpControllerActivator Create(ILifetimeScope scope)
-        {
-            return new AutofacHttpControllerActivator(scope);
         }
 
         /// <summary>
