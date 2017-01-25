@@ -41,6 +41,30 @@ namespace MeasureIt.Web.Mvc.Autofac
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="createOptions"></param>
+        /// <param name="optionsActivated"></param>
+        /// <returns></returns>
+        /// <see cref="EnableMvcMeasurements{TInterface,TService,TOptions,TProvider}"/>
+        public static ContainerBuilder EnableMvcMeasurements<TInterface, TService>(
+            this ContainerBuilder builder
+            , Func<InstrumentationDiscoveryOptions> createOptions = null
+            , Action<InstrumentationDiscoveryOptions> optionsActivated = null)
+            where TInterface : class, IMvcActionInstrumentationDiscoveryService
+            where TService : class, TInterface
+        {
+            return builder.EnableMvcMeasurements<TInterface, TService
+                , InstrumentationDiscoveryOptions
+                , MvcActionMeasurementProvider>(createOptions, optionsActivated);
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <typeparamref name="TService"/> via
+        /// <paramref name="builder"/>, and using <see cref="MvcActionMeasurementProvider"/> for
+        /// provider.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="builder"></param>
         /// <param name="createOptions"></param>
@@ -53,7 +77,7 @@ namespace MeasureIt.Web.Mvc.Autofac
             , Action<TOptions> optionsActivated = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
-            where TOptions : class, IMvcInstrumentationDiscoveryOptions, new()
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
         {
             return builder.EnableMvcMeasurements<TInterface, TService, TOptions
                 , MvcActionMeasurementProvider>(createOptions, optionsActivated);
@@ -77,41 +101,33 @@ namespace MeasureIt.Web.Mvc.Autofac
             , Action<TOptions> optionsActivated = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
-            where TOptions : class, IMvcInstrumentationDiscoveryOptions, new()
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
             where TProvider : class, ITwoStageMeasurementProvider
         {
-            createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
-            optionsActivated = optionsActivated ?? delegate { };
+            {
+                typeof(TOptions).VerifyIsClass();
 
-            typeof(TOptions).VerifyIsClass();
-            typeof(TService).VerifyIsClass();
+                createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
+                optionsActivated = optionsActivated ?? delegate { };
+
+                builder.Register(context => createOptions())
+                    .AsImplementedInterfaces()
+                    .SingleInstance()
+                    .OnActivated(args => optionsActivated(args.Instance));
+            }
 
             // TODO: TBD: should this accept the full Activated event handler? doubtful, but we'll see...
-            builder.Register(context => createOptions())
-                .AsImplementedInterfaces()
-                .SingleInstance()
-                .OnActivated(args => optionsActivated(args.Instance));
 
             builder.RegisterType<TProvider>()
-                .As<ITwoStageMeasurementProvider>()
+                .AsImplementedInterfaces()
                 .InstancePerRequest();
 
             {
-                var interfaceType = typeof(TInterface);
+                typeof(TService).VerifyIsClass();
+                typeof(TInterface).VerifyIsInterface();
 
-                interfaceType.VerifyIsInterface();
-
-                var registration = builder.RegisterType<TService>()
-                    .As<IMvcActionInstrumentationDiscoveryService>();
-
-                if (interfaceType != typeof(IMvcActionInstrumentationDiscoveryService))
-                {
-                    registration = registration.As<TInterface>();
-                }
-
-                registration
-                    .As<IRuntimeInstrumentationDiscoveryService>()
-                    .As<IInstallerInstrumentationDiscoveryService>()
+                builder.RegisterType<TService>()
+                    .AsImplementedInterfaces()
                     .InstancePerLifetimeScope();
             }
 
