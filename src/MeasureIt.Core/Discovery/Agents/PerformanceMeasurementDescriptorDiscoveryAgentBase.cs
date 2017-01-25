@@ -7,10 +7,13 @@ namespace MeasureIt.Discovery.Agents
     /// <summary>
     /// 
     /// </summary>
+    /// <typeparam name="TDescriptor"></typeparam>
     /// <typeparam name="TAttribute"></typeparam>
-    public class PerformanceMeasurementDescriptorDiscoveryAgentBase<TAttribute> : DiscoveryAgentBase<
-        IPerformanceMeasurementDescriptor>, IPerformanceMeasurementDescriptorDiscoveryAgent<TAttribute>
-        where TAttribute : Attribute, IMeasurePerformanceAttribute
+    public class PerformanceMeasurementDescriptorDiscoveryAgentBase<TDescriptor, TAttribute>
+        : DiscoveryAgentBase<IPerformanceMeasurementDescriptor>
+            , IPerformanceMeasurementDescriptorDiscoveryAgent<TAttribute>
+        where TDescriptor : class, IPerformanceMeasurementDescriptor
+        where TAttribute : Attribute, IMeasurePerformanceAttribute<TDescriptor>
     {
         /// <summary>
         /// Protected Constructor
@@ -20,7 +23,7 @@ namespace MeasureIt.Discovery.Agents
         protected PerformanceMeasurementDescriptorDiscoveryAgentBase(
             IInstrumentationDiscoveryOptions discoveryOptions
             , DiscoveryServiceExportedTypesGetterDelegate getExportedTypes
-            )
+        )
             : base(discoveryOptions, getExportedTypes)
         {
             _filter = new PerformanceMeasurementDescriptorFilter();

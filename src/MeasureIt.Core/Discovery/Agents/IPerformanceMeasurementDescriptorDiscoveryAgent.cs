@@ -17,7 +17,7 @@ namespace MeasureIt.Discovery.Agents
     /// <typeparam name="TAttribute"></typeparam>
     public interface IPerformanceMeasurementDescriptorDiscoveryAgent<TAttribute>
         : IPerformanceMeasurementDescriptorDiscoveryAgent
-        where TAttribute : Attribute, IMeasurePerformanceAttribute
+        where TAttribute : Attribute, IMeasurePerformanceAttributeBase
     {
     }
 }
