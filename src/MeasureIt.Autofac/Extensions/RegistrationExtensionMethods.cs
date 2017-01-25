@@ -89,38 +89,31 @@ namespace MeasureIt
         {
             {
                 typeof(TOptions).VerifyIsClass();
+
                 createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
-                builder.Register(context => createOptions()).AsImplementedInterfaces().SingleInstance();
+
+                builder.Register(context => createOptions())
+                    .AsImplementedInterfaces()
+                    .SingleInstance();
             }
 
             {
                 builder.RegisterType<InterceptionMeasurementProvider>()
-                    .As<IInterceptionMeasurementProvider>()
+                    .AsImplementedInterfaces()
                     .InstancePerDependency();
 
                 builder.RegisterType<TInterceptor>()
-                    .As<IMeasurementInterceptor>()
+                    .AsImplementedInterfaces()
                     .InstancePerDependency();
             }
 
             {
-                var interfaceType = typeof(TInterface);
+                typeof(TInterface).VerifyIsInterface();
+                typeof(TService).VerifyIsClass();
 
-                interfaceType.VerifyIsInterface();
-
-                var serviceReg = builder.RegisterType<TService>()
-                    .As<TInterface>()
-                    .InstancePerDependency();
-
-                var discoveryServiceType = typeof(IRuntimeInstrumentationDiscoveryService);
-
-                // Register the Runtime Instrumentation when necessary.
-                if (interfaceType != discoveryServiceType
-                    && discoveryServiceType.IsAssignableFrom(interfaceType))
-                {
-                    // IRuntimeInstrumentationDiscoveryService is required by InterceptionMeasurementProvider.
-                    serviceReg.As<IRuntimeInstrumentationDiscoveryService>();
-                }
+                builder.RegisterType<TService>()
+                    .AsImplementedInterfaces()
+                    .InstancePerLifetimeScope();
             }
 
             return builder;
