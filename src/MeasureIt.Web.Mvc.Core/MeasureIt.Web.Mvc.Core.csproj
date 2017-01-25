@@ -82,8 +82,11 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Attributes\IMvcMeasurePerformanceAttribute.cs" />
     <Compile Include="Collections\ApplicationStatefulStorageDictionary.cs" />
     <Compile Include="Collections\IStatefulStorageDictionary.cs" />
+    <Compile Include="Descriptors\IMvcInstrumentationDiscoveryOptions.cs" />
+    <Compile Include="Descriptors\MvcPerformanceMeasurementDescriptor.cs" />
     <Compile Include="Discovery\Agents\IMeasurementFilterDiscoveryAgent.cs" />
     <Compile Include="Discovery\Agents\MeasurementFilterDiscoveryAgent.cs" />
     <Compile Include="Discovery\MvcInstrumentationDiscoveryOptions.Statics.cs" />
@@ -93,6 +96,7 @@
     <Compile Include="Discovery\IMvcInstrumentationDiscoveryOptions.cs" />
     <Compile Include="Discovery\MvcActionInstrumentationDiscoveryService.cs" />
     <Compile Include="Discovery\IMvcActionInstrumentationDiscoveryService.cs" />
+    <Compile Include="Extensions\CollectionExtensionMethods.cs" />
     <Compile Include="Extensions\MvcExtensionMethods.cs" />
     <Compile Include="Collections\IApplicationStatefulStorageDictionary.cs" />
     <Compile Include="Collections\IRequestStatefulStorageDictionary.cs" />

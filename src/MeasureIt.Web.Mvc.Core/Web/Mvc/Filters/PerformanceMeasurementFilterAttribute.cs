@@ -8,6 +8,7 @@ namespace MeasureIt.Web.Mvc.Filters
     using Contexts;
     using Kingdom.Web.Mvc;
     using IMvcDependencyResolver = IDependencyResolver;
+    using static Discovery.MeasurementBoundary;
     using static StatefulStorageMode;
 
     /// <summary>
@@ -45,6 +46,11 @@ namespace MeasureIt.Web.Mvc.Filters
         private const string MeasurementContextKey = "mvc-measurement-context";
 
         /// <summary>
+        /// "action-descriptor-key"
+        /// </summary>
+        private const string ActionDescriptorKey = "action-descriptor-key";
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="categoryType"></param>
@@ -66,27 +72,71 @@ namespace MeasureIt.Web.Mvc.Filters
                 );
         }
 
-        private void BeginMeasurementContext(ActionExecutingContext filterContext, ITwoStageMeasurementProvider provider)
+        private class MeasurementContextInfo
+        {
+            internal object FilterContext { get; }
+
+            internal IController Controller { get; }
+
+            internal ActionDescriptor ActionDescriptor { get; set; }
+
+            internal Exception Exception { get; }
+
+            internal MeasurementContextInfo(ActionExecutingContext filterContext)
+                : this(filterContext, filterContext.Controller, filterContext.ActionDescriptor)
+            {
+            }
+
+            internal MeasurementContextInfo(ActionExecutedContext filterContext)
+                : this(filterContext, filterContext.Controller, filterContext.ActionDescriptor, filterContext.Exception)
+            {
+            }
+
+            internal MeasurementContextInfo(ResultExecutingContext filterContext)
+                : this(filterContext, filterContext.Controller)
+            {
+            }
+
+            internal MeasurementContextInfo(ResultExecutedContext filterContext)
+                : this(filterContext, filterContext.Controller, filterContext.Exception)
+            {
+            }
+
+            private MeasurementContextInfo(object filterContext, IController ctrl, Exception ex = null)
+            {
+                Controller = ctrl;
+                FilterContext = filterContext;
+                Exception = ex;
+            }
+
+            private MeasurementContextInfo(object filterContext, IController ctrl, ActionDescriptor actionDescriptor, Exception ex = null)
+            {
+                Controller = ctrl;
+                FilterContext = filterContext;
+                ActionDescriptor = actionDescriptor;
+                Exception = ex;
+            }
+        }
+
+        private void BeginMeasurementContext(MeasurementContextInfo contextInfo)
         {
             try
             {
+                var provider = GetMeasurementProvider();
+
+                var actionDescriptor = _storage.Get<ActionDescriptor>(ActionDescriptorKey);
+
                 /* TODO: TBD: thinking about how in the world to test it... will need to consider a readonly set
                  * of counters, as well as a writable set, in order to get proper measurement that diagnostics are
                  * indeed taking place... */
 
                 Func<ITwoStageMeasurementContext> createContext = () =>
                 {
-                    var ctrlType = filterContext.Controller.GetType();
+                    var ctrlType = contextInfo.Controller.GetType();
 
-                    var asyncActionDescriptor = filterContext.ActionDescriptor as ReflectedAsyncActionDescriptor;
-
-                    if (asyncActionDescriptor != null)
-                        return provider.GetMeasurementContext(ctrlType, asyncActionDescriptor.MethodInfo);
-
-                    var actionDescriptor = filterContext.ActionDescriptor as ReflectedActionDescriptor;
-
-                    // ReSharper disable once PossibleNullReferenceException
-                    return provider.GetMeasurementContext(ctrlType, actionDescriptor.MethodInfo);
+                    return provider.GetMeasurementContext(ctrlType, actionDescriptor is ReflectedAsyncActionDescriptor
+                        ? ((ReflectedAsyncActionDescriptor) actionDescriptor).MethodInfo
+                        : ((ReflectedActionDescriptor) actionDescriptor).MethodInfo);
                 };
 
                 var measurementContext = _storage.GetOrAdd(MeasurementContextKey, createContext);
@@ -100,11 +150,12 @@ namespace MeasureIt.Web.Mvc.Filters
             catch (Exception ex)
             {
                 Trace.TraceError(ex.ToString());
+                Descriptor.SetError(ex);
                 if (ThrowPublishErrors) throw;
             }
         }
 
-        private void EndMeasurementContext(ActionExecutedContext filterContext)
+        private void EndMeasurementContext(MeasurementContextInfo contextInfo)
         {
             /* TODO: TBD: the thought is along the right lines, I believe; but the boundary likely
              * needs to be OnResultExecuted... */
@@ -124,12 +175,13 @@ namespace MeasureIt.Web.Mvc.Filters
                 using (var stoppedContext = measurementContext.Stop())
                 {
                     // Remember to set any error information that may have been encountered during execution.
-                    stoppedContext.SetError(filterContext.Exception);
+                    stoppedContext.SetError(contextInfo.Exception);
                 }
             }
             catch (Exception ex)
             {
                 Trace.TraceError(ex.ToString());
+                Descriptor.SetError(ex);
                 if (ThrowPublishErrors) throw;
             }
             finally
@@ -137,6 +189,7 @@ namespace MeasureIt.Web.Mvc.Filters
                 // Try to remove the Properties.
                 _storage.TryRemove(MeasurementProviderKey);
                 _storage.TryRemove(MeasurementContextKey);
+                _storage.TryRemove(ActionDescriptorKey);
             }
         }
 
@@ -151,9 +204,18 @@ namespace MeasureIt.Web.Mvc.Filters
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             _storage = new StatefulStorage(filterContext.HttpContext, _storageMode);
+
+            /* In this case we do want to add, basically, the Descriptor. This is so that
+             * the Descriptor is available later on, regardless of the boundary. */
+
+            _storage.GetOrAdd(ActionDescriptorKey, () => filterContext.ActionDescriptor);
+
+            if (StartBoundary == BeginAction)
+            {
+                BeginMeasurementContext(new MeasurementContextInfo(filterContext));
+            }
+
             base.OnActionExecuting(filterContext);
-            var provider = GetMeasurementProvider();
-            BeginMeasurementContext(filterContext, provider);
         }
 
         /// <summary>
@@ -162,11 +224,65 @@ namespace MeasureIt.Web.Mvc.Filters
         /// <param name="filterContext"></param>
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
+            var lazyInfo = new Lazy<MeasurementContextInfo>(
+                () => new MeasurementContextInfo(filterContext)
+                );
+
+            if (StartBoundary == EndAction)
+            {
+                BeginMeasurementContext(lazyInfo.Value);
+            }
+
             base.OnActionExecuted(filterContext);
-            EndMeasurementContext(filterContext);
+
+            if (StopBoundary == EndAction)
+            {
+                EndMeasurementContext(lazyInfo.Value);
+            }
         }
 
         /* TODO: TBD: methinks I would want to evaluate from beginning of action executing, to end
          * of result executed... perhaps even have some additional boundaries in mind (?)... */
+
+        /// <summary>
+        /// Result executing event handler.
+        /// </summary>
+        /// <param name="filterContext"></param>
+        public override void OnResultExecuting(ResultExecutingContext filterContext)
+        {
+            var lazyInfo = new Lazy<MeasurementContextInfo>(
+                () =>
+                {
+                    var actionDescriptor = _storage.Get<ActionDescriptor>(ActionDescriptorKey);
+                    return new MeasurementContextInfo(filterContext) {ActionDescriptor = actionDescriptor};
+                });
+
+            // I don't know why you would do this, but it's possible...
+            if (StartBoundary == BeginResult)
+            {
+                BeginMeasurementContext(lazyInfo.Value);
+            }
+
+            base.OnResultExecuting(filterContext);
+
+            if (StopBoundary == BeginResult)
+            {
+                EndMeasurementContext(lazyInfo.Value);
+            }
+        }
+
+        /// <summary>
+        /// Result executed event handler.
+        /// </summary>
+        /// <param name="filterContext"></param>
+        public override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            base.OnResultExecuted(filterContext);
+
+            if (StopBoundary == EndResult)
+            {
+                EndMeasurementContext(new MeasurementContextInfo(filterContext));
+            }
+        }
     }
 }

@@ -22,12 +22,13 @@ namespace MeasureIt.Web.Mvc.Interception
         /// </summary>
         protected IMvcActionInstrumentationDiscoveryService DiscoveryService => _lazyDiscoveryService.Value;
 
+        // TODO: TBD: an "Mvc" version of the provider may not actually be necessary any logner...
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="options"></param>
         /// <param name="discoveryService"></param>
-        public MvcActionMeasurementProvider(IMvcInstrumentationDiscoveryOptions options
+        public MvcActionMeasurementProvider(IInstrumentationDiscoveryOptions options
             , IMvcActionInstrumentationDiscoveryService discoveryService)
             : base(options)
         {

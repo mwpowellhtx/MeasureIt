@@ -58,16 +58,19 @@ namespace MeasureIt.Discovery
         public MeasurementBoundaryPair Set(MeasurementBoundary start, MeasurementBoundary stop)
         {
             const MeasurementBoundary action = MeasurementBoundary.Action;
-            const MeasurementBoundary actionResult = action | Result;
 
-            // Rule out a couple of obvious circumstances and/or overlapping scenarios.
-            start.VerifyHaving(Begin).VerifyNotHaving(End).VerifyNotHaving(actionResult);
-            stop.VerifyHaving(End).VerifyNotHaving(Begin).VerifyNotHaving(actionResult);
+            /* This is sufficient. If we had any more than two, then possibly we consider a
+             * more formal loop. But we don't. So just verify them and be done with it. */
 
-            // Rule out an overlapping corner case. The other three use cases in the truth table are acceptable.
-            if (start.TryHas(Result) && stop.TryHas(action))
+            start.VerifyHasOne(Begin, End).VerifyHasOne(action, Result);
+            stop.VerifyHasOne(Begin, End).VerifyHasOne(action, Result);
+
+            // Then rule out any overlapping scenarios.
+            if (start >= stop)
             {
-                throw new ArgumentException($"{start} value should not overlap {stop} value.", nameof(start));
+                throw new ArgumentException(
+                    $"'{typeof(MeasurementBoundary).FullName}' start value '{start}'"
+                    + $" must occur prior to stop value '{stop}'.", nameof(start));
             }
 
             Start = start;
