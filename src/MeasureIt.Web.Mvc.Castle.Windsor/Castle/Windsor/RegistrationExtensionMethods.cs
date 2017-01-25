@@ -33,7 +33,7 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
             , Action<TOptions> optionsCreated = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
-            where TOptions : class, IMvcInstrumentationDiscoveryOptions, new()
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
         {
             return container.EnableMvcMeasurements<TInterface, TService, TOptions
                 , MvcActionMeasurementProvider>(createOptions, optionsCreated);
@@ -57,7 +57,7 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
             , Action<TOptions> optionsCreated = null)
             where TInterface : class, IMvcActionInstrumentationDiscoveryService
             where TService : class, TInterface
-            where TOptions : class, IMvcInstrumentationDiscoveryOptions, new()
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
             where TProvider : class, ITwoStageMeasurementProvider
         {
             createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
