@@ -4,6 +4,7 @@ namespace MeasureIt.AspNet.Mvc.Castle.Windsor.Controllers
 {
     using Instrumentation;
     using Web.Mvc.Filters;
+    using static Discovery.MeasurementBoundary;
 
     public class MeasuredController : Controller
     {
@@ -12,6 +13,7 @@ namespace MeasureIt.AspNet.Mvc.Castle.Windsor.Controllers
             , typeof(AverageTimePerformanceCounterAdapter)
             , typeof(TotalMemberAccessesPerformanceCounterAdapter)
             , PublishCounters = true, PublishEvent = true, ThrowPublishErrors = true
+            , Boundary = new[] {BeginAction, EndAction}
         )]
         public ActionResult Index()
         {

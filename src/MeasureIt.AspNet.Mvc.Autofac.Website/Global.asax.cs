@@ -28,9 +28,9 @@ namespace MeasureIt.AspNet.Mvc.Autofac
             yield return typeof(MvcApplication).Assembly;
         }
 
-        private static MvcInstrumentationDiscoveryOptions CreateOptions()
+        private static InstrumentationDiscoveryOptions CreateOptions()
         {
-            return new MvcInstrumentationDiscoveryOptions
+            return new InstrumentationDiscoveryOptions
             {
                 ThrowOnInstallerFailure = false,
                 ThrowOnUninstallerFailure = false,
@@ -59,7 +59,7 @@ namespace MeasureIt.AspNet.Mvc.Autofac
             builder.EnableMvcMeasurements<
                     IMvcActionInstrumentationDiscoveryService
                     , MvcActionInstrumentationDiscoveryService
-                    , MvcInstrumentationDiscoveryOptions>(CreateOptions)
+                    , InstrumentationDiscoveryOptions>(CreateOptions)
                 ;
 
             // Build the Container and Resolve the Resolver.
