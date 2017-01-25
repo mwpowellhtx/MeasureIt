@@ -5,15 +5,9 @@ namespace MeasureIt.Web.Http.Castle.Windsor
     using Kingdom.Web.Http;
     using Owin;
     using global::Castle.Windsor;
-    using StartupBase = Startup;
 
-    public class StartupFixture : StartupBase
+    public class StartupFixture : Startup<IWindsorContainer>
     {
-        /// <summary>
-        /// Gets the Container associated with the StartupFixture.
-        /// </summary>
-        protected IWindsorContainer Container { get; }
-
         public StartupFixture()
         {
             // Make sure we have a Container waiting for us OnConfiguration.
@@ -22,16 +16,11 @@ namespace MeasureIt.Web.Http.Castle.Windsor
 
         protected override void OnConfiguration(IAppBuilder app, HttpConfiguration config)
         {
-            base.OnConfiguration(app, config);
-
             Container.InstallApiServices<StartupFixture>(config);
 
-            config.UseWindsorDependencyResolver(Container)
-                .MapHttpAttributeRoutes();
+            config.UseWindsorDependencyResolver(Container);
 
-            config.Routes.MapHttpRoute(
-                "DefaultApi", "api/{controller}/{action}/{value}",
-                new {action = "get", value = RouteParameter.Optional});
+            base.OnConfiguration(app, config);
         }
     }
 }

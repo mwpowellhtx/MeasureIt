@@ -1,6 +1,10 @@
 namespace MeasureIt.Web.Http.Autofac
 {
-    public class UnmeasuredControllerActionTests : UnmeasuredControllerActionTestFixtureBase<StartupFixture>
+    using global::Autofac;
+
+    public class UnmeasuredControllerActionTests
+        : UnmeasuredControllerActionTestFixtureBase<
+            IContainer, StartupFixture>
     {
     }
 }

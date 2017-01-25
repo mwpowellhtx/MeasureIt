@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using System.Web.Http.Dependencies;
 
 namespace MeasureIt.Web.Http.Autofac
 {
@@ -6,19 +7,24 @@ namespace MeasureIt.Web.Http.Autofac
     using Owin;
     using global::Autofac;
     using global::Autofac.Integration.WebApi;
-    using MeasureItStartup = Startup;
 
-    public class StartupFixture : MeasureItStartup
+    public class StartupFixture : Startup<IContainer>
     {
-        protected IContainer Container { get; private set; }
-
         protected override void OnConfiguration(IAppBuilder app, HttpConfiguration config)
         {
-            base.OnConfiguration(app, config);
-
             var builder = new ContainerBuilder();
 
-            builder.RegisterApiControllers(typeof(MeasuredController).Assembly);
+            // TODO: TBD: consider whether this belongs as an extension method?
+
+#pragma warning disable 612
+
+            builder.RegisterApiServices<
+                    AutofacWebApiDependencyResolver
+                    , AutofacHttpControllerActivator
+                    , TraceExceptionLogger>()
+                .RegisterApiControllers(typeof(MeasuredController).Assembly);
+
+#pragma warning restore 612
 
             //builder.EnableApiMeasurements<
             //    IHttpActionInstrumentationDiscoveryService
@@ -36,21 +42,14 @@ namespace MeasureIt.Web.Http.Autofac
             //        //};
             //    });
 
+            base.OnConfiguration(app, config);
+
             var container = Container = builder.Build();
 
-            app.UseAutofacLifetimeScopeInjector(container);
+            app.UseAutofacWebApi(config)
+                .UseAutofacMiddleware(container);
 
-            //app.UseAutofacMiddleware(container);
-
-            config.MapHttpAttributeRoutes();
-
-            config.Routes.MapHttpRoute(
-                "DefaultApi", "api/{controller}/{action}/{value}",
-                new {action = "get", value = RouteParameter.Optional});
-
-            app.UseWebApi(config);
-
-            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-        }
+            config.DependencyResolver = container.Resolve<IDependencyResolver>();
+       }
     }
 }

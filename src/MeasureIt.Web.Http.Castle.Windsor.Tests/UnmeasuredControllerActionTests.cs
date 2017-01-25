@@ -1,6 +1,10 @@
 namespace MeasureIt.Web.Http.Castle.Windsor
 {
-    public class UnmeasuredControllerActionTests : UnmeasuredControllerActionTestFixtureBase<StartupFixture>
+    using global::Castle.Windsor;
+
+    public class UnmeasuredControllerActionTests
+        : UnmeasuredControllerActionTestFixtureBase<
+            IWindsorContainer, StartupFixture>
     {
     }
 }

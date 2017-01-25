@@ -6,8 +6,9 @@ namespace MeasureIt.Web.Http
     using Microsoft.Owin.Hosting;
     using Xunit;
 
-    public abstract class SelfHostTestFixtureBase<TStartup> : DisposableTestFixtureBase
-        where TStartup : Startup
+    public abstract class SelfHostTestFixtureBase<TContainer, TStartup>
+        : DisposableTestFixtureBase
+        where TStartup : Startup<TContainer>
     {
         protected static string GetUrl()
         {

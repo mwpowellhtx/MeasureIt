@@ -8,13 +8,10 @@ namespace MeasureIt.Web.Http.Autofac
     using Owin;
     using global::Autofac;
     using global::Autofac.Integration.WebApi;
-    using MeasureItStartup = Startup;
 
-    public class MeasuredStartupFixture : MeasureItStartup
+    public class MeasuredStartupFixture : Startup<IContainer>
     {
         internal static HttpConfiguration InternalConfig { get; private set; }
-
-        protected IContainer Container { get; private set; }
 
         private void Install<TDiscoveryService>()
             where TDiscoveryService : class, IInstallerInstrumentationDiscoveryService
@@ -44,22 +41,28 @@ namespace MeasureIt.Web.Http.Autofac
 
         protected override void OnConfiguration(IAppBuilder app, HttpConfiguration config)
         {
-            base.OnConfiguration(app, config);
-
             InternalConfig = config;
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterApiControllers(typeof(MeasuredController).Assembly);
+#pragma warning disable 612
 
-            builder.RegisterApiServices()
+            builder.RegisterApiServices<
+                    AutofacWebApiDependencyResolver
+                    , AutofacHttpControllerActivator
+                    , TraceExceptionLogger>()
                 .EnableApiMeasurements<
                     IHttpActionInstrumentationDiscoveryService
-                    , HttpActionInstrumentationDiscoveryService
-                    , InstrumentationDiscoveryOptions>(CreateDiscoveryOptions)
+                    , HttpActionInstrumentationDiscoveryService>(CreateDiscoveryOptions)
+                .RegisterApiControllers(typeof(MeasuredController).Assembly)
                 ;
 
+#pragma warning restore 612
+
             var container = Container = builder.Build();
+
+            // Very nearly last but not least inform the configuration of our Dependency Resolver.
+            config.DependencyResolver = container.Resolve<IDependencyResolver>();
 
             /* TODO: TBD: code such as this, Install<?>() perhaps goes better in a dedicated installer,
              * or at a bare minimum quarantined behind a decidated server side controller. */
@@ -67,14 +70,7 @@ namespace MeasureIt.Web.Http.Autofac
             Install<IInstallerInstrumentationDiscoveryService>();
             Install<IHttpActionInstrumentationDiscoveryService>();
 
-            // Very nearly last but not least inform the configuration of our Dependency Resolver.
-            config.DependencyResolver = container.Resolve<IDependencyResolver>();
-
-            config.MapHttpAttributeRoutes();
-
-            config.Routes.MapHttpRoute(
-                "DefaultApi", "api/{controller}/{action}/{value}",
-                new {action = "get", value = RouteParameter.Optional});
+            base.OnConfiguration(app, config);
         }
     }
 }

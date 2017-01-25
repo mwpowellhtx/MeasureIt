@@ -7,9 +7,11 @@ namespace MeasureIt.Web.Http
     using Controllers;
     using Newtonsoft.Json;
     using Xunit;
+    using static HttpStatusCode;
 
-    public abstract class UnmeasuredControllerActionTestFixtureBase<TStartup> : SelfHostTestFixtureBase<TStartup>
-        where TStartup : Startup
+    public abstract class UnmeasuredControllerActionTestFixtureBase<TContainer, TStartup>
+        : SelfHostTestFixtureBase<TContainer, TStartup>
+        where TStartup : Startup<TContainer>
     {
         protected UnmeasuredControllerActionTestFixtureBase(string url = null)
             : base(url ?? GetUrl(), "api/unmeasured")
@@ -25,9 +27,7 @@ namespace MeasureIt.Web.Http
                 {
                     Assert.NotNull(response);
 
-                    const HttpStatusCode ok = HttpStatusCode.OK;
-
-                    Assert.Equal(ok, response.StatusCode);
+                    Assert.Equal(OK, response.StatusCode);
 
                     var s = response.Content.ReadAsStringAsync().Result;
 
@@ -55,14 +55,12 @@ namespace MeasureIt.Web.Http
         public void VerifyApiVerifiedValueCorrect(int value, int[] expectedValues)
         {
             // So much of the mechanics of this depends on correct DI container resolution.
-            MakeRequest(client => client.GetAsync(string.Format("{0}/verify/{1}", BaseApiUrl, value)).Result)
+            MakeRequest(client => client.GetAsync($"{BaseApiUrl}/verify/{value}").Result)
                 .Handle(response =>
                 {
                     Assert.NotNull(response);
 
-                    const HttpStatusCode ok = HttpStatusCode.OK;
-
-                    Assert.Equal(ok, response.StatusCode);
+                    Assert.Equal(OK, response.StatusCode);
 
                     var s = response.Content.ReadAsStringAsync().Result;
 

@@ -10,15 +10,17 @@ namespace MeasureIt.Web.Http
     /// <summary>
     /// 
     /// </summary>
-    public partial class Startup
+    public abstract partial class Startup<TContainer>
     {
         // TODO: TBD: may need/want to replace the Config downstream from here...
         protected HttpConfiguration Config { get; }
 
+        protected TContainer Container { get; set; }
+
         /// <summary>
-        /// Default Constructor
+        /// Protected Constructor
         /// </summary>
-        public Startup()
+        protected Startup()
         {
             // Make sure that we have an HttpConfiguration ready and waiting for us.
             Config = new HttpConfiguration();
@@ -34,7 +36,15 @@ namespace MeasureIt.Web.Http
         /// <param name="app"></param>
         public virtual void Configuration(IAppBuilder app)
         {
-            OnConfiguration(app, Config);
+            var config = Config;
+
+            OnConfiguration(app, config);
+
+            config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                "DefaultApi", "api/{controller}/{action}/{value}",
+                new {action = "get", value = RouteParameter.Optional});
 
             app.UseWebApi(Config);
         }

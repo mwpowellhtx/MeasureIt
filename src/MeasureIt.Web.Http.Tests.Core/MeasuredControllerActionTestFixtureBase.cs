@@ -9,9 +9,11 @@ namespace MeasureIt.Web.Http
     using Discovery;
     using Newtonsoft.Json;
     using Xunit;
+    using static HttpStatusCode;
 
-    public abstract class MeasuredControllerActionTestFixtureBase<TStartup> : SelfHostTestFixtureBase<TStartup>
-        where TStartup : Startup
+    public abstract class MeasuredControllerActionTestFixtureBase<TContainer, TStartup>
+        : SelfHostTestFixtureBase<TContainer, TStartup>
+        where TStartup : Startup<TContainer>
     {
         protected abstract HttpConfiguration GetConfiguration();
 
@@ -34,10 +36,8 @@ namespace MeasureIt.Web.Http
                 {
                     Assert.NotNull(response);
 
-                    const HttpStatusCode ok = HttpStatusCode.OK;
-
                     // We expect an OK Response to begin with.
-                    Assert.Equal(ok, response.StatusCode);
+                    Assert.Equal(OK, response.StatusCode);
 
                     var s = response.Content.ReadAsStringAsync().Result;
 
@@ -65,14 +65,12 @@ namespace MeasureIt.Web.Http
         ]
         public void VerifyApiVerifiedValueCorrect(int value, int[] expectedValues)
         {
-            MakeRequest(client => client.GetAsync(string.Format("{0}/verify/{1}", BaseApiUrl, value)).Result)
+            MakeRequest(client => client.GetAsync($"{BaseApiUrl}/verify/{value}").Result)
                 .Handle(response =>
                 {
-                    const HttpStatusCode ok = HttpStatusCode.OK;
-
                     Assert.NotNull(response);
 
-                    Assert.Equal(ok, response.StatusCode);
+                    Assert.Equal(OK, response.StatusCode);
 
                     var s = response.Content.ReadAsStringAsync().Result;
 

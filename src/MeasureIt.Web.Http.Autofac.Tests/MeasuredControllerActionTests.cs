@@ -3,9 +3,12 @@ using System.Web.Http;
 namespace MeasureIt.Web.Http.Autofac
 {
     using Xunit;
+    using global::Autofac;
     using global::Autofac.Integration.WebApi;
 
-    public class MeasuredControllerActionTests : MeasuredControllerActionTestFixtureBase<MeasuredStartupFixture>
+    public class MeasuredControllerActionTests
+        : MeasuredControllerActionTestFixtureBase<
+            IContainer, MeasuredStartupFixture>
     {
         protected override HttpConfiguration GetConfiguration()
         {

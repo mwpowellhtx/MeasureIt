@@ -2,15 +2,17 @@ using System.Web.Http;
 
 namespace MeasureIt.Web.Http.Castle.Windsor
 {
-    using Discovery;
     using Kingdom.Web.Http.Dependencies;
     using Xunit;
+    using global::Castle.Windsor;
 
-    public class MeasuredControllerActionTests : MeasuredControllerActionTestFixtureBase<BasicMeasuredStartupFixture>
+    public class MeasuredControllerActionTests
+        : MeasuredControllerActionTestFixtureBase<
+            IWindsorContainer, MeasuredStartupFixture>
     {
         protected override HttpConfiguration GetConfiguration()
         {
-            var config = MeasuredStartupFixture<InstrumentationDiscoveryOptions>.InternalConfig;
+            var config = MeasuredStartupFixture.InternalConfig;
 
             // Verify a couple of handshakey things...
             Assert.NotNull(config);
@@ -20,13 +22,5 @@ namespace MeasureIt.Web.Http.Castle.Windsor
             // TODO: TBD: ditto Autofac WebApi testing...
             return config;
         }
-    }
-
-    /// <summary>
-    /// Apparently self-hosted OWIN servers must provide a concrete class, no generics involved.
-    /// Although it may derive from a generic base class as we do here.
-    /// </summary>
-    public class BasicMeasuredStartupFixture : MeasuredStartupFixture<InstrumentationDiscoveryOptions>
-    {
     }
 }

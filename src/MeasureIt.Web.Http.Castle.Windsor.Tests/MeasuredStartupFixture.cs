@@ -4,15 +4,13 @@ namespace MeasureIt.Web.Http.Castle.Windsor
 {
     using Controllers;
     using Discovery;
-    using Interception;
     using Owin;
 
-    public class MeasuredStartupFixture<TOptions> : StartupFixture
-        where TOptions : class, IInstrumentationDiscoveryOptions, new()
+    public class MeasuredStartupFixture : StartupFixture
     {
-        protected virtual TOptions GetDiscoveryOptions()
+        protected virtual InstrumentationDiscoveryOptions GetDiscoveryOptions()
         {
-            return new TOptions
+            return new InstrumentationDiscoveryOptions
             {
                 ThrowOnInstallerFailure = false,
                 ThrowOnUninstallerFailure = false,
@@ -52,9 +50,7 @@ namespace MeasureIt.Web.Http.Castle.Windsor
             // Followed by enabling Api measurements via Container.
             Container.EnableApiMeasurements<
                 IHttpActionInstrumentationDiscoveryService
-                , HttpActionInstrumentationDiscoveryService
-                , TOptions
-                , HttpActionMeasurementProvider>(GetDiscoveryOptions);
+                , HttpActionInstrumentationDiscoveryService>(GetDiscoveryOptions);
 
             Install<IInstallerInstrumentationDiscoveryService>();
             Install<IHttpActionInstrumentationDiscoveryService>();
