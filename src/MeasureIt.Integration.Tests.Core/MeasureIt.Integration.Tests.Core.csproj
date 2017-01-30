@@ -64,16 +64,20 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Castle\Interception\AdHocMeasurementTestFixtureBase.cs" />
+    <Compile Include="Castle\Interception\SubjectClassAdHocMeasurementTests.cs" />
     <Compile Include="Classes\SubjectClass.cs" />
     <Compile Include="Classes\SubjectClassBase.cs" />
     <Compile Include="Counters\WindsorPerformanceCounterCategoryAdapter.cs" />
     <Compile Include="Castle\Interception\Measurement\IMeasurementInterceptorFixture.cs" />
     <Compile Include="Castle\Interception\Measurement\InvocationInterceptedEventArgs.cs" />
     <Compile Include="Castle\Interception\Measurement\MeasurementInterceptorFixture.cs" />
+    <Compile Include="DisposableTestFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\Root.cs" />
     <Compile Include="Castle\Core\DependencyInjectionTestFixtureBase.cs" />
     <Compile Include="Castle\Core\InstallerMeasurementInterceptorTestFixtureBase.cs" />
+    <Compile Include="TestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MeasureIt.Castle.Interception\MeasureIt.Castle.Interception.csproj">

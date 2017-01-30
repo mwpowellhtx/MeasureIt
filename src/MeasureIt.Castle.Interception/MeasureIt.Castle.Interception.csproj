@@ -7,7 +7,7 @@
     <ProjectGuid>{C3A1A8BB-8160-482F-B66B-60F256836C4B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MeasureIt.Castle.Interception</RootNamespace>
+    <RootNamespace>MeasureIt</RootNamespace>
     <AssemblyName>MeasureIt.Castle.Interception</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -48,11 +48,12 @@
     <Compile Include="..\Shared\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="IMeasurementInterceptor.cs" />
-    <Compile Include="MeasurementInterceptor.cs" />
-    <Compile Include="MeasurementInterceptorBase.cs" />
-    <Compile Include="Measurement\IInterceptionMeasurementProvider.cs" />
-    <Compile Include="Measurement\InterceptionMeasurementProvider.cs" />
+    <Compile Include="Castle\Interception\IMeasurementInterceptor.cs" />
+    <Compile Include="Castle\Interception\MeasurementInterceptor.cs" />
+    <Compile Include="Castle\Interception\MeasurementInterceptorBase.cs" />
+    <Compile Include="Castle\Interception\Measurement\IInterceptionMeasurementProvider.cs" />
+    <Compile Include="Castle\Interception\Measurement\InterceptionMeasurementProvider.cs" />
+    <Compile Include="Extensions\RegistrationExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +66,7 @@
       <Name>MeasureIt.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

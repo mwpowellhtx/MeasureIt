@@ -14,20 +14,17 @@ namespace MeasureIt.Castle.Interception.Measurement
 
         private static void RaiseIntercepted(object sender, InvocationInterceptedEventArgs e)
         {
-            if (Intercepted == null) return;
-            Intercepted(sender, e);
+            Intercepted?.Invoke(sender, e);
         }
 
         private static void RaiseMeasuring(object sender, InvocationInterceptedEventArgs e)
         {
-            if (Measuring == null) return;
-            Measuring(sender, e);
+            Measuring?.Invoke(sender, e);
         }
 
         private static void RaiseMeasured(object sender, InvocationInterceptedEventArgs e)
         {
-            if (Measured == null) return;
-            Measured(sender, e);
+            Measured?.Invoke(sender, e);
         }
 
         public MeasurementInterceptorFixture(IInterceptionMeasurementProvider measurementProvider)

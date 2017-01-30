@@ -1,4 +1,3 @@
-
 namespace MeasureIt.Castle.Interception
 {
     using global::Castle.DynamicProxy;
