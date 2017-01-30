@@ -23,6 +23,47 @@ namespace MeasureIt.Castle.Windsor
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="createOptions"></param>
+        /// <returns></returns>
+        public static IWindsorContainer EnableMeasurements<TInterface, TService>(
+            this IWindsorContainer container
+            , Func<InstrumentationDiscoveryOptions> createOptions = null)
+            where TInterface : class, IRuntimeInstrumentationDiscoveryService
+            where TService : class, TInterface
+        {
+            return container.EnableMeasurements<TInterface, TService
+                , InstrumentationDiscoveryOptions
+                , MeasurementInterceptor>();
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <typeparamref name="TService"/> via
+        /// <paramref name="container"/>.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TOptions"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="createOptions"></param>
+        /// <returns></returns>
+        public static IWindsorContainer EnableMeasurements<TInterface, TService, TOptions>(
+            this IWindsorContainer container
+            , Func<TOptions> createOptions = null)
+            where TInterface : class, IRuntimeInstrumentationDiscoveryService
+            where TService : class, TInterface
+            where TOptions : class, IInstrumentationDiscoveryOptions, new()
+        {
+            return container.EnableMeasurements<TInterface, TService, TOptions
+                , MeasurementInterceptor>();
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <typeparamref name="TService"/> via
+        /// <paramref name="container"/>.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
         /// <typeparam name="TOptions"></typeparam>
         /// <typeparam name="TInterceptor"></typeparam>
         /// <param name="container"></param>
@@ -116,24 +157,38 @@ namespace MeasureIt.Castle.Windsor
 
         /// <summary>
         /// Measure the <paramref name="obj"/> Instance providing for <paramref name="container"/>
-        /// and <paramref name="optsProxyGeneration"/>.
+        /// and <paramref name="createGeneratorOptions"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="obj"></param>
+        /// <param name="createGeneratorOptions"></param>
+        /// <returns></returns>
+        public static T MeasureInstance<T>(this IWindsorContainer container
+            , T obj, Func<ProxyGenerationOptions> createGeneratorOptions = null)
+            where T : class
+        {
+            return container.MeasureInstance<T, MeasurementInterceptor>(obj, createGeneratorOptions);
+        }
+
+        /// <summary>
+        /// Measure the <paramref name="obj"/> Instance providing for <paramref name="container"/>
+        /// and <paramref name="createGeneratorOptions"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TInterceptor"></typeparam>
         /// <param name="container"></param>
         /// <param name="obj"></param>
-        /// <param name="optsProxyGeneration"></param>
+        /// <param name="createGeneratorOptions"></param>
         /// <returns></returns>
         public static T MeasureInstance<T, TInterceptor>(this IWindsorContainer container
-            , T obj, Action<ProxyGenerationOptions> optsProxyGeneration = null)
+            , T obj, Func<ProxyGenerationOptions> createGeneratorOptions = null)
             where T : class
             where TInterceptor : class, IMeasurementInterceptor
         {
-            optsProxyGeneration = optsProxyGeneration ?? (o => { });
+            createGeneratorOptions = createGeneratorOptions ?? (() => new ProxyGenerationOptions());
 
-            var opts = new ProxyGenerationOptions();
-
-            optsProxyGeneration(opts);
+            var opts = createGeneratorOptions();
 
             // TODO: ModuleScope?
             var generator = new ProxyGenerator();
