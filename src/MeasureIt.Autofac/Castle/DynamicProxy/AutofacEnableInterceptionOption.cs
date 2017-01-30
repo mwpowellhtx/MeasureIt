@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace MeasureIt.Castle.DynamicProxy
 {
@@ -18,5 +19,20 @@ namespace MeasureIt.Castle.DynamicProxy
         /// Signals to Enable Interception for Interface.
         /// </summary>
         Interface = 1 << 1
+    }
+
+    internal static class AutofacEnableInterceptionOptionExtensionMethods
+    {
+        internal static bool TryContains(this AutofacEnableInterceptionOption value,
+            params AutofacEnableInterceptionOption[] values)
+        {
+            return values.Any(x => (value & x) == x);
+        }
+
+        internal static bool TryDoesNotContain(this AutofacEnableInterceptionOption value,
+            params AutofacEnableInterceptionOption[] values)
+        {
+            return !values.Any(x => (value & x) == x);
+        }
     }
 }

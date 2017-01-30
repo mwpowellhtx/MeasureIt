@@ -52,7 +52,7 @@ namespace MeasureIt
             /* It is the "same" code as for Autofac and yet it isn't so do not be fooled by the lines of code.
              * The similarity is by design. */
 
-            var measured = Container.MeasureInstance<SubjectClass, IMeasurementInterceptor>(obj);
+            var measured = Container.AsMeasuredInstance<SubjectClass, IMeasurementInterceptor>(obj);
          
             Assert.NotNull(measured);
 

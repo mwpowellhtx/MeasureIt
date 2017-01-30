@@ -12,6 +12,7 @@ namespace MeasureIt
     using Discovery;
     using global::Castle.DynamicProxy;
     using static Discovery.InstrumentationDiscoveryOptions;
+    using static Castle.DynamicProxy.AutofacEnableInterceptionOption;
 
     /// <summary>
     /// 
@@ -33,10 +34,9 @@ namespace MeasureIt
             where TInterface : class, IRuntimeInstrumentationDiscoveryService
             where TService : class, TInterface
         {
-            builder.EnableMeasurements<TInterface, TService, InstrumentationDiscoveryOptions
+            return builder.EnableMeasurements<TInterface, TService
+                , InstrumentationDiscoveryOptions
                 , MeasurementInterceptor>(createOptions);
-
-            return builder;
         }
 
         /// <summary>
@@ -59,10 +59,8 @@ namespace MeasureIt
             where TService : class, TInterface
             where TOptions : class, IInstrumentationDiscoveryOptions, new()
         {
-            builder.EnableMeasurements<TInterface, TService, TOptions
+            return builder.EnableMeasurements<TInterface, TService, TOptions
                 , MeasurementInterceptor>(createOptions);
-
-            return builder;
         }
 
         /// <summary>
@@ -120,54 +118,93 @@ namespace MeasureIt
         }
 
         /// <summary>
-        /// 
+        /// Returns the values defined by the <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="TImplementer"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private static IEnumerable<T> GetEnumValues<T>()
+        {
+            var type = typeof(T);
+
+            if (!type.IsEnum)
+            {
+                var message = $"Type {typeof(T).FullName} is not an enum type.";
+                throw new InvalidOperationException(message);
+            }
+
+            foreach (T value in Enum.GetValues(type)) yield return value;
+        }
+
+        /// <summary>
+        /// Returns a Created Instance of the type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private static T CreateDefaultInstance<T>()
+            where T : class, new()
+        {
+            return new T();
+        }
+
+        /// <summary>
+        /// Registers the <typeparamref name="TService"/> with interception support by the
+        /// <typeparamref name="TInterceptor"/>.
+        /// </summary>
         /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TInterceptor"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="optsProxyGeneration"></param>
+        /// <param name="createGeneratorOptions">Enables <see cref="Class"/> or
+        /// <see cref="Interface"/> interception, depending on the
+        /// <see cref="AutofacProxyGenerationOptions"/> that were provided.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">Thrown when options are insufficient to proceed.</exception>
-        public static ContainerBuilder EnableMeasurementInterception<TImplementer, TService, TInterceptor>(
+        public static ContainerBuilder EnableMeasurementInterception<TInterface, TService, TInterceptor>(
             this ContainerBuilder builder
-            , Action<AutofacProxyGenerationOptions> optsProxyGeneration = null)
-            where TImplementer : class
+            , Func<AutofacProxyGenerationOptions> createGeneratorOptions = null)
+            where TInterface : class
+            where TService : class, TInterface
             where TInterceptor : class, IMeasurementInterceptor
         {
-            optsProxyGeneration = optsProxyGeneration ?? delegate { };
+            createGeneratorOptions = createGeneratorOptions ?? CreateDefaultInstance<AutofacProxyGenerationOptions>;
 
-            var opts = new AutofacProxyGenerationOptions();
+            var generatorOptions = createGeneratorOptions();
 
-            optsProxyGeneration(opts);
-
-            // TODO: TBD: may want to derive this "feature" based on TImplementer/TService types instead...
-            const AutofacEnableInterceptionOption cls = AutofacEnableInterceptionOption.Class;
-            const AutofacEnableInterceptionOption intf = AutofacEnableInterceptionOption.Interface;
-
-            if (!((opts.EnableInterception & cls) == cls
-                || (opts.EnableInterception & intf) == intf))
+            // I'm not sure how this "simplifies" the LINQ, but we'll run with it anyway.
+            if (GetEnumValues<AutofacEnableInterceptionOption>()
+                .All(x => generatorOptions.EnableInterception.TryContains(x)))
             {
-                const string message = "Expected an option for Autofac EnableInterception.";
+                var optionsType = typeof(AutofacProxyGenerationOptions);
+
+                var property = optionsType.GetProperty(nameof(AutofacProxyGenerationOptions.EnableInterception));
+
+                var message = $"Expected an '{typeof(AutofacEnableInterceptionOption).FullName}'"
+                              + $" value for '{optionsType.FullName}.{property.Name}'.";
+
                 throw new InvalidOperationException(message);
+            }
+
+            typeof(TInterface).VerifyIsInterface();
+            typeof(TService).VerifyIsClass();
+
+            var regBuilder = builder
+                .RegisterType<TService>()
+                .AsImplementedInterfaces();
+
+            // TODO: TBD: whether to capture enable xyz interceptors (Type[] additionalInterfaces) args via options
+            if (generatorOptions.EnableInterception.TryContains(Class))
+            {
+                regBuilder.EnableClassInterceptors(generatorOptions);
+            }
+
+            if (generatorOptions.EnableInterception.TryContains(Interface))
+            {
+                regBuilder.EnableInterfaceInterceptors(generatorOptions);
             }
 
             var interceptorType = typeof(TInterceptor);
 
-            var regBuilder = builder
-                .RegisterType<TImplementer>()
-                .As<TService>();
-
-            // TODO: TBD: whether to capture enable xyz interceptors (Type[] additionalInterfaces) args via options
-            if ((opts.EnableInterception & cls) == cls)
-            {
-                regBuilder.EnableClassInterceptors(opts);
-            }
-
-            if ((opts.EnableInterception & intf) == intf)
-            {
-                regBuilder.EnableInterfaceInterceptors(opts);
-            }
+            interceptorType.VerifyIsClass();
 
             regBuilder.InterceptedBy(interceptorType);
 
@@ -176,31 +213,31 @@ namespace MeasureIt
 
         /// <summary>
         /// Measure the <paramref name="obj"/> Instance providing for <paramref name="container"/>
-        /// and <paramref name="optsProxyGeneration"/>.
+        /// and <paramref name="createGeneratorOptions"/>. In this case all we need are
+        /// <see cref="ProxyGenerationOptions"/> options. No need to get specific with
+        /// <see cref="AutofacProxyGenerationOptions"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TInterceptor"></typeparam>
         /// <param name="container"></param>
         /// <param name="obj"></param>
-        /// <param name="optsProxyGeneration"></param>
+        /// <param name="createGeneratorOptions"></param>
         /// <returns></returns>
-        public static T MeasureInstance<T, TInterceptor>(this IContainer container
-            , T obj, Action<AutofacProxyGenerationOptions> optsProxyGeneration = null)
+        public static T AsMeasuredInstance<T, TInterceptor>(this IContainer container, T obj
+            , Func<ProxyGenerationOptions> createGeneratorOptions = null)
             where T : class
             where TInterceptor : class, IMeasurementInterceptor
         {
-            optsProxyGeneration = optsProxyGeneration ?? delegate { };
+            // ReSharper disable once ConvertToLambdaExpression
+            createGeneratorOptions = createGeneratorOptions ?? CreateDefaultInstance<ProxyGenerationOptions>;
 
-            var opts = new AutofacProxyGenerationOptions();
+            var generatorOptions = createGeneratorOptions();
 
-            optsProxyGeneration(opts);
-
-            // TODO: ModuleScope?
             var generator = new ProxyGenerator();
 
             var interceptors = container.Resolve<IEnumerable<TInterceptor>>().ToArray<IInterceptor>();
 
-            var proxy = generator.CreateClassProxyWithTarget(obj, opts, interceptors);
+            var proxy = generator.CreateClassProxyWithTarget(obj, generatorOptions, interceptors);
 
             return proxy;
         }

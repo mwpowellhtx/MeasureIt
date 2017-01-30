@@ -57,6 +57,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Castle\DynamicProxy\AutofacEnableInterceptionOption.cs" />
+    <Compile Include="Castle\DynamicProxy\IAutofacProxyGenerationOptions.cs" />
     <Compile Include="Castle\DynamicProxy\RegistrationExtensionMethods.cs" />
     <Compile Include="Extensions\RegistrationExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
