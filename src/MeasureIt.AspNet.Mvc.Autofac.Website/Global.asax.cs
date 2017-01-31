@@ -38,6 +38,11 @@ namespace MeasureIt.AspNet.Mvc.Autofac
             };
         }
 
+        private static IEnumerable<Assembly> GetControllerAssemblies()
+        {
+            yield return typeof(HomeController).Assembly;
+        }
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -51,10 +56,9 @@ namespace MeasureIt.AspNet.Mvc.Autofac
             // Assumes filters, routes, bundles, etc, have all been configured.
 
             // TODO: TBD: could/should potentially put these in a useful extension method...
-            builder.RegisterType<AutofacControllerActionInvoker>().As<IActionInvoker>().InstancePerRequest();
-            builder.RegisterType<AutofacDependencyResolver>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterRequiredServices<AutofacDependencyResolver>();
 
-            builder.RegisterControllers(typeof(HomeController).Assembly).InjectActionInvoker();
+            builder.RegisterControllers(GetControllerAssemblies().ToArray()).InjectActionInvoker();
 
             builder.EnableMvcMeasurements<
                     IMvcActionInstrumentationDiscoveryService

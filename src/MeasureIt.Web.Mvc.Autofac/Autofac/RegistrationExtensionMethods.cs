@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Mvc;
 
 namespace MeasureIt.Web.Mvc.Autofac
 {
@@ -31,7 +32,41 @@ namespace MeasureIt.Web.Mvc.Autofac
             typeof(TInterface).VerifyIsInterface();
             typeof(TService).VerifyIsClass();
 
-            return builder.RegisterType<TService>().As<TInterface>();
+            return builder.RegisterType<TService>().AsImplementedInterfaces();
+        }
+
+        /// <summary>
+        /// Registers the Required Services with the <paramref name="builder"/>.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ContainerBuilder RegisterRequiredServices<TResolver>(this ContainerBuilder builder)
+            where TResolver : class, IDependencyResolver
+        {
+            return builder.RegisterRequiredServices<AutofacControllerActionInvoker, TResolver>();
+        }
+
+        /// <summary>
+        /// Registers the Required Services with the <paramref name="builder"/>.
+        /// </summary>
+        /// <typeparam name="TInvoker"></typeparam>
+        /// <typeparam name="TResolver"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ContainerBuilder RegisterRequiredServices<TInvoker, TResolver>(
+            this ContainerBuilder builder)
+            where TInvoker : class, IAutofacControllerActionInvoker
+            where TResolver : class, IDependencyResolver
+        {
+            typeof(TInvoker).VerifyIsClass();
+
+            // TODO: TBD: It would be better if we had an interface that isolated the Autofac specializing from the base, but we do not.
+            typeof(TResolver).VerifyIsClass();
+
+            builder.RegisterType<TInvoker>().AsImplementedInterfaces().InstancePerRequest();
+            builder.RegisterType<TResolver>().AsImplementedInterfaces().SingleInstance();
+
+            return builder;
         }
 
         /// <summary>
