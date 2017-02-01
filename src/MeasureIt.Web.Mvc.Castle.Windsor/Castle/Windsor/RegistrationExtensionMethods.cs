@@ -21,6 +21,30 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
         /// </summary>
         /// <typeparam name="TInterface"></typeparam>
         /// <typeparam name="TService"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="createOptions"></param>
+        /// <param name="optionsCreated"></param>
+        /// <returns></returns>
+        /// <see cref="EnableMvcMeasurements{TInterface,TService,TOptions,TProvider}"/>
+        public static IWindsorContainer EnableMvcMeasurements<TInterface, TService>(
+            this IWindsorContainer container
+            , Func<InstrumentationDiscoveryOptions> createOptions = null
+            , Action<InstrumentationDiscoveryOptions> optionsCreated = null)
+            where TInterface : class, IMvcActionInstrumentationDiscoveryService
+            where TService : class, TInterface
+        {
+            return container.EnableMvcMeasurements<TInterface, TService
+                , InstrumentationDiscoveryOptions
+                , MvcActionMeasurementProvider>(createOptions, optionsCreated);
+        }
+
+        /// <summary>
+        /// Enables runtime interception using <typeparamref name="TService"/> via
+        /// <paramref name="container"/>, and using <see cref="MvcActionMeasurementProvider"/> for
+        /// provider.
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="container"></param>
         /// <param name="createOptions"></param>
@@ -63,6 +87,8 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
             createOptions = createOptions ?? CreateDefaultDiscoveryOptions<TOptions>;
             optionsCreated = optionsCreated ?? delegate { };
 
+            typeof(TOptions).VerifyIsClass();
+
             container.Register(
 
                 Component.For(typeof(TOptions).GetInterfaces())
@@ -77,14 +103,13 @@ namespace MeasureIt.Web.Mvc.Castle.Windsor
             );
 
             {
+                typeof(TService).VerifyIsClass();
                 typeof(TInterface).VerifyIsInterface();
 
                 container.Register(
                     
                     // TODO: TBD: just register all of the implemented interfaces?
-                    Component.For<TInterface
-                            , IRuntimeInstrumentationDiscoveryService
-                            , IInstallerInstrumentationDiscoveryService>()
+                    Component.For(typeof(TService).GetInterfaces())
                         .ImplementedBy<TService>().LifestyleTransient()
 
                 );
