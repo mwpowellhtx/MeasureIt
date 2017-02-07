@@ -74,7 +74,7 @@ namespace MeasureIt.Web.Mvc.Filters
 
         private class MeasurementContextInfo
         {
-            internal object FilterContext { get; }
+            private readonly object _filterContext;
 
             internal IController Controller { get; }
 
@@ -105,14 +105,14 @@ namespace MeasureIt.Web.Mvc.Filters
             private MeasurementContextInfo(object filterContext, IController ctrl, Exception ex = null)
             {
                 Controller = ctrl;
-                FilterContext = filterContext;
+                _filterContext = filterContext;
                 Exception = ex;
             }
 
             private MeasurementContextInfo(object filterContext, IController ctrl, ActionDescriptor actionDescriptor, Exception ex = null)
             {
                 Controller = ctrl;
-                FilterContext = filterContext;
+                _filterContext = filterContext;
                 ActionDescriptor = actionDescriptor;
                 Exception = ex;
             }
