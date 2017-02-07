@@ -5,10 +5,10 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using MeasureIt.AspNet.Mvc.Autofac.Controllers;
 
 namespace MeasureIt.AspNet.Mvc.Autofac
 {
+    using Controllers;
     using Discovery;
     using Web.Mvc.Autofac;
     using global::Autofac;
