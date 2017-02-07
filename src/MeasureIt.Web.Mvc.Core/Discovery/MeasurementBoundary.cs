@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace MeasureIt.Discovery
 {
+    using static MeasurementBoundary;
     using static MvcInstrumentationDiscoveryOptions;
 
     /// <summary>
@@ -145,10 +146,8 @@ namespace MeasureIt.Discovery
         internal static void VerifyBoundaries(this IEnumerable<MeasurementBoundary> values,
             out MeasurementBoundary start, out MeasurementBoundary stop)
         {
-            if (values == null)
-            {
-                throw new ArgumentNullException(nameof(values), "values is null.");
-            }
+            // Make life a bit easier with the default assignment.
+            values = values ?? new[] {BeginAction, EndAction};
 
             // ReSharper disable once PossibleMultipleEnumeration
             if (values.Count() != 2)
