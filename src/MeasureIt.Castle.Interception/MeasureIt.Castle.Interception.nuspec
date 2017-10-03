@@ -12,7 +12,7 @@
         <copyright>Copyright © 2016</copyright>
         <tags>MeasureIt interception measurement performance counter counters Castle Interceptor IInterceptor</tags>
         <dependencies>
-            <dependency id="MeaureIt.Core" version="1.16.0" />
+            <dependency id="MeasureIt.Core" version="1.16.0" />
         </dependencies>
     </metadata>
     <files>
